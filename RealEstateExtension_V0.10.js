@@ -8,7 +8,7 @@ export const RealEstateExtension = {
         console.log('Raw trace.payload:', trace.payload);
 
         let payloadObj;
-
+        
         // First, parse the trace.payload if it's a string
         if (typeof trace.payload === 'string') {
             try {
@@ -40,150 +40,92 @@ export const RealEstateExtension = {
             return;
         }
 
-        // Inject proper CSS into the document head
-        if (!document.getElementById('real-estate-styles')) {
-            const style = document.createElement('style');
-            style.id = 'real-estate-styles';
-            style.innerHTML = `
-                /* Remove default chat bubble background */
-                .vfrc-message.vfrc-message--extension-RealEstate {
-                    background: none !important;
-                    padding: 0 !important;
-                }
+        // Set container styling
+        const container = document.createElement('div');
+        container.style.width = '600px';
+        container.style.margin = '0 auto';
+        container.style.display = 'grid';
+        container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+        container.style.gap = '15px';
+        container.style.justifyContent = 'center';
+        container.style.alignItems = 'center';
 
-                /* Main container */
-                .real-estate-container {
-                    display: flex;
-                    justify-content: center;
-                    align-items: flex-start;
-                    width: 100%;
-                    gap: 20px;
-                    flex-wrap: wrap;
-                }
-
-                /* Property grid */
-                .property-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                    gap: 15px;
-                    width: 600px;
-                    max-width: 100%;
-                }
-
-                /* Property card */
-                .property-card {
-                    background: white;
-                    padding: 10px;
-                    border-radius: 10px;
-                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-                    cursor: pointer;
-                    transition: transform 0.2s;
-                    text-align: center;
-                    max-width: 180px;
-                }
-                .property-card:hover {
-                    transform: scale(1.05);
-                }
-                .property-card img {
-                    width: 100%;
-                    border-radius: 5px;
-                }
-
-                /* Property details */
-                .property-details {
-                    width: 400px;
-                    padding: 10px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    background: white;
-                    border-radius: 10px;
-                    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-                    padding: 15px;
-                }
-
-                /* Main image */
-                .property-details img {
-                    width: 100%;
-                    border-radius: 10px;
-                }
-
-                /* Thumbnail container */
-                .property-thumbnails {
-                    display: flex;
-                    gap: 5px;
-                    margin-top: 10px;
-                }
-
-                /* Small images for thumbnails */
-                .property-thumbnails img {
-                    width: 60px;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    transition: opacity 0.2s;
-                }
-
-                .property-thumbnails img:hover {
-                    opacity: 0.7;
-                }
-
-                /* Back button */
-                .back-button {
-                    margin-top: 10px;
-                    padding: 8px;
-                    border: none;
-                    background-color: #007bff;
-                    color: white;
-                    cursor: pointer;
-                    border-radius: 5px;
-                    width: 100%;
-                    text-align: center;
-                }
-
-                .back-button:hover {
-                    background-color: #0056b3;
-                }
-            `;
-            document.head.appendChild(style);
+        // Remove the background from the message container
+        let parentMessage = element.closest('.vfrc-message.vfrc-message--extension-RealEstate');
+        if (parentMessage) {
+            parentMessage.style.background = 'transparent';
+            parentMessage.style.boxShadow = 'none';
         }
 
-        // Create main container
-        const container = document.createElement('div');
-        container.className = 'real-estate-container';
+        function renderGrid() {
+            container.innerHTML = '';
 
-        // Create property grid
-        const grid = document.createElement('div');
-        grid.className = 'property-grid';
+            properties.forEach((property) => {
+                const propertyCard = document.createElement('div');
+                propertyCard.style.width = '250px';
+                propertyCard.style.borderRadius = '10px';
+                propertyCard.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.1)';
+                propertyCard.style.padding = '15px';
+                propertyCard.style.textAlign = 'center';
+                propertyCard.style.background = 'white';
+                propertyCard.style.cursor = 'pointer';
+                propertyCard.style.transition = 'transform 0.3s ease';
+                propertyCard.addEventListener('mouseover', () => {
+                    propertyCard.style.transform = 'scale(1.05)';
+                });
+                propertyCard.addEventListener('mouseout', () => {
+                    propertyCard.style.transform = 'scale(1)';
+                });
 
-        // Property details container
-        const detailsContainer = document.createElement('div');
-        detailsContainer.className = 'property-details';
-        detailsContainer.style.display = 'none';
+                const img = document.createElement('img');
+                img.src = property.fields?.Image?.[0]?.url || '';
+                img.style.width = '100%';
+                img.style.borderRadius = '5px';
+
+                const title = document.createElement('p');
+                title.textContent = property.fields?.['Property Name'] || 'Unknown Property';
+                title.style.margin = '10px 0 5px';
+                title.style.fontWeight = 'bold';
+
+                propertyCard.appendChild(img);
+                propertyCard.appendChild(title);
+                propertyCard.addEventListener('click', () => showPropertyDetail(property));
+                container.appendChild(propertyCard);
+            });
+        }
 
         function showPropertyDetail(property) {
-            detailsContainer.innerHTML = '';
+            container.innerHTML = '';
 
             // Main image
             const mainImage = document.createElement('img');
             mainImage.src = property.fields?.Image?.[0]?.url || '';
-            mainImage.alt = 'Property Image';
-            detailsContainer.appendChild(mainImage);
+            mainImage.style.width = '100%';
+            mainImage.style.borderRadius = '10px';
+            mainImage.style.marginBottom = '10px';
 
-            // Thumbnail images
+            // Image thumbnails
             const thumbnailContainer = document.createElement('div');
-            thumbnailContainer.className = 'property-thumbnails';
+            thumbnailContainer.style.display = 'flex';
+            thumbnailContainer.style.justifyContent = 'center';
+            thumbnailContainer.style.gap = '10px';
 
             property.fields?.Image?.slice(1).forEach(imgData => {
-                const thumbImg = document.createElement('img');
-                thumbImg.src = imgData.url;
-                thumbImg.addEventListener('click', () => (mainImage.src = imgData.url));
-                thumbnailContainer.appendChild(thumbImg);
-            });
+                const smallImg = document.createElement('img');
+                smallImg.src = imgData.url;
+                smallImg.style.width = '80px';
+                smallImg.style.borderRadius = '5px';
+                smallImg.style.cursor = 'pointer';
+                smallImg.addEventListener('click', () => (mainImage.src = imgData.url));
 
-            detailsContainer.appendChild(thumbnailContainer);
+                thumbnailContainer.appendChild(smallImg);
+            });
 
             // Property details
             const details = document.createElement('div');
+            details.style.textAlign = 'center';
+            details.style.fontSize = '16px';
+            details.style.marginTop = '15px';
             details.innerHTML = `
                 <p><strong>City:</strong> ${property.fields?.City || 'N/A'}</p>
                 <p><strong>Type:</strong> ${property.fields?.['Property Type'] || 'N/A'}</p>
@@ -195,45 +137,26 @@ export const RealEstateExtension = {
                 <p><strong>Plot:</strong> ${property.fields?.Plot ? property.fields.Plot + ' m²' : 'N/A'}</p>
                 <p><strong>Energy Label:</strong> ${property.fields?.['Energy Label'] || 'N/A'}</p>
             `;
-            detailsContainer.appendChild(details);
 
             // Back button
             const backButton = document.createElement('button');
-            backButton.className = 'back-button';
             backButton.textContent = '← Back to Listings';
+            backButton.style.marginTop = '10px';
+            backButton.style.padding = '10px 15px';
+            backButton.style.border = 'none';
+            backButton.style.backgroundColor = '#007bff';
+            backButton.style.color = 'white';
+            backButton.style.borderRadius = '5px';
+            backButton.style.cursor = 'pointer';
             backButton.addEventListener('click', renderGrid);
 
-            detailsContainer.appendChild(backButton);
-
-            detailsContainer.style.display = 'flex';
-        }
-
-        function renderGrid() {
-            grid.innerHTML = '';
-            detailsContainer.style.display = 'none';
-
-            properties.forEach(property => {
-                const card = document.createElement('div');
-                card.className = 'property-card';
-
-                const img = document.createElement('img');
-                img.src = property.fields?.Image?.[0]?.url || '';
-                img.alt = 'Property Thumbnail';
-                card.appendChild(img);
-
-                const title = document.createElement('p');
-                title.textContent = property.fields?.['Property Name'] || 'Unknown Property';
-                title.style.fontWeight = 'bold';
-                card.appendChild(title);
-
-                card.addEventListener('click', () => showPropertyDetail(property));
-                grid.appendChild(card);
-            });
+            container.appendChild(mainImage);
+            container.appendChild(thumbnailContainer);
+            container.appendChild(details);
+            container.appendChild(backButton);
         }
 
         renderGrid();
-        container.appendChild(grid);
-        container.appendChild(detailsContainer);
         element.appendChild(container);
-    }
+    },
 };
