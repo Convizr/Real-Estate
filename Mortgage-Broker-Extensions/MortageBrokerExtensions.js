@@ -59,9 +59,9 @@ export const RenteVergelijkerExtension = {
         background: #eaf0ff !important;
         color: #2d5fff !important;
         font-weight: 700 !important;
-        font-size: 1.08em !important;
+        font-size: 1em !important;
         border: none !important;
-        border-radius: 18px !important;
+        border-radius: 14px !important;
         padding: 10px 36px 10px 18px !important;
         margin-top: 4px !important;
         margin-bottom: 4px !important;
@@ -69,7 +69,7 @@ export const RenteVergelijkerExtension = {
         outline: none !important;
         transition: box-shadow 0.15s !important;
         cursor: pointer !important;
-        min-width: 140px !important;
+        min-width: 120px !important;
         position: relative !important;
       }
       .vf-modern-select:focus {
@@ -189,6 +189,28 @@ export const RenteVergelijkerExtension = {
         min-width: 54px;
         text-align: center;
         box-shadow: 0 2px 8px #0001;
+      }
+      .vf-mortgage-col label {
+        font-size: 0.98em !important;
+        font-weight: 600 !important;
+      }
+      #btn-apply {
+        display: block !important;
+        width: 100% !important;
+        background: #2d5fff !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 14px !important;
+        padding: 10px 0 !important;
+        font-weight: 700 !important;
+        font-size: 1em !important;
+        margin: 16px 0 0 0 !important;
+        box-shadow: 0 2px 8px #2d5fff22 !important;
+        cursor: pointer !important;
+      }
+      #results-area {
+        min-height: 180px;
+        margin-top: 18px !important;
       }
     `;
     if (element.shadowRoot) {
