@@ -86,6 +86,60 @@ export const RenteVergelijkerExtension = {
         color: #2d5fff;
         pointer-events: none;
       }
+      .vf-sort-menu .sort-option:hover {
+        background: #eaf0ff !important;
+        color: #2d5fff !important;
+      }
+      .vf-loan-input-wrap {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .vf-loan-input {
+        background: #eaf0ff;
+        color: #222;
+        font-weight: 700;
+        font-size: 1.25em;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 18px 10px 36px;
+        margin: 0;
+        outline: none;
+        box-shadow: none;
+        border-bottom: 3px solid #2d5fff;
+        width: 140px;
+        transition: border-color 0.15s;
+        text-align: left;
+      }
+      .vf-loan-input:focus {
+        border-bottom: 3px solid #1a3fd1;
+      }
+      .vf-loan-input-currency {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      .vf-loan-input-currency span {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2d5fff;
+        font-size: 1.1em;
+        font-weight: 700;
+        pointer-events: none;
+      }
+      .vf-loan-badge {
+        background: #eaf0ff;
+        color: #2d5fff;
+        font-weight: 700;
+        font-size: 1.08em;
+        border-radius: 12px;
+        padding: 8px 18px;
+        margin-left: 6px;
+        margin-top: 18px;
+        display: inline-block;
+        min-width: 54px;
+        text-align: center;
+      }
     `;
     document.head.appendChild(style);
 
@@ -100,8 +154,23 @@ export const RenteVergelijkerExtension = {
     // Responsive row for price/down, expandable filters for mobile
     inputPanel.innerHTML = `
       <div class="vf-mortgage-row">
-        <div class="vf-mortgage-col"><label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br><input id="input-price" type="number" placeholder="e.g. 300000" /></label></div>
-        <div class="vf-mortgage-col"><label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br><input id="input-down" type="number" placeholder="e.g. 60000" /></label></div>
+        <div class="vf-mortgage-col">
+          <label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br>
+          <span class="vf-loan-input-currency">
+            <span>$</span>
+            <input id="input-price" type="number" placeholder="e.g. 300000" class="vf-loan-input" />
+          </span>
+          </label>
+        </div>
+        <div class="vf-mortgage-col">
+          <label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br>
+          <span class="vf-loan-input-currency">
+            <span>$</span>
+            <input id="input-down" type="number" placeholder="e.g. 60000" class="vf-loan-input" />
+          </span>
+          <span id="down-badge" class="vf-loan-badge">0%</span>
+          </label>
+        </div>
       </div>
       <button class="vf-mortgage-more" id="vf-more-btn">More Filters ▼</button>
       <div class="vf-mortgage-filters" id="vf-filters">
@@ -330,6 +399,23 @@ export const RenteVergelijkerExtension = {
       cardsToShow = 3;
       applyFiltersAndRender();
     });
+
+    // --- Down payment percentage badge logic ---
+    const inputPrice = inputPanel.querySelector('#input-price');
+    const inputDown = inputPanel.querySelector('#input-down');
+    const downBadge = inputPanel.querySelector('#down-badge');
+    function updateDownBadge() {
+      const price = parseFloat(inputPrice.value);
+      const down = parseFloat(inputDown.value);
+      let pct = 0;
+      if (price > 0 && down > 0) {
+        pct = Math.round((down / price) * 100);
+      }
+      downBadge.textContent = isNaN(pct) ? '0%' : pct + '%';
+    }
+    inputPrice.addEventListener('input', updateDownBadge);
+    inputDown.addEventListener('input', updateDownBadge);
+    updateDownBadge();
 
     // --- Parse and Render Payload ---
     try {
