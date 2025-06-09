@@ -140,6 +140,56 @@ export const RenteVergelijkerExtension = {
         min-width: 54px;
         text-align: center;
       }
+      .vf-loan-input-currency-euro {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: none;
+      }
+      .vf-loan-input-currency-euro span:first-child {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2d5fff;
+        font-size: 1.15em;
+        font-weight: 700;
+        pointer-events: none;
+      }
+      .vf-loan-input-euro {
+        background: #fff;
+        color: #222;
+        font-weight: 700;
+        font-size: 1.25em;
+        border: 1.5px solid #dbe6ff;
+        border-radius: 8px;
+        padding: 12px 12px 10px 38px;
+        margin: 0;
+        outline: none;
+        box-shadow: none;
+        border-bottom: 3px solid #2d5fff;
+        width: 160px;
+        transition: border-color 0.15s;
+        text-align: left;
+      }
+      .vf-loan-input-euro:focus {
+        border-color: #2d5fff;
+        border-bottom: 3px solid #1a3fd1;
+      }
+      .vf-loan-badge-euro {
+        background: #2d5fff;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.08em;
+        border-radius: 12px;
+        padding: 8px 18px;
+        margin-left: 12px;
+        margin-top: 18px;
+        display: inline-block;
+        min-width: 54px;
+        text-align: center;
+        box-shadow: 0 2px 8px #0001;
+      }
     `;
     document.head.appendChild(style);
 
@@ -156,19 +206,19 @@ export const RenteVergelijkerExtension = {
       <div class="vf-mortgage-row">
         <div class="vf-mortgage-col">
           <label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br>
-          <span class="vf-loan-input-currency">
-            <span>$</span>
-            <input id="input-price" type="number" placeholder="e.g. 300000" class="vf-loan-input" />
+          <span class="vf-loan-input-currency-euro">
+            <span>€</span>
+            <input id="input-price" type="number" placeholder="e.g. 300000" class="vf-loan-input-euro" />
           </span>
           </label>
         </div>
         <div class="vf-mortgage-col">
           <label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br>
-          <span class="vf-loan-input-currency">
-            <span>$</span>
-            <input id="input-down" type="number" placeholder="e.g. 60000" class="vf-loan-input" />
+          <span class="vf-loan-input-currency-euro">
+            <span>€</span>
+            <input id="input-down" type="number" placeholder="e.g. 60000" class="vf-loan-input-euro" />
           </span>
-          <span id="down-badge" class="vf-loan-badge">0%</span>
+          <span id="down-badge" class="vf-loan-badge-euro">0%</span>
           </label>
         </div>
       </div>
