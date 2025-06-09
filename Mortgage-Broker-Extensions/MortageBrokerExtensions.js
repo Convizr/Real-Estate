@@ -228,15 +228,20 @@ export const RenteVergelijkerExtension = {
       
       // Handle the ratesApiResponse structure
       if (payloadObj.ratesApiResponse) {
-        console.log('Found ratesApiResponse:', payloadObj.ratesApiResponse);
-        const apiResponse = typeof payloadObj.ratesApiResponse === 'object' 
-          ? payloadObj.ratesApiResponse 
-          : JSON.parse(payloadObj.ratesApiResponse);
-        
+        let apiResponse = payloadObj.ratesApiResponse;
+        if (typeof apiResponse === "string") {
+          try {
+            apiResponse = JSON.parse(apiResponse);
+          } catch (e) {
+            console.error("Failed to parse ratesApiResponse string:", apiResponse, e);
+            showError("Fout bij het verwerken van de rentes.");
+            return;
+          }
+        }
         if (apiResponse.records) {
           currentRates = transformAirtableData(apiResponse);
-        } else if (Array.isArray(apiResponse.rates)) {
-          currentRates = apiResponse.rates;
+        } else if (Array.isArray(apiResponse)) {
+          currentRates = apiResponse;
         } else {
           throw new Error("Invalid ratesApiResponse format");
         }
