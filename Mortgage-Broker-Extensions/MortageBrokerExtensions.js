@@ -207,14 +207,13 @@ export const RenteVergelijkerExtension = {
     // --- Input/Filter Panel ---
     const inputPanel = document.createElement('div');
     inputPanel.id = 'user-inputs';
-    // Responsive row for price/down, expandable filters for mobile
     inputPanel.innerHTML = `
       <div class="vf-mortgage-row">
         <div class="vf-mortgage-col">
           <label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br>
           <span class="vf-loan-input-currency-euro">
             <span>€</span>
-            <input id="input-price" type="text" placeholder="e.g. 300000" class="vf-loan-input-euro" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
+            <input id="input-price" class="vf-loan-input-euro" type="text" placeholder="e.g. 300000" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
           </span>
           </label>
         </div>
@@ -222,31 +221,28 @@ export const RenteVergelijkerExtension = {
           <label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br>
           <span class="vf-loan-input-currency-euro">
             <span>€</span>
-            <input id="input-down" type="text" placeholder="e.g. 60000" class="vf-loan-input-euro" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
+            <input id="input-down" class="vf-loan-input-euro" type="text" placeholder="e.g. 60000" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
           </span>
           <span id="down-badge" class="vf-loan-badge-euro">0%</span>
           </label>
         </div>
-      </div>
-      <button class="vf-mortgage-more" id="vf-more-btn">More Filters ▼</button>
-      <div class="vf-mortgage-filters" id="vf-filters">
-        <div class="vf-mortgage-col"><label>Loan Term<br><select id="input-term" style="background:#eaf0ff;color:#2d5fff;font-weight:700;font-size:1.08em;border:none;border-radius:18px;padding:10px 36px 10px 18px;margin-top:4px;margin-bottom:4px;box-shadow:0 1px 4px #0001;outline:none;transition:box-shadow 0.15s;cursor:pointer;min-width:140px;position:relative;">
-          <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
-        </select></label></div>
-        <div class="vf-mortgage-col"><label>Country<br><select id="input-country" style="background:#eaf0ff;color:#2d5fff;font-weight:700;font-size:1.08em;border:none;border-radius:18px;padding:10px 36px 10px 18px;margin-top:4px;margin-bottom:4px;box-shadow:0 1px 4px #0001;outline:none;transition:box-shadow 0.15s;cursor:pointer;min-width:140px;position:relative;"></select></label></div>
-        <div class="vf-mortgage-col" style="position:relative; min-width: 48px;">
-          <label style="opacity:0;">Sort</label>
-          <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.3em; color:#2d5fff; padding:0 8px; width:40px; height:40px; vertical-align:middle;" title="Sort options">
-            ⇅
-          </button>
-          <div id="sort-menu" style="display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:9999; min-width:170px; padding: 4px 0;">
-            <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by APR</div>
-            <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by Monthly Payment</div>
-            <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by Fees</div>
-          </div>
+        <div style="position:absolute; right:24px; top:12px;">
+          <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:2em; color:#2d5fff; padding:0; width:40px; height:40px; vertical-align:middle;" title="Sort options">⇅</button>
         </div>
-        <div class="vf-mortgage-col"><button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer; width:100%;">Get Rates</button></div>
       </div>
+      <div class="vf-mortgage-row" style="margin-top:18px; align-items:flex-end;">
+        <div class="vf-mortgage-col">
+          <label style="font-size:1.15em; font-weight:600;">Loan Term</label>
+          <select id="input-term" class="vf-modern-select">
+            <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
+          </select>
+        </div>
+        <div class="vf-mortgage-col">
+          <label style="font-size:1.15em; font-weight:600;">Country</label>
+          <select id="input-country" class="vf-modern-select"></select>
+        </div>
+      </div>
+      <button id="btn-apply" style="display:block; width:100%; background:#226cff; color:#fff; border:none; border-radius:18px; padding:18px 0; font-weight:700; font-size:1.35em; margin:28px 0 0 0; box-shadow:0 2px 8px #226cff22; cursor:pointer;">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
 
@@ -255,57 +251,6 @@ export const RenteVergelijkerExtension = {
     resultsArea.id = 'results-area';
     resultsArea.style.cssText = 'min-height:180px;';
     widgetContainer.appendChild(resultsArea);
-
-    // --- Responsive filter logic ---
-    const moreBtn = inputPanel.querySelector('#vf-more-btn');
-    const filtersDiv = inputPanel.querySelector('#vf-filters');
-    let filtersOpen = false;
-    function updateFiltersDisplay() {
-      if (window.innerWidth <= 600) {
-        filtersDiv.classList.toggle('vf-open', filtersOpen);
-        moreBtn.textContent = filtersOpen ? 'Hide Filters ▲' : 'More Filters ▼';
-      } else {
-        filtersDiv.classList.add('vf-open');
-        moreBtn.style.display = 'none';
-      }
-    }
-    moreBtn.addEventListener('click', () => {
-      filtersOpen = !filtersOpen;
-      updateFiltersDisplay();
-    });
-    window.addEventListener('resize', updateFiltersDisplay);
-    setTimeout(updateFiltersDisplay, 10);
-
-    // --- Sort menu logic ---
-    const sortIcon = inputPanel.querySelector('#sort-icon');
-    const sortMenu = inputPanel.querySelector('#sort-menu');
-    console.log('Sort icon:', sortIcon, 'Sort menu:', sortMenu); // Debug log
-    // Ensure menu is hidden by default
-    sortMenu.style.display = 'none';
-    sortIcon.addEventListener('click', (e) => {
-      e.stopPropagation();
-      console.log('Sort icon clicked'); // Debug log
-      if (sortMenu.style.display === 'block') {
-        sortMenu.style.display = 'none';
-      } else {
-        sortMenu.style.display = 'block';
-      }
-    });
-    sortMenu.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent document click from closing immediately
-    });
-    sortMenu.querySelectorAll('.sort-option').forEach(opt => {
-      opt.addEventListener('click', e => {
-        activeSort = e.target.getAttribute('data-sort');
-        sortMenu.style.display = 'none';
-        applyFiltersAndRender();
-      });
-    });
-    document.addEventListener('click', (e) => {
-      if (!sortMenu.contains(e.target) && !sortIcon.contains(e.target)) {
-        sortMenu.style.display = 'none';
-      }
-    });
 
     // --- Loading State ---
     function showLoading() {
