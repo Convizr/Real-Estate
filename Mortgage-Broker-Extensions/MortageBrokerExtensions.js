@@ -243,7 +243,12 @@ export const RenteVergelijkerExtension = {
           }
         }
         if (Array.isArray(apiResponse)) {
-          currentRates = apiResponse;
+          // If the first item has a 'fields' property, map the array
+          if (apiResponse.length > 0 && apiResponse[0].fields) {
+            currentRates = transformAirtableData({ records: apiResponse });
+          } else {
+            currentRates = apiResponse;
+          }
         } else if (apiResponse.records) {
           currentRates = transformAirtableData(apiResponse);
         } else {
