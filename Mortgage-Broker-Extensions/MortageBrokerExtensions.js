@@ -156,6 +156,8 @@ export const RenteVergelijkerExtension = {
 
     // Helper: render the rates table
     function renderRatesTable(ratesArray) {
+      // Filter out records without a valid rate
+      ratesArray = ratesArray.filter(r => typeof r.rate === 'number');
       if (!Array.isArray(ratesArray) || ratesArray.length === 0) {
         tbody.innerHTML = `
           <tr>
@@ -179,7 +181,9 @@ export const RenteVergelijkerExtension = {
           <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.term}</td>
           <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.type}</td>
           <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.nhg ? "Yes" : "No"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.rate.toFixed(2)}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">
+            ${typeof rateObj.rate === 'number' ? rateObj.rate.toFixed(2) : '–'}
+          </td>
         `;
         tr.addEventListener("click", () => {
           if (window.VF && window.VF.events) {
