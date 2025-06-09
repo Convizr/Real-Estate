@@ -238,10 +238,10 @@ export const RenteVergelijkerExtension = {
             return;
           }
         }
-        if (apiResponse.records) {
-          currentRates = transformAirtableData(apiResponse);
-        } else if (Array.isArray(apiResponse)) {
+        if (Array.isArray(apiResponse)) {
           currentRates = apiResponse;
+        } else if (apiResponse.records) {
+          currentRates = transformAirtableData(apiResponse);
         } else {
           throw new Error("Invalid ratesApiResponse format");
         }
