@@ -455,6 +455,17 @@ export const RenteVergelijkerExtension = {
     const inputDown = inputPanel.querySelector('#input-down');
     const downBadge = inputPanel.querySelector('#down-badge');
 
+    // Add back updateDownBadge function
+    function updateDownBadge() {
+      const price = parseFloat(inputPrice.value);
+      const down = parseFloat(inputDown.value);
+      let pct = 0;
+      if (price > 0 && down > 0) {
+        pct = Math.round((down / price) * 100);
+      }
+      downBadge.textContent = isNaN(pct) ? '0%' : pct + '%';
+    }
+
     // Numeric validation for text inputs
     function validateNumericInput(input) {
       const val = input.value;
