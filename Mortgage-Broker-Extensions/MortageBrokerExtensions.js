@@ -9,19 +9,14 @@ export const RenteVergelijkerExtension = {
     let currentRates = [];
     let filteredRates = [];
     let activeSort = 'apr';
-    let filterRateMin = '';
-    let filterRateMax = '';
-    let filterTerms = new Set();
-    let filterNHG = false;
-    let filterCreditScore = '';
     let userInput = {
       price: '',
       down: '',
       term: '',
-      score: '',
-      zip: ''
+      country: ''
     };
     let loading = false;
+    let cardsToShow = 3;
 
     // Helper: PMT calculation
     function calculatePMT(ratePerMonth, nper, pv) {
@@ -41,51 +36,33 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement('div');
     inputPanel.id = 'user-inputs';
     inputPanel.style.cssText = 'display:flex; flex-wrap:wrap; gap:16px; margin-bottom:24px; align-items:flex-end;';
+    // Country dropdown will be populated after data load
     inputPanel.innerHTML = `
-      <div><label>Purchase Price<br><input id="input-price" type="number" placeholder="e.g. 300000" style="width:120px;" /></label></div>
-      <div><label>Down Payment<br><input id="input-down" type="number" placeholder="e.g. 60000" style="width:100px;" /></label></div>
+      <div><label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br><input id="input-price" type="number" placeholder="e.g. 300000" style="width:120px;" /></label></div>
+      <div><label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br><input id="input-down" type="number" placeholder="e.g. 60000" style="width:100px;" /></label></div>
       <div><label>Loan Term<br><select id="input-term" style="width:90px;">
         <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
       </select></label></div>
-      <div><label>Credit Score<br><select id="input-score" style="width:110px;">
-        <option value="">Any</option><option value="excellent">Excellent</option><option value="good">Good</option><option value="fair">Fair</option>
-      </select></label></div>
-      <div><label>ZIP Code<br><input id="input-zip" type="text" placeholder="e.g. 90210" style="width:80px;" /></label></div>
+      <div><label>Country<br><select id="input-country" style="width:110px;"></select></label></div>
       <button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer;">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
 
-    // --- Filter Bar ---
+    // --- Filter Bar (Sort Icon Only) ---
     const filterBar = document.createElement('div');
     filterBar.id = 'filter-controls';
-    filterBar.style.cssText = 'display:flex; gap:16px; margin-bottom:18px; align-items:center; flex-wrap:wrap;';
+    filterBar.style.cssText = 'display:flex; align-items:center; margin-bottom:18px;';
     filterBar.innerHTML = `
-      <label style="font-weight:500;">Sort by
-        <select id="sort-by" style="margin-left:6px;">
-          <option value="apr">APR</option>
-          <option value="payment">Monthly Payment</option>
-          <option value="fees">Total Fees</option>
-        </select>
-      </label>
-      <label>Rate
-        <input id="rate-min" type="number" step="0.01" placeholder="Min" style="width:60px; margin:0 2px;"/>–
-        <input id="rate-max" type="number" step="0.01" placeholder="Max" style="width:60px; margin-left:2px;"/>
-      </label>
-      <label>Term
-        <input type="checkbox" class="term-cb" value="10"/>10
-        <input type="checkbox" class="term-cb" value="15"/>15
-        <input type="checkbox" class="term-cb" value="20"/>20
-        <input type="checkbox" class="term-cb" value="30"/>30
-      </label>
-      <label><input id="nhg-toggle" type="checkbox"/> NHG Only</label>
-      <label>Credit Score
-        <select id="filter-score" style="margin-left:6px;">
-          <option value="">Any</option>
-          <option value="excellent">Excellent</option>
-          <option value="good">Good</option>
-          <option value="fair">Fair</option>
-        </select>
-      </label>
+      <div style="position:relative;">
+        <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.3em; color:#2d5fff; padding:0 8px;">
+          <span title="Sort options">⇅</span>
+        </button>
+        <div id="sort-menu" style="display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:10; min-width:140px;">
+          <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer;">Sort by APR</div>
+          <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer;">Sort by Monthly Payment</div>
+          <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer;">Sort by Fees</div>
+        </div>
+      </div>
     `;
     widgetContainer.appendChild(filterBar);
 
@@ -104,7 +81,7 @@ export const RenteVergelijkerExtension = {
       resultsArea.innerHTML = `<div style="padding:48px 0; text-align:center; color:#888; font-size:1.1em; border-radius:12px; background:#f8f9fb;">No loans found matching your criteria.</div>`;
     }
 
-    // --- Card Renderer ---
+    // --- Card Renderer with Pagination ---
     function renderCards(rates) {
       if (!Array.isArray(rates) || rates.length === 0) {
         showNoResults();
@@ -113,7 +90,8 @@ export const RenteVergelijkerExtension = {
       resultsArea.innerHTML = '';
       const grid = document.createElement('div');
       grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px;';
-      rates.forEach((rateObj, idx) => {
+      const visibleRates = rates.slice(0, cardsToShow);
+      visibleRates.forEach((rateObj, idx) => {
         const principal = Number(userInput.price) - Number(userInput.down) || 250000;
         const nper = (rateObj.term || 20) * 12;
         const ratePerMonth = (rateObj.rate || 3) / 100 / 12;
@@ -163,6 +141,16 @@ export const RenteVergelijkerExtension = {
         grid.appendChild(card);
       });
       resultsArea.appendChild(grid);
+      if (rates.length > cardsToShow) {
+        const showMoreBtn = document.createElement('button');
+        showMoreBtn.textContent = 'Show more';
+        showMoreBtn.style.cssText = 'margin:24px auto 0 auto; display:block; background:#f3f6ff; color:#2d5fff; border:none; border-radius:8px; padding:10px 28px; font-weight:600; font-size:1em; cursor:pointer;';
+        showMoreBtn.onclick = () => {
+          cardsToShow += 3;
+          renderCards(rates);
+        };
+        resultsArea.appendChild(showMoreBtn);
+      }
     }
 
     // --- Filtering, Sorting, and Apply Logic ---
@@ -172,18 +160,10 @@ export const RenteVergelijkerExtension = {
       setTimeout(() => {
         loading = false;
         filteredRates = [...currentRates];
-        // Filter by rate range
-        if (filterRateMin) filteredRates = filteredRates.filter(r => typeof r.rate === 'number' && r.rate >= Number(filterRateMin));
-        if (filterRateMax) filteredRates = filteredRates.filter(r => typeof r.rate === 'number' && r.rate <= Number(filterRateMax));
-        // Filter by terms
-        if (filterTerms.size > 0) filteredRates = filteredRates.filter(r => filterTerms.has(String(r.term)));
-        // Filter by NHG
-        if (filterNHG) filteredRates = filteredRates.filter(r => r.nhg === true);
-        // Filter by credit score
-        if (filterCreditScore) filteredRates = filteredRates.filter(r => !r.minCreditScore || r.minCreditScore === filterCreditScore);
-        // Filter by user input term/score
+        // Filter by country
+        if (userInput.country) filteredRates = filteredRates.filter(r => r.country === userInput.country);
+        // Filter by term
         if (userInput.term) filteredRates = filteredRates.filter(r => String(r.term) === String(userInput.term));
-        if (userInput.score) filteredRates = filteredRates.filter(r => !r.minCreditScore || r.minCreditScore === userInput.score);
         // Sort
         if (activeSort === 'apr') filteredRates.sort((a, b) => a.rate - b.rate);
         else if (activeSort === 'payment') {
@@ -205,24 +185,26 @@ export const RenteVergelijkerExtension = {
       userInput.price = inputPanel.querySelector('#input-price').value;
       userInput.down = inputPanel.querySelector('#input-down').value;
       userInput.term = inputPanel.querySelector('#input-term').value;
-      userInput.score = inputPanel.querySelector('#input-score').value;
-      userInput.zip = inputPanel.querySelector('#input-zip').value;
+      userInput.country = inputPanel.querySelector('#input-country').value;
+      cardsToShow = 3;
       applyFiltersAndRender();
     });
-    filterBar.querySelector('#sort-by').addEventListener('change', e => { activeSort = e.target.value; applyFiltersAndRender(); });
-    filterBar.querySelector('#rate-min').addEventListener('input', e => { filterRateMin = e.target.value; });
-    filterBar.querySelector('#rate-max').addEventListener('input', e => { filterRateMax = e.target.value; });
-    filterBar.querySelectorAll('.term-cb').forEach(cb => {
-      cb.addEventListener('change', e => {
-        if (e.target.checked) filterTerms.add(e.target.value);
-        else filterTerms.delete(e.target.value);
+    // Sort icon and menu logic
+    const sortIcon = filterBar.querySelector('#sort-icon');
+    const sortMenu = filterBar.querySelector('#sort-menu');
+    sortIcon.addEventListener('click', () => {
+      sortMenu.style.display = sortMenu.style.display === 'block' ? 'none' : 'block';
+    });
+    sortMenu.querySelectorAll('.sort-option').forEach(opt => {
+      opt.addEventListener('click', e => {
+        activeSort = e.target.getAttribute('data-sort');
+        sortMenu.style.display = 'none';
         applyFiltersAndRender();
       });
     });
-    filterBar.querySelector('#nhg-toggle').addEventListener('change', e => { filterNHG = e.target.checked; applyFiltersAndRender(); });
-    filterBar.querySelector('#filter-score').addEventListener('change', e => { filterCreditScore = e.target.value; applyFiltersAndRender(); });
-    filterBar.querySelector('#rate-min').addEventListener('change', applyFiltersAndRender);
-    filterBar.querySelector('#rate-max').addEventListener('change', applyFiltersAndRender);
+    document.addEventListener('click', (e) => {
+      if (!filterBar.contains(e.target)) sortMenu.style.display = 'none';
+    });
 
     // --- Parse and Render Payload ---
     try {
@@ -249,6 +231,10 @@ export const RenteVergelijkerExtension = {
       } else {
         throw new Error('Invalid payload format');
       }
+      // Populate country dropdown
+      const countrySet = new Set(currentRates.map(r => r.country).filter(Boolean));
+      const countrySelect = inputPanel.querySelector('#input-country');
+      countrySelect.innerHTML = '<option value="">Any</option>' + Array.from(countrySet).map(c => `<option value="${c}">${c}</option>`).join('');
       applyFiltersAndRender();
     } catch (err) {
       resultsArea.innerHTML = `<div style="color:red; padding:32px 0; text-align:center;">Geen rentes beschikbaar. Probeer het later opnieuw.</div>`;
