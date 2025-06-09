@@ -27,50 +27,113 @@ export const RenteVergelijkerExtension = {
       return Math.round(principal * 0.01 + 500); // simple estimate
     }
 
+    // --- Responsive Styles ---
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 600px) {
+        .vf-mortgage-row { flex-direction: row; gap: 8px; }
+        .vf-mortgage-col { flex: 1 1 0; min-width: 0; }
+        .vf-mortgage-more { display: block; margin: 12px 0 0 0; width: 100%; }
+        .vf-mortgage-filters { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
+        .vf-mortgage-filters.vf-open { display: flex; }
+      }
+      @media (min-width: 601px) {
+        .vf-mortgage-row { flex-direction: row; gap: 16px; }
+        .vf-mortgage-col { flex: 1 1 0; min-width: 0; }
+        .vf-mortgage-more { display: none; }
+        .vf-mortgage-filters { display: flex !important; flex-direction: row; gap: 16px; margin-top: 0; }
+      }
+      .vf-mortgage-row { display: flex; flex-wrap: wrap; align-items: flex-end; }
+      .vf-mortgage-col label { display: block; font-size: 0.98em; margin-bottom: 2px; }
+      .vf-mortgage-col input, .vf-mortgage-col select { width: 100%; box-sizing: border-box; }
+      .vf-mortgage-more { background: #f3f6ff; color: #2d5fff; border: none; border-radius: 8px; padding: 8px 0; font-weight: 600; font-size: 1em; cursor: pointer; }
+      .vf-mortgage-filters { transition: max-height 0.3s; overflow: hidden; }
+      .vf-sort-menu { display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:1000; min-width:140px; }
+      .vf-sort-menu.vf-open { display:block; }
+    `;
+    document.head.appendChild(style);
+
     // --- UI Root ---
     element.innerHTML = '';
     const widgetContainer = document.createElement('div');
     widgetContainer.style.cssText = 'font-family: Inter, Arial, sans-serif; max-width:600px; width:100%; margin:0 auto; background:#fff; border-radius:16px; box-shadow:0 2px 16px #0001; padding:24px;';
 
-    // --- Input Panel ---
+    // --- Input/Filter Panel ---
     const inputPanel = document.createElement('div');
     inputPanel.id = 'user-inputs';
-    inputPanel.style.cssText = 'display:flex; flex-wrap:wrap; gap:16px; margin-bottom:24px; align-items:flex-end;';
-    // Country dropdown will be populated after data load
+    // Responsive row for price/down, expandable filters for mobile
     inputPanel.innerHTML = `
-      <div><label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br><input id="input-price" type="number" placeholder="e.g. 300000" style="width:120px;" /></label></div>
-      <div><label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br><input id="input-down" type="number" placeholder="e.g. 60000" style="width:100px;" /></label></div>
-      <div><label>Loan Term<br><select id="input-term" style="width:90px;">
-        <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
-      </select></label></div>
-      <div><label>Country<br><select id="input-country" style="width:110px;"></select></label></div>
-      <button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer;">Get Rates</button>
-    `;
-    widgetContainer.appendChild(inputPanel);
-
-    // --- Filter Bar (Sort Icon Only) ---
-    const filterBar = document.createElement('div');
-    filterBar.id = 'filter-controls';
-    filterBar.style.cssText = 'display:flex; align-items:center; margin-bottom:18px;';
-    filterBar.innerHTML = `
-      <div style="position:relative;">
-        <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.3em; color:#2d5fff; padding:0 8px;">
-          <span title="Sort options">⇅</span>
-        </button>
-        <div id="sort-menu" style="display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:10; min-width:140px;">
-          <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer;">Sort by APR</div>
-          <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer;">Sort by Monthly Payment</div>
-          <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer;">Sort by Fees</div>
+      <div class="vf-mortgage-row">
+        <div class="vf-mortgage-col"><label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br><input id="input-price" type="number" placeholder="e.g. 300000" /></label></div>
+        <div class="vf-mortgage-col"><label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br><input id="input-down" type="number" placeholder="e.g. 60000" /></label></div>
+      </div>
+      <button class="vf-mortgage-more" id="vf-more-btn">More Filters ▼</button>
+      <div class="vf-mortgage-filters" id="vf-filters">
+        <div class="vf-mortgage-col"><label>Loan Term<br><select id="input-term">
+          <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
+        </select></label></div>
+        <div class="vf-mortgage-col"><label>Country<br><select id="input-country"></select></label></div>
+        <div class="vf-mortgage-col" style="position:relative; min-width: 48px;">
+          <label style="opacity:0;">Sort</label>
+          <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.3em; color:#2d5fff; padding:0 8px; width:40px; height:40px; vertical-align:middle;" title="Sort options">
+            ⇅
+          </button>
+          <div id="sort-menu" class="vf-sort-menu">
+            <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer;">Sort by APR</div>
+            <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer;">Sort by Monthly Payment</div>
+            <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer;">Sort by Fees</div>
+          </div>
         </div>
+        <div class="vf-mortgage-col"><button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer; width:100%;">Get Rates</button></div>
       </div>
     `;
-    widgetContainer.appendChild(filterBar);
+    widgetContainer.appendChild(inputPanel);
 
     // --- Results Area ---
     const resultsArea = document.createElement('div');
     resultsArea.id = 'results-area';
     resultsArea.style.cssText = 'min-height:180px;';
     widgetContainer.appendChild(resultsArea);
+
+    // --- Responsive filter logic ---
+    const moreBtn = inputPanel.querySelector('#vf-more-btn');
+    const filtersDiv = inputPanel.querySelector('#vf-filters');
+    let filtersOpen = false;
+    function updateFiltersDisplay() {
+      if (window.innerWidth <= 600) {
+        filtersDiv.classList.toggle('vf-open', filtersOpen);
+        moreBtn.textContent = filtersOpen ? 'Hide Filters ▲' : 'More Filters ▼';
+      } else {
+        filtersDiv.classList.add('vf-open');
+        moreBtn.style.display = 'none';
+      }
+    }
+    moreBtn.addEventListener('click', () => {
+      filtersOpen = !filtersOpen;
+      updateFiltersDisplay();
+    });
+    window.addEventListener('resize', updateFiltersDisplay);
+    setTimeout(updateFiltersDisplay, 10);
+
+    // --- Sort menu logic ---
+    const sortIcon = inputPanel.querySelector('#sort-icon');
+    const sortMenu = inputPanel.querySelector('#sort-menu');
+    sortIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sortMenu.classList.toggle('vf-open');
+    });
+    sortMenu.querySelectorAll('.sort-option').forEach(opt => {
+      opt.addEventListener('click', e => {
+        activeSort = e.target.getAttribute('data-sort');
+        sortMenu.classList.remove('vf-open');
+        applyFiltersAndRender();
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!sortMenu.contains(e.target) && !sortIcon.contains(e.target)) {
+        sortMenu.classList.remove('vf-open');
+      }
+    });
 
     // --- Loading State ---
     function showLoading() {
@@ -81,7 +144,7 @@ export const RenteVergelijkerExtension = {
       resultsArea.innerHTML = `<div style="padding:48px 0; text-align:center; color:#888; font-size:1.1em; border-radius:12px; background:#f8f9fb;">No loans found matching your criteria.</div>`;
     }
 
-    // --- Card Renderer with Pagination ---
+    // --- Card Renderer with Pagination and Smart Recommendation ---
     function renderCards(rates) {
       if (!Array.isArray(rates) || rates.length === 0) {
         showNoResults();
@@ -91,13 +154,44 @@ export const RenteVergelijkerExtension = {
       const grid = document.createElement('div');
       grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px;';
       const visibleRates = rates.slice(0, cardsToShow);
-      visibleRates.forEach((rateObj, idx) => {
+
+      // --- Calculate monthly, fees, and score for each card ---
+      // First, compute all values for normalization
+      const computed = visibleRates.map(rateObj => {
         const principal = Number(userInput.price) - Number(userInput.down) || 250000;
         const nper = (rateObj.term || 20) * 12;
         const ratePerMonth = (rateObj.rate || 3) / 100 / 12;
         const monthly = calculatePMT(ratePerMonth, nper, principal);
         const fees = rateObj.fees || estimateFees(principal);
-        const isRecommended = idx === 0; // highlight first as best fit
+        return { rateObj, monthly, fees };
+      });
+      const minPayment = Math.min(...computed.map(c => c.monthly));
+      const maxPayment = Math.max(...computed.map(c => c.monthly));
+      const minFees = Math.min(...computed.map(c => c.fees));
+      const maxFees = Math.max(...computed.map(c => c.fees));
+      const minRate = Math.min(...computed.map(c => c.rateObj.rate));
+      const maxRate = Math.max(...computed.map(c => c.rateObj.rate));
+      const maxTerm = Math.max(...computed.map(c => c.rateObj.term));
+
+      // Calculate score for each card
+      computed.forEach(c => {
+        // Weighted score: lower is better
+        // 0.4*monthly, 0.2*fees, 0.2*rate, -0.2*term (longer term is better)
+        // All normalized 0-1
+        const normPayment = maxPayment !== minPayment ? (c.monthly - minPayment) / (maxPayment - minPayment) : 0;
+        const normFees = maxFees !== minFees ? (c.fees - minFees) / (maxFees - minFees) : 0;
+        const normRate = maxRate !== minRate ? (c.rateObj.rate - minRate) / (maxRate - minRate) : 0;
+        const normTerm = maxTerm ? (c.rateObj.term || 0) / maxTerm : 0;
+        c.score = 0.4 * normPayment + 0.2 * normFees + 0.2 * normRate - 0.2 * normTerm;
+      });
+      // Find the index of the best (lowest score)
+      let bestIdx = 0;
+      let bestScore = computed[0].score;
+      computed.forEach((c, idx) => { if (c.score < bestScore) { bestScore = c.score; bestIdx = idx; } });
+
+      computed.forEach((c, idx) => {
+        const { rateObj, monthly, fees } = c;
+        const isRecommended = idx === bestIdx;
         const card = document.createElement('div');
         card.className = 'card';
         card.style.cssText = `background:#fff; border-radius:14px; box-shadow:0 2px 8px #0001; padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:flex-start; border:2px solid ${isRecommended ? '#2d5fff' : '#f0f0f0'}; position:relative;`;
@@ -188,22 +282,6 @@ export const RenteVergelijkerExtension = {
       userInput.country = inputPanel.querySelector('#input-country').value;
       cardsToShow = 3;
       applyFiltersAndRender();
-    });
-    // Sort icon and menu logic
-    const sortIcon = filterBar.querySelector('#sort-icon');
-    const sortMenu = filterBar.querySelector('#sort-menu');
-    sortIcon.addEventListener('click', () => {
-      sortMenu.style.display = sortMenu.style.display === 'block' ? 'none' : 'block';
-    });
-    sortMenu.querySelectorAll('.sort-option').forEach(opt => {
-      opt.addEventListener('click', e => {
-        activeSort = e.target.getAttribute('data-sort');
-        sortMenu.style.display = 'none';
-        applyFiltersAndRender();
-      });
-    });
-    document.addEventListener('click', (e) => {
-      if (!filterBar.contains(e.target)) sortMenu.style.display = 'none';
     });
 
     // --- Parse and Render Payload ---
