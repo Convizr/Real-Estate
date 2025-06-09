@@ -155,21 +155,25 @@ export const RenteVergelijkerExtension = {
     const sortIcon = inputPanel.querySelector('#sort-icon');
     const sortMenu = inputPanel.querySelector('#sort-menu');
     // Ensure menu is hidden by default
-    sortMenu.classList.remove('vf-open');
+    sortMenu.style.display = 'none';
     sortIcon.addEventListener('click', (e) => {
       e.stopPropagation();
-      sortMenu.classList.toggle('vf-open');
+      if (sortMenu.style.display === 'block') {
+        sortMenu.style.display = 'none';
+      } else {
+        sortMenu.style.display = 'block';
+      }
     });
     sortMenu.querySelectorAll('.sort-option').forEach(opt => {
       opt.addEventListener('click', e => {
         activeSort = e.target.getAttribute('data-sort');
-        sortMenu.classList.remove('vf-open');
+        sortMenu.style.display = 'none';
         applyFiltersAndRender();
       });
     });
     document.addEventListener('click', (e) => {
       if (!sortMenu.contains(e.target) && !sortIcon.contains(e.target)) {
-        sortMenu.classList.remove('vf-open');
+        sortMenu.style.display = 'none';
       }
     });
 
