@@ -4,10 +4,258 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
-    // In-memory state
+    // --- Modern Mortgage Comparison UI ---
+    // State
     let currentRates = [];
     let filteredRates = [];
-    let activeFilter = null;
+    let activeSort = 'apr';
+    let filterRateMin = '';
+    let filterRateMax = '';
+    let filterTerms = new Set();
+    let filterNHG = false;
+    let filterCreditScore = '';
+    let userInput = {
+      price: '',
+      down: '',
+      term: '',
+      score: '',
+      zip: ''
+    };
+    let loading = false;
+
+    // Helper: PMT calculation
+    function calculatePMT(ratePerMonth, nper, pv) {
+      if (ratePerMonth === 0) return pv / nper;
+      return (pv * ratePerMonth) / (1 - Math.pow(1 + ratePerMonth, -nper));
+    }
+    function estimateFees(principal) {
+      return Math.round(principal * 0.01 + 500); // simple estimate
+    }
+
+    // --- UI Root ---
+    element.innerHTML = '';
+    const widgetContainer = document.createElement('div');
+    widgetContainer.style.cssText = 'font-family: Inter, Arial, sans-serif; max-width:600px; width:100%; margin:0 auto; background:#fff; border-radius:16px; box-shadow:0 2px 16px #0001; padding:24px;';
+
+    // --- Input Panel ---
+    const inputPanel = document.createElement('div');
+    inputPanel.id = 'user-inputs';
+    inputPanel.style.cssText = 'display:flex; flex-wrap:wrap; gap:16px; margin-bottom:24px; align-items:flex-end;';
+    inputPanel.innerHTML = `
+      <div><label>Purchase Price<br><input id="input-price" type="number" placeholder="e.g. 300000" style="width:120px;" /></label></div>
+      <div><label>Down Payment<br><input id="input-down" type="number" placeholder="e.g. 60000" style="width:100px;" /></label></div>
+      <div><label>Loan Term<br><select id="input-term" style="width:90px;">
+        <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
+      </select></label></div>
+      <div><label>Credit Score<br><select id="input-score" style="width:110px;">
+        <option value="">Any</option><option value="excellent">Excellent</option><option value="good">Good</option><option value="fair">Fair</option>
+      </select></label></div>
+      <div><label>ZIP Code<br><input id="input-zip" type="text" placeholder="e.g. 90210" style="width:80px;" /></label></div>
+      <button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer;">Get Rates</button>
+    `;
+    widgetContainer.appendChild(inputPanel);
+
+    // --- Filter Bar ---
+    const filterBar = document.createElement('div');
+    filterBar.id = 'filter-controls';
+    filterBar.style.cssText = 'display:flex; gap:16px; margin-bottom:18px; align-items:center; flex-wrap:wrap;';
+    filterBar.innerHTML = `
+      <label style="font-weight:500;">Sort by
+        <select id="sort-by" style="margin-left:6px;">
+          <option value="apr">APR</option>
+          <option value="payment">Monthly Payment</option>
+          <option value="fees">Total Fees</option>
+        </select>
+      </label>
+      <label>Rate
+        <input id="rate-min" type="number" step="0.01" placeholder="Min" style="width:60px; margin:0 2px;"/>–
+        <input id="rate-max" type="number" step="0.01" placeholder="Max" style="width:60px; margin-left:2px;"/>
+      </label>
+      <label>Term
+        <input type="checkbox" class="term-cb" value="10"/>10
+        <input type="checkbox" class="term-cb" value="15"/>15
+        <input type="checkbox" class="term-cb" value="20"/>20
+        <input type="checkbox" class="term-cb" value="30"/>30
+      </label>
+      <label><input id="nhg-toggle" type="checkbox"/> NHG Only</label>
+      <label>Credit Score
+        <select id="filter-score" style="margin-left:6px;">
+          <option value="">Any</option>
+          <option value="excellent">Excellent</option>
+          <option value="good">Good</option>
+          <option value="fair">Fair</option>
+        </select>
+      </label>
+    `;
+    widgetContainer.appendChild(filterBar);
+
+    // --- Results Area ---
+    const resultsArea = document.createElement('div');
+    resultsArea.id = 'results-area';
+    resultsArea.style.cssText = 'min-height:180px;';
+    widgetContainer.appendChild(resultsArea);
+
+    // --- Loading State ---
+    function showLoading() {
+      resultsArea.innerHTML = `<div style="padding:48px 0; text-align:center; color:#aaa; font-size:1.2em;">Loading rates…</div>`;
+    }
+    // --- No Results State ---
+    function showNoResults() {
+      resultsArea.innerHTML = `<div style="padding:48px 0; text-align:center; color:#888; font-size:1.1em; border-radius:12px; background:#f8f9fb;">No loans found matching your criteria.</div>`;
+    }
+
+    // --- Card Renderer ---
+    function renderCards(rates) {
+      if (!Array.isArray(rates) || rates.length === 0) {
+        showNoResults();
+        return;
+      }
+      resultsArea.innerHTML = '';
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:18px;';
+      rates.forEach((rateObj, idx) => {
+        const principal = Number(userInput.price) - Number(userInput.down) || 250000;
+        const nper = (rateObj.term || 20) * 12;
+        const ratePerMonth = (rateObj.rate || 3) / 100 / 12;
+        const monthly = calculatePMT(ratePerMonth, nper, principal);
+        const fees = rateObj.fees || estimateFees(principal);
+        const isRecommended = idx === 0; // highlight first as best fit
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = `background:#fff; border-radius:14px; box-shadow:0 2px 8px #0001; padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:flex-start; border:2px solid ${isRecommended ? '#2d5fff' : '#f0f0f0'}; position:relative;`;
+        card.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:38px; height:38px; background:#f3f6ff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.3em; font-weight:700; color:#2d5fff;">
+              <span>🏦</span>
+            </div>
+            <div>
+              <div style="font-size:1.1em; font-weight:600;">${rateObj.bank || '–'}</div>
+              <div style="font-size:0.95em; color:#888;">${rateObj.country || ''}</div>
+            </div>
+            ${isRecommended ? '<span style="background:#2d5fff; color:#fff; font-size:0.85em; border-radius:6px; padding:2px 8px; margin-left:10px;">Recommended</span>' : ''}
+          </div>
+          <div style="margin-bottom:8px;">
+            <span style="font-size:1.2em; font-weight:700; color:#2d5fff;">${typeof rateObj.rate === 'number' ? rateObj.rate.toFixed(2) + '%' : '–'}</span>
+            <span style="margin-left:10px; color:#888;">${rateObj.term || '–'} yrs</span>
+          </div>
+          <div style="margin-bottom:6px; color:#444;">Type: <b>${rateObj.type || '–'}</b></div>
+          <div style="margin-bottom:6px; color:#444;">NHG: <b>${rateObj.nhg ? 'Yes' : 'No'}</b></div>
+          <div style="margin-bottom:6px; color:#444;">Monthly: <b>$${monthly ? monthly.toFixed(0) : '–'}</b></div>
+          <div style="margin-bottom:10px; color:#444;">Fees: <b>$${fees}</b></div>
+          <button class="btn-select" style="margin-top:auto; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:8px 18px; font-weight:600; cursor:pointer; font-size:1em;">Choose This</button>
+        `;
+        card.querySelector('.btn-select').addEventListener('click', () => {
+          if (window.VF && window.VF.events) {
+            window.VF.events.emit("RATE_SELECTED", {
+              country: rateObj.country,
+              bank: rateObj.bank || null,
+              term: rateObj.term,
+              type: rateObj.type,
+              nhg: rateObj.nhg,
+              rate: rateObj.rate,
+              source: rateObj.source,
+              dataDate: rateObj.dataDate,
+              monthlyPayment: monthly,
+              fees: fees
+            });
+          }
+        });
+        grid.appendChild(card);
+      });
+      resultsArea.appendChild(grid);
+    }
+
+    // --- Filtering, Sorting, and Apply Logic ---
+    function applyFiltersAndRender() {
+      loading = true;
+      showLoading();
+      setTimeout(() => {
+        loading = false;
+        filteredRates = [...currentRates];
+        // Filter by rate range
+        if (filterRateMin) filteredRates = filteredRates.filter(r => typeof r.rate === 'number' && r.rate >= Number(filterRateMin));
+        if (filterRateMax) filteredRates = filteredRates.filter(r => typeof r.rate === 'number' && r.rate <= Number(filterRateMax));
+        // Filter by terms
+        if (filterTerms.size > 0) filteredRates = filteredRates.filter(r => filterTerms.has(String(r.term)));
+        // Filter by NHG
+        if (filterNHG) filteredRates = filteredRates.filter(r => r.nhg === true);
+        // Filter by credit score
+        if (filterCreditScore) filteredRates = filteredRates.filter(r => !r.minCreditScore || r.minCreditScore === filterCreditScore);
+        // Filter by user input term/score
+        if (userInput.term) filteredRates = filteredRates.filter(r => String(r.term) === String(userInput.term));
+        if (userInput.score) filteredRates = filteredRates.filter(r => !r.minCreditScore || r.minCreditScore === userInput.score);
+        // Sort
+        if (activeSort === 'apr') filteredRates.sort((a, b) => a.rate - b.rate);
+        else if (activeSort === 'payment') {
+          filteredRates.sort((a, b) => {
+            const principal = Number(userInput.price) - Number(userInput.down) || 250000;
+            const nper = (a.term || 20) * 12;
+            const nperB = (b.term || 20) * 12;
+            const rA = (a.rate || 3) / 100 / 12;
+            const rB = (b.rate || 3) / 100 / 12;
+            return calculatePMT(rA, nper, principal) - calculatePMT(rB, nperB, principal);
+          });
+        } else if (activeSort === 'fees') filteredRates.sort((a, b) => (a.fees || 0) - (b.fees || 0));
+        renderCards(filteredRates);
+      }, 350); // simulate loading
+    }
+
+    // --- Event Listeners ---
+    inputPanel.querySelector('#btn-apply').addEventListener('click', () => {
+      userInput.price = inputPanel.querySelector('#input-price').value;
+      userInput.down = inputPanel.querySelector('#input-down').value;
+      userInput.term = inputPanel.querySelector('#input-term').value;
+      userInput.score = inputPanel.querySelector('#input-score').value;
+      userInput.zip = inputPanel.querySelector('#input-zip').value;
+      applyFiltersAndRender();
+    });
+    filterBar.querySelector('#sort-by').addEventListener('change', e => { activeSort = e.target.value; applyFiltersAndRender(); });
+    filterBar.querySelector('#rate-min').addEventListener('input', e => { filterRateMin = e.target.value; });
+    filterBar.querySelector('#rate-max').addEventListener('input', e => { filterRateMax = e.target.value; });
+    filterBar.querySelectorAll('.term-cb').forEach(cb => {
+      cb.addEventListener('change', e => {
+        if (e.target.checked) filterTerms.add(e.target.value);
+        else filterTerms.delete(e.target.value);
+        applyFiltersAndRender();
+      });
+    });
+    filterBar.querySelector('#nhg-toggle').addEventListener('change', e => { filterNHG = e.target.checked; applyFiltersAndRender(); });
+    filterBar.querySelector('#filter-score').addEventListener('change', e => { filterCreditScore = e.target.value; applyFiltersAndRender(); });
+    filterBar.querySelector('#rate-min').addEventListener('change', applyFiltersAndRender);
+    filterBar.querySelector('#rate-max').addEventListener('change', applyFiltersAndRender);
+
+    // --- Parse and Render Payload ---
+    try {
+      const payloadObj = typeof trace.payload === 'object' ? trace.payload : JSON.parse(trace.payload || '{}');
+      // Accepts: ratesApiResponse (array or Airtable), records, or rates
+      if (payloadObj.ratesApiResponse) {
+        let apiResponse = payloadObj.ratesApiResponse;
+        if (typeof apiResponse === 'string') apiResponse = JSON.parse(apiResponse);
+        if (Array.isArray(apiResponse)) {
+          if (apiResponse.length > 0 && apiResponse[0].fields) {
+            currentRates = transformAirtableData({ records: apiResponse });
+          } else {
+            currentRates = apiResponse;
+          }
+        } else if (apiResponse.records) {
+          currentRates = transformAirtableData(apiResponse);
+        } else {
+          throw new Error('Invalid ratesApiResponse format');
+        }
+      } else if (payloadObj.records) {
+        currentRates = transformAirtableData(payloadObj);
+      } else if (Array.isArray(payloadObj.rates)) {
+        currentRates = payloadObj.rates;
+      } else {
+        throw new Error('Invalid payload format');
+      }
+      applyFiltersAndRender();
+    } catch (err) {
+      resultsArea.innerHTML = `<div style="color:red; padding:32px 0; text-align:center;">Geen rentes beschikbaar. Probeer het later opnieuw.</div>`;
+      console.error('Error processing payload:', err);
+    }
+
+    element.appendChild(widgetContainer);
 
     // Helper: transform Airtable data to our format
     function transformAirtableData(airtableData) {
@@ -25,253 +273,6 @@ export const RenteVergelijkerExtension = {
         source: record.fields.Source,
         dataDate: record.fields.DataDate
       }));
-    }
-
-    // Create the widget container
-    const widgetContainer = document.createElement('div');
-    widgetContainer.style.cssText = 'font-family: Arial, sans-serif; width:100%;';
-
-    // Create summary container
-    const summaryContainer = document.createElement('div');
-    widgetContainer.appendChild(summaryContainer);
-
-    // Create header with filters
-    const headerDiv = document.createElement('div');
-    headerDiv.style.cssText = 'margin:8px 0;';
-
-    const filterLowest = document.createElement('button');
-    filterLowest.textContent = 'Lowest Rate';
-    headerDiv.appendChild(filterLowest);
-
-    const filterShortest = document.createElement('button');
-    filterShortest.textContent = 'Shortest Term';
-    headerDiv.appendChild(filterShortest);
-
-    const filterNHG = document.createElement('button');
-    filterNHG.textContent = 'NHG Only';
-    headerDiv.appendChild(filterNHG);
-
-    widgetContainer.appendChild(headerDiv);
-
-    // Create table container
-    const tableContainer = document.createElement('div');
-    tableContainer.style.cssText = 'max-height:300px; overflow-y:auto; border:1px solid #ddd;';
-
-    // Create table
-    const table = document.createElement('table');
-    table.style.cssText = 'width:100%; border-collapse: collapse;';
-
-    // Create table header
-    const thead = document.createElement('thead');
-    thead.style.cssText = 'background-color:#f0f0f0;';
-    thead.innerHTML = `
-      <tr>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">Country</th>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">Bank</th>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">Term (yrs)</th>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">Type</th>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">NHG</th>
-        <th style="padding:8px; border-bottom:1px solid #ccc;">Rate (%)</th>
-      </tr>
-    `;
-    table.appendChild(thead);
-
-    // Create table body
-    const tbody = document.createElement('tbody');
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="padding:12px; text-align:center; color:#666;">
-          Loading rates…
-        </td>
-      </tr>
-    `;
-    table.appendChild(tbody);
-    tableContainer.appendChild(table);
-    widgetContainer.appendChild(tableContainer);
-
-    // Create footer
-    const footer = document.createElement('div');
-    footer.style.cssText = 'margin-top:8px; font-size:0.85em; color:#666;';
-    
-    const errorMessage = document.createElement('span');
-    footer.appendChild(errorMessage);
-    widgetContainer.appendChild(footer);
-
-    // Add the widget to the element
-    element.appendChild(widgetContainer);
-
-    // Helper: show error
-    function showError(message) {
-      errorMessage.textContent = message;
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6" style="padding:12px; text-align:center; color:red;">
-            ${message}
-          </td>
-        </tr>
-      `;
-    }
-
-    // Helper: render average summary if provided
-    function renderAverageSummary(averageRates) {
-      const rowsHtml = averageRates.map(r => `
-        <tr>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.country}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">
-            ${r.rate !== undefined ? r.rate.toFixed(2) + "%" : r.range}
-          </td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.source}</td>
-        </tr>
-      `).join("");
-
-      summaryContainer.innerHTML = `
-        <h3>Gemiddelde Hypotheekrentes (begin 2025)</h3>
-        <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
-          <thead>
-            <tr>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Country</th>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Rate</th>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-          </tbody>
-        </table>
-      `;
-    }
-
-    // Helper: apply filters & render table
-    function applyFiltersAndRender() {
-      filteredRates = [...currentRates];
-      if (activeFilter === "lowest") {
-        filteredRates.sort((a, b) => a.rate - b.rate);
-      } else if (activeFilter === "shortest") {
-        filteredRates.sort((a, b) => a.term - b.term);
-      } else if (activeFilter === "nhg") {
-        filteredRates = filteredRates.filter(r => r.nhg === true);
-      }
-      renderRatesTable(filteredRates);
-    }
-
-    // Helper: render the rates table
-    function renderRatesTable(ratesArray) {
-      // Filter out records without a valid rate
-      ratesArray = ratesArray.filter(r => typeof r.rate === 'number');
-      if (!Array.isArray(ratesArray) || ratesArray.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" style="padding:12px; text-align:center; color:#666;">
-              Geen rentes gevonden.
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      tbody.innerHTML = ""; // clear
-      ratesArray.forEach(rateObj => {
-        const tr = document.createElement("tr");
-        tr.style.cursor = "pointer";
-        tr.addEventListener("mouseover", () => { tr.style.backgroundColor = "#f9f9f9"; });
-        tr.addEventListener("mouseout", () => { tr.style.backgroundColor = ""; });
-        tr.innerHTML = `
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.country}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.bank || "–"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.term}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.type}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.nhg ? "Yes" : "No"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">
-            ${typeof rateObj.rate === 'number' ? rateObj.rate.toFixed(2) : '–'}
-          </td>
-        `;
-        tr.addEventListener("click", () => {
-          if (window.VF && window.VF.events) {
-            window.VF.events.emit("RATE_SELECTED", {
-              country: rateObj.country,
-              bank: rateObj.bank || null,
-              term: rateObj.term,
-              type: rateObj.type,
-              nhg: rateObj.nhg,
-              rate: rateObj.rate,
-              source: rateObj.source,
-              dataDate: rateObj.dataDate
-            });
-          } else {
-            console.error("VF events not available");
-          }
-        });
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Attach filter button listeners
-    filterLowest.addEventListener("click", () => {
-      activeFilter = (activeFilter === "lowest") ? null : "lowest";
-      applyFiltersAndRender();
-    });
-
-    filterShortest.addEventListener("click", () => {
-      activeFilter = (activeFilter === "shortest") ? null : "shortest";
-      applyFiltersAndRender();
-    });
-
-    filterNHG.addEventListener("click", () => {
-      activeFilter = (activeFilter === "nhg") ? null : "nhg";
-      applyFiltersAndRender();
-    });
-
-    // Parse and render payload
-    try {
-      console.log('Raw trace payload:', trace.payload);
-      console.log('Trace payload type:', typeof trace.payload);
-      
-      // If payload is already an object, use it directly
-      const payloadObj = typeof trace.payload === 'object' ? trace.payload : JSON.parse(trace.payload || "{}");
-      console.log('Parsed payload object:', payloadObj);
-      
-      // Handle the ratesApiResponse structure
-      if (payloadObj.ratesApiResponse) {
-        let apiResponse = payloadObj.ratesApiResponse;
-        if (typeof apiResponse === "string") {
-          try {
-            apiResponse = JSON.parse(apiResponse);
-          } catch (e) {
-            console.error("Failed to parse ratesApiResponse string:", apiResponse, e);
-            showError("Fout bij het verwerken van de rentes.");
-            return;
-          }
-        }
-        if (Array.isArray(apiResponse)) {
-          // If the first item has a 'fields' property, map the array
-          if (apiResponse.length > 0 && apiResponse[0].fields) {
-            currentRates = transformAirtableData({ records: apiResponse });
-          } else {
-            currentRates = apiResponse;
-          }
-        } else if (apiResponse.records) {
-          currentRates = transformAirtableData(apiResponse);
-        } else {
-          throw new Error("Invalid ratesApiResponse format");
-        }
-      } else if (payloadObj.records) {
-        currentRates = transformAirtableData(payloadObj);
-      } else if (Array.isArray(payloadObj.rates)) {
-        currentRates = payloadObj.rates;
-      } else {
-        throw new Error("Invalid payload format");
-      }
-
-      // Handle average rates if provided
-      if (Array.isArray(payloadObj.averageRates)) {
-        renderAverageSummary(payloadObj.averageRates);
-      }
-
-      applyFiltersAndRender();
-    } catch (err) {
-      console.error("Error processing payload:", err);
-      console.error("Payload that caused error:", trace.payload);
-      showError("Geen rentes beschikbaar. Probeer het later opnieuw.");
     }
   }
 }; 

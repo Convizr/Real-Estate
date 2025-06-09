@@ -425,7 +425,176 @@ function showError(message) {
 - **Self-Contained:** No external libraries—pure JavaScript + minimal inline CSS
 - **Clear Event Flow:** When the user picks a rate, you know exactly what payload Voiceflow will receive (RATE_SELECTED)
 
-## 7. Checklist Before Sharing to Others
+## 7. Suggested UX & Feature Enhancements
+
+**Goal:** Move from a bare-bones "table + three buttons" into a friendly, SaaS-style mortgage-comparison experience.
+
+---
+
+### 7.1 Add a Pre-Table Input Panel
+
+Before showing any rates, let users narrow down the universe by entering their own numbers. Build a form above the table:
+
+```html
+<div id="user-inputs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
+  <div>
+    <label>Purchase Price</label>
+    <input id="input-price" type="number" placeholder="e.g. 300000" />
+  </div>
+  <div>
+    <label>Down Payment</label>
+    <input id="input-down" type="number" placeholder="e.g. 60000" />
+  </div>
+  <div>
+    <label>Loan Term</label>
+    <select id="input-term">
+      <option value="10">10 yrs</option>
+      <option value="15">15 yrs</option>
+      <option value="20">20 yrs</option>
+      <option value="30">30 yrs</option>
+    </select>
+  </div>
+  <div>
+    <label>Credit Score</label>
+    <select id="input-score">
+      <option value="excellent">Excellent</option>
+      <option value="good">Good</option>
+      <option value="fair">Fair</option>
+    </select>
+  </div>
+  <div>
+    <label>ZIP Code</label>
+    <input id="input-zip" type="text" placeholder="e.g. 90210" />
+  </div>
+  <button id="btn-apply" style="align-self:flex-end">Get Rates</button>
+</div>
+```
+
+- **Behavior:** On "Get Rates" click, filter your `currentRates` by matching term & credit score, compute monthly payment for each row, then render the table.
+
+---
+
+### 7.2 Calculate & Display Monthly Payment & Fees
+
+Extend each rate entry with:
+
+```js
+monthlyPayment = calculatePMT(rate / 100 / 12, term*12, principal – downPayment);
+totalFees = rateObj.fees || estimateFees(principal);
+```
+
+Add two new columns:
+- **Monthly Payment** (e.g. $996)
+- **Total Fees** (e.g. $675)
+
+---
+
+### 7.3 Rich Filter Panel
+
+Replace three toggle buttons with a collapsible filter sidebar or top-bar with multi-select options:
+
+- **Sort by:** APR, Monthly Payment, Total Fees, Rating
+- **Filter by:**
+  - Rate range slider (e.g. 2.5%–3.5%)
+  - Term checkboxes (10, 15, 20, 30 yrs)
+  - NHG toggle
+  - Credit Score dropdown
+
+Example:
+
+```html
+<div id="filter-controls" style="display:flex; gap:12px; margin-bottom:12px;">
+  <label>Sort by
+    <select id="sort-by">
+      <option value="apr">APR</option>
+      <option value="payment">Monthly Payment</option>
+      <option value="fees">Total Fees</option>
+    </select>
+  </label>
+  <label>Rate
+    <input id="rate-min" type="number" step="0.01" placeholder="2.5"/>–
+    <input id="rate-max" type="number" step="0.01" placeholder="3.5"/>
+  </label>
+  <!-- …other filters… -->
+</div>
+```
+
+---
+
+### 7.4 Card-Based Results View
+
+Rather than a dense table, render each lender as a card:
+
+```html
+<div class="card">
+  <img src="bank-logo.png" alt="Bank A logo" class="bank-logo"/>
+  <div class="card-content">
+    <h4>Bank A</h4>
+    <p><strong>Rate:</strong> 3.15%</p>
+    <p><strong>Term:</strong> 10 yrs</p>
+    <p><strong>Monthly:</strong> $945</p>
+    <p><strong>Fees:</strong> $550</p>
+    <button class="btn-select">Choose This</button>
+  </div>
+</div>
+```
+
+- Cards can wrap responsively in a grid.
+- Highlight the "best fit" (lowest payment, lowest APR) card with a "Recommended" badge.
+
+---
+
+### 7.5 Visual Feedback & Loading States
+
+- Show a skeleton loader while you compute/filter.
+- When no results match, display a friendly "No loans found matching your criteria" card.
+- Animate filter panels opening/closing with a slide effect.
+
+---
+
+### 7.6 UI Polish
+
+- Use consistent spacing (8–16 px), a coherent color palette, and a legible font stack.
+- Add hover/focus states for buttons & cards.
+- Keep the entire widget's width fluid (e.g. `max-width:600px; width:100%`).
+
+---
+
+### 7.7 Data & Payload Updates
+
+To support these enhancements, extend your payload schema:
+
+```json
+{
+  "rates": [
+    {
+      "country": "NL",
+      "bank": "Bank A",
+      "term": 10,
+      "type": "Annuity",
+      "nhg": true,
+      "rate": 3.15,
+      "fees": 550,
+      "minCreditScore": "good"
+    }
+    // …
+  ]
+}
+```
+
+- **fees:** number (estimated closing costs)
+- **minCreditScore:** string ("excellent", "good", "fair")
+
+---
+
+**Tip:**  
+For even more SaaS polish, consider adding:
+- Lender ratings/reviews
+- "Compare" checkboxes for side-by-side comparison
+- Tooltips for terms/fees
+- Responsive design for mobile
+
+## 8. Checklist Before Sharing to Others
 
 - Confirm that Voiceflow sends the trace with type: "Custom_RenteVergelijker"
 - Ensure the JSON payload shape matches exactly—rates must be an array
