@@ -213,8 +213,17 @@ export const RenteVergelijkerExtension = {
       try {
         const payloadObj = JSON.parse(trace.payload || "{}");
         
-        // Transform Airtable data to our format
-        if (payloadObj.records) {
+        // Handle the ratesApiResponse structure
+        if (payloadObj.ratesApiResponse) {
+          const apiResponse = JSON.parse(payloadObj.ratesApiResponse);
+          if (apiResponse.records) {
+            currentRates = transformAirtableData(apiResponse);
+          } else if (Array.isArray(apiResponse.rates)) {
+            currentRates = apiResponse.rates;
+          } else {
+            throw new Error("Invalid ratesApiResponse format");
+          }
+        } else if (payloadObj.records) {
           currentRates = transformAirtableData(payloadObj);
         } else if (Array.isArray(payloadObj.rates)) {
           currentRates = payloadObj.rates;
