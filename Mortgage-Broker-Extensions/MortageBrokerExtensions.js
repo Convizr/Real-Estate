@@ -105,19 +105,19 @@ export const RenteVergelijkerExtension = {
       </div>
       <button class="vf-mortgage-more" id="vf-more-btn">More Filters ▼</button>
       <div class="vf-mortgage-filters" id="vf-filters">
-        <div class="vf-mortgage-col"><label>Loan Term<br><select id="input-term">
+        <div class="vf-mortgage-col"><label>Loan Term<br><select id="input-term" style="background:#eaf0ff;color:#2d5fff;font-weight:700;font-size:1.08em;border:none;border-radius:18px;padding:10px 36px 10px 18px;margin-top:4px;margin-bottom:4px;box-shadow:0 1px 4px #0001;outline:none;transition:box-shadow 0.15s;cursor:pointer;min-width:140px;position:relative;">
           <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
         </select></label></div>
-        <div class="vf-mortgage-col"><label>Country<br><select id="input-country"></select></label></div>
+        <div class="vf-mortgage-col"><label>Country<br><select id="input-country" style="background:#eaf0ff;color:#2d5fff;font-weight:700;font-size:1.08em;border:none;border-radius:18px;padding:10px 36px 10px 18px;margin-top:4px;margin-bottom:4px;box-shadow:0 1px 4px #0001;outline:none;transition:box-shadow 0.15s;cursor:pointer;min-width:140px;position:relative;"></select></label></div>
         <div class="vf-mortgage-col" style="position:relative; min-width: 48px;">
           <label style="opacity:0;">Sort</label>
           <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.3em; color:#2d5fff; padding:0 8px; width:40px; height:40px; vertical-align:middle;" title="Sort options">
             ⇅
           </button>
-          <div id="sort-menu" class="vf-sort-menu">
-            <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer;">Sort by APR</div>
-            <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer;">Sort by Monthly Payment</div>
-            <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer;">Sort by Fees</div>
+          <div id="sort-menu" style="display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:9999; min-width:170px; padding: 4px 0;">
+            <div class="sort-option" data-sort="apr" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by APR</div>
+            <div class="sort-option" data-sort="payment" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by Monthly Payment</div>
+            <div class="sort-option" data-sort="fees" style="padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s;">Sort by Fees</div>
           </div>
         </div>
         <div class="vf-mortgage-col"><button id="btn-apply" style="height:38px; background:#2d5fff; color:#fff; border:none; border-radius:8px; padding:0 18px; font-weight:600; cursor:pointer; width:100%;">Get Rates</button></div>
@@ -351,25 +351,6 @@ export const RenteVergelijkerExtension = {
       const countrySet = new Set(currentRates.map(r => r.country).filter(Boolean));
       const countrySelect = inputPanel.querySelector('#input-country');
       countrySelect.innerHTML = '<option value="">Any</option>' + Array.from(countrySet).map(c => `<option value="${c}">${c}</option>`).join('');
-      // Add modern class to all selects
-      inputPanel.querySelectorAll('select').forEach(sel => {
-        sel.classList.add('vf-modern-select');
-        sel.style.background = '#eaf0ff';
-        sel.style.color = '#2d5fff';
-        sel.style.fontWeight = '700';
-        sel.style.fontSize = '1.08em';
-        sel.style.border = 'none';
-        sel.style.borderRadius = '18px';
-        sel.style.padding = '10px 36px 10px 18px';
-        sel.style.marginTop = '4px';
-        sel.style.marginBottom = '4px';
-        sel.style.boxShadow = '0 1px 4px #0001';
-        sel.style.outline = 'none';
-        sel.style.transition = 'box-shadow 0.15s';
-        sel.style.cursor = 'pointer';
-        sel.style.minWidth = '140px';
-        sel.style.position = 'relative';
-      });
       applyFiltersAndRender();
     } catch (err) {
       resultsArea.innerHTML = `<div style="color:red; padding:32px 0; text-align:center;">Geen rentes beschikbaar. Probeer het later opnieuw.</div>`;
