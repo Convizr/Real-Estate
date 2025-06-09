@@ -52,6 +52,40 @@ export const RenteVergelijkerExtension = {
       .vf-sort-menu.vf-open { display:block; }
       .vf-sort-menu .sort-option { padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s; }
       .vf-sort-menu .sort-option:hover { background:#f3f6ff; color:#2d5fff; }
+      .vf-modern-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: #eaf0ff;
+        color: #2d5fff;
+        font-weight: 700;
+        font-size: 1.08em;
+        border: none;
+        border-radius: 18px;
+        padding: 10px 36px 10px 18px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        box-shadow: 0 1px 4px #0001;
+        outline: none;
+        transition: box-shadow 0.15s;
+        cursor: pointer;
+        min-width: 140px;
+        position: relative;
+      }
+      .vf-modern-select:focus {
+        box-shadow: 0 0 0 2px #2d5fff33;
+      }
+      .vf-modern-select::-ms-expand { display: none; }
+      .vf-modern-select option { color: #222; font-weight: 400; background: #fff; }
+      .vf-modern-select:after {
+        content: '\25BC';
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2d5fff;
+        pointer-events: none;
+      }
     `;
     document.head.appendChild(style);
 
@@ -317,6 +351,8 @@ export const RenteVergelijkerExtension = {
       const countrySet = new Set(currentRates.map(r => r.country).filter(Boolean));
       const countrySelect = inputPanel.querySelector('#input-country');
       countrySelect.innerHTML = '<option value="">Any</option>' + Array.from(countrySet).map(c => `<option value="${c}">${c}</option>`).join('');
+      // Add modern class to all selects
+      inputPanel.querySelectorAll('select').forEach(sel => sel.classList.add('vf-modern-select'));
       applyFiltersAndRender();
     } catch (err) {
       resultsArea.innerHTML = `<div style="color:red; padding:32px 0; text-align:center;">Geen rentes beschikbaar. Probeer het later opnieuw.</div>`;
