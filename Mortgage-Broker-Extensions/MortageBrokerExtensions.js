@@ -78,7 +78,7 @@ export const RenteVergelijkerExtension = {
       .vf-modern-select::-ms-expand { display: none; }
       .vf-modern-select option { color: #222; font-weight: 400; background: #fff; }
       .vf-modern-select:after {
-        content: '\25BC';
+        content: '▼';
         position: absolute;
         right: 16px;
         top: 50%;
