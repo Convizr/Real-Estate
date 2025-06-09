@@ -53,30 +53,30 @@ export const RenteVergelijkerExtension = {
       .vf-sort-menu .sort-option { padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s; }
       .vf-sort-menu .sort-option:hover { background:#f3f6ff; color:#2d5fff; }
       .vf-modern-select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background: #eaf0ff;
-        color: #2d5fff;
-        font-weight: 700;
-        font-size: 1.08em;
-        border: none;
-        border-radius: 18px;
-        padding: 10px 36px 10px 18px;
-        margin-top: 4px;
-        margin-bottom: 4px;
-        box-shadow: 0 1px 4px #0001;
-        outline: none;
-        transition: box-shadow 0.15s;
-        cursor: pointer;
-        min-width: 140px;
-        position: relative;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        background: #eaf0ff !important;
+        color: #2d5fff !important;
+        font-weight: 700 !important;
+        font-size: 1.08em !important;
+        border: none !important;
+        border-radius: 18px !important;
+        padding: 10px 36px 10px 18px !important;
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+        box-shadow: 0 1px 4px #0001 !important;
+        outline: none !important;
+        transition: box-shadow 0.15s !important;
+        cursor: pointer !important;
+        min-width: 140px !important;
+        position: relative !important;
       }
       .vf-modern-select:focus {
-        box-shadow: 0 0 0 2px #2d5fff33;
+        box-shadow: 0 0 0 2px #2d5fff33 !important;
       }
-      .vf-modern-select::-ms-expand { display: none; }
-      .vf-modern-select option { color: #222; font-weight: 400; background: #fff; }
+      .vf-modern-select::-ms-expand { display: none !important; }
+      .vf-modern-select option { color: #222 !important; font-weight: 400 !important; background: #fff !important; }
       .vf-modern-select:after {
         content: '▼';
         position: absolute;
@@ -352,7 +352,24 @@ export const RenteVergelijkerExtension = {
       const countrySelect = inputPanel.querySelector('#input-country');
       countrySelect.innerHTML = '<option value="">Any</option>' + Array.from(countrySet).map(c => `<option value="${c}">${c}</option>`).join('');
       // Add modern class to all selects
-      inputPanel.querySelectorAll('select').forEach(sel => sel.classList.add('vf-modern-select'));
+      inputPanel.querySelectorAll('select').forEach(sel => {
+        sel.classList.add('vf-modern-select');
+        sel.style.background = '#eaf0ff';
+        sel.style.color = '#2d5fff';
+        sel.style.fontWeight = '700';
+        sel.style.fontSize = '1.08em';
+        sel.style.border = 'none';
+        sel.style.borderRadius = '18px';
+        sel.style.padding = '10px 36px 10px 18px';
+        sel.style.marginTop = '4px';
+        sel.style.marginBottom = '4px';
+        sel.style.boxShadow = '0 1px 4px #0001';
+        sel.style.outline = 'none';
+        sel.style.transition = 'box-shadow 0.15s';
+        sel.style.cursor = 'pointer';
+        sel.style.minWidth = '140px';
+        sel.style.position = 'relative';
+      });
       applyFiltersAndRender();
     } catch (err) {
       resultsArea.innerHTML = `<div style="color:red; padding:32px 0; text-align:center;">Geen rentes beschikbaar. Probeer het later opnieuw.</div>`;
