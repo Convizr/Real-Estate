@@ -2,8 +2,14 @@
 export const RenteVergelijkerExtension = {
   name: "RenteVergelijker",
   type: "response",
-  match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
+  match: ({ trace }) => {
+    console.log("Match called with trace:", trace);
+    return trace.type === "Custom_RenteVergelijker";
+  },
   render: ({ trace, element }) => {
+    console.log("Render called with element:", element);
+    console.log("Trace payload:", trace.payload);
+
     // In-memory state
     let currentRates = [];
     let filteredRates = [];
@@ -11,6 +17,7 @@ export const RenteVergelijkerExtension = {
 
     // Helper: transform Airtable data to our format
     function transformAirtableData(airtableData) {
+      console.log("Transforming Airtable data:", airtableData);
       if (!airtableData || !Array.isArray(airtableData.records)) {
         throw new Error("Invalid Airtable data format");
       }
@@ -29,221 +36,277 @@ export const RenteVergelijkerExtension = {
 
     // Helper: show error
     function showError(message) {
-      const errorElement = element.querySelector("#error-message");
-      const tbodyElement = element.querySelector("#rente-table tbody");
-      
-      if (errorElement) {
-        errorElement.innerText = message;
-      }
-      
-      if (tbodyElement) {
-        tbodyElement.innerHTML = `
-          <tr>
-            <td colspan="6" style="padding:12px; text-align:center; color:red;">
-              ${message}
-            </td>
-          </tr>
-        `;
+      console.log("Showing error:", message);
+      try {
+        const errorElement = element.querySelector("#error-message");
+        const tbodyElement = element.querySelector("#rente-table tbody");
+        
+        if (errorElement) {
+          errorElement.innerText = message;
+        } else {
+          console.warn("Error element not found");
+        }
+        
+        if (tbodyElement) {
+          tbodyElement.innerHTML = `
+            <tr>
+              <td colspan="6" style="padding:12px; text-align:center; color:red;">
+                ${message}
+              </td>
+            </tr>
+          `;
+        } else {
+          console.warn("Table body element not found");
+        }
+      } catch (err) {
+        console.error("Error in showError:", err);
       }
     }
 
     // Helper: render average summary if provided
     function renderAverageSummary(averageRates) {
-      const container = element.querySelector("#summary-container");
-      if (!container) return;
+      console.log("Rendering average summary:", averageRates);
+      try {
+        const container = element.querySelector("#summary-container");
+        if (!container) {
+          console.warn("Summary container not found");
+          return;
+        }
 
-      const rowsHtml = averageRates.map(r => `
-        <tr>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.country}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">
-            ${r.rate !== undefined ? r.rate.toFixed(2) + "%" : r.range}
-          </td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.source}</td>
-        </tr>
-      `).join("");
+        const rowsHtml = averageRates.map(r => `
+          <tr>
+            <td style="padding:6px;border-bottom:1px solid #eee;">${r.country}</td>
+            <td style="padding:6px;border-bottom:1px solid #eee;">
+              ${r.rate !== undefined ? r.rate.toFixed(2) + "%" : r.range}
+            </td>
+            <td style="padding:6px;border-bottom:1px solid #eee;">${r.source}</td>
+          </tr>
+        `).join("");
 
-      container.innerHTML = `
-        <h3>Gemiddelde Hypotheekrentes (begin 2025)</h3>
-        <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
-          <thead>
-            <tr>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Country</th>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Rate</th>
-              <th style="padding:6px;border-bottom:1px solid #ccc;">Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-          </tbody>
-        </table>
-      `;
+        container.innerHTML = `
+          <h3>Gemiddelde Hypotheekrentes (begin 2025)</h3>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
+            <thead>
+              <tr>
+                <th style="padding:6px;border-bottom:1px solid #ccc;">Country</th>
+                <th style="padding:6px;border-bottom:1px solid #ccc;">Rate</th>
+                <th style="padding:6px;border-bottom:1px solid #ccc;">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        `;
+      } catch (err) {
+        console.error("Error in renderAverageSummary:", err);
+      }
     }
 
     // Helper: apply filters & render table
     function applyFiltersAndRender() {
-      filteredRates = [...currentRates];
-      if (activeFilter === "lowest") {
-        filteredRates.sort((a, b) => a.rate - b.rate);
-      } else if (activeFilter === "shortest") {
-        filteredRates.sort((a, b) => a.term - b.term);
-      } else if (activeFilter === "nhg") {
-        filteredRates = filteredRates.filter(r => r.nhg === true);
+      console.log("Applying filters and rendering");
+      try {
+        filteredRates = [...currentRates];
+        if (activeFilter === "lowest") {
+          filteredRates.sort((a, b) => a.rate - b.rate);
+        } else if (activeFilter === "shortest") {
+          filteredRates.sort((a, b) => a.term - b.term);
+        } else if (activeFilter === "nhg") {
+          filteredRates = filteredRates.filter(r => r.nhg === true);
+        }
+        renderRatesTable(filteredRates);
+      } catch (err) {
+        console.error("Error in applyFiltersAndRender:", err);
+        showError("Error applying filters");
       }
-      renderRatesTable(filteredRates);
     }
 
     // Helper: render the rates table
     function renderRatesTable(ratesArray) {
-      const tbodyEl = element.querySelector("#rente-table tbody");
-      if (!tbodyEl) return;
+      console.log("Rendering rates table:", ratesArray);
+      try {
+        const tbodyEl = element.querySelector("#rente-table tbody");
+        if (!tbodyEl) {
+          console.warn("Table body element not found");
+          return;
+        }
 
-      if (!Array.isArray(ratesArray) || ratesArray.length === 0) {
-        tbodyEl.innerHTML = `
-          <tr>
-            <td colspan="6" style="padding:12px; text-align:center; color:#666;">
-              Geen rentes gevonden.
-            </td>
-          </tr>
-        `;
-        return;
-      }
+        if (!Array.isArray(ratesArray) || ratesArray.length === 0) {
+          tbodyEl.innerHTML = `
+            <tr>
+              <td colspan="6" style="padding:12px; text-align:center; color:#666;">
+                Geen rentes gevonden.
+              </td>
+            </tr>
+          `;
+          return;
+        }
 
-      tbodyEl.innerHTML = ""; // clear
-      ratesArray.forEach(rateObj => {
-        const tr = document.createElement("tr");
-        tr.style.cursor = "pointer";
-        tr.addEventListener("mouseover", () => { tr.style.backgroundColor = "#f9f9f9"; });
-        tr.addEventListener("mouseout", () => { tr.style.backgroundColor = ""; });
-        tr.innerHTML = `
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.country}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.bank || "–"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.term}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.type}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.nhg ? "Yes" : "No"}</td>
-          <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.rate.toFixed(2)}</td>
-        `;
-        tr.addEventListener("click", () => {
-          VF.events.emit("RATE_SELECTED", {
-            country: rateObj.country,
-            bank: rateObj.bank || null,
-            term: rateObj.term,
-            type: rateObj.type,
-            nhg: rateObj.nhg,
-            rate: rateObj.rate,
-            source: rateObj.source,
-            dataDate: rateObj.dataDate
+        tbodyEl.innerHTML = ""; // clear
+        ratesArray.forEach(rateObj => {
+          const tr = document.createElement("tr");
+          tr.style.cursor = "pointer";
+          tr.addEventListener("mouseover", () => { tr.style.backgroundColor = "#f9f9f9"; });
+          tr.addEventListener("mouseout", () => { tr.style.backgroundColor = ""; });
+          tr.innerHTML = `
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.country}</td>
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.bank || "–"}</td>
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.term}</td>
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.type}</td>
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.nhg ? "Yes" : "No"}</td>
+            <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.rate.toFixed(2)}</td>
+          `;
+          tr.addEventListener("click", () => {
+            VF.events.emit("RATE_SELECTED", {
+              country: rateObj.country,
+              bank: rateObj.bank || null,
+              term: rateObj.term,
+              type: rateObj.type,
+              nhg: rateObj.nhg,
+              rate: rateObj.rate,
+              source: rateObj.source,
+              dataDate: rateObj.dataDate
+            });
           });
+          tbodyEl.appendChild(tr);
         });
-        tbodyEl.appendChild(tr);
-      });
+      } catch (err) {
+        console.error("Error in renderRatesTable:", err);
+        showError("Error rendering rates table");
+      }
     }
 
     // Initialize the widget
     function initializeWidget() {
-      // Build container HTML
-      element.innerHTML = `
-        <div id="rente-widget" style="font-family: Arial, sans-serif; width:100%;">
-          <!-- (Optional) Average Rates Summary Table -->
-          <div id="summary-container"></div>
-
-          <!-- Filters and Country (if you want to allow "group by country") -->
-          <div id="widget-header" style="margin:8px 0;">
-            <button id="filter-lowest">Lowest Rate</button>
-            <button id="filter-shortest">Shortest Term</button>
-            <button id="filter-nhg">NHG Only</button>
-          </div>
-
-          <!-- Interactive Rates Table -->
-          <div id="widget-body" style="max-height:300px; overflow-y:auto; border:1px solid #ddd;">
-            <table id="rente-table" style="width:100%; border-collapse: collapse;">
-              <thead style="background-color:#f0f0f0;">
-                <tr>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">Country</th>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">Bank</th>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">Term (yrs)</th>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">Type</th>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">NHG</th>
-                  <th style="padding:8px; border-bottom:1px solid #ccc;">Rate (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="6" style="padding:12px; text-align:center; color:#666;">
-                    Loading rates…
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Footer/Error -->
-          <div id="widget-footer" style="margin-top:8px; font-size:0.85em; color:#666;">
-            <span id="error-message"></span>
-          </div>
-        </div>
-      `;
-
-      // Attach filter button listeners
-      const filterLowest = element.querySelector("#filter-lowest");
-      const filterShortest = element.querySelector("#filter-shortest");
-      const filterNHG = element.querySelector("#filter-nhg");
-
-      if (filterLowest) {
-        filterLowest.addEventListener("click", () => {
-          activeFilter = (activeFilter === "lowest") ? null : "lowest";
-          applyFiltersAndRender();
-        });
-      }
-
-      if (filterShortest) {
-        filterShortest.addEventListener("click", () => {
-          activeFilter = (activeFilter === "shortest") ? null : "shortest";
-          applyFiltersAndRender();
-        });
-      }
-
-      if (filterNHG) {
-        filterNHG.addEventListener("click", () => {
-          activeFilter = (activeFilter === "nhg") ? null : "nhg";
-          applyFiltersAndRender();
-        });
-      }
-
-      // Parse and render payload
+      console.log("Initializing widget");
       try {
-        const payloadObj = JSON.parse(trace.payload || "{}");
-        
-        // Handle the ratesApiResponse structure
-        if (payloadObj.ratesApiResponse) {
-          const apiResponse = JSON.parse(payloadObj.ratesApiResponse);
-          if (apiResponse.records) {
-            currentRates = transformAirtableData(apiResponse);
-          } else if (Array.isArray(apiResponse.rates)) {
-            currentRates = apiResponse.rates;
+        // Build container HTML
+        element.innerHTML = `
+          <div id="rente-widget" style="font-family: Arial, sans-serif; width:100%;">
+            <!-- (Optional) Average Rates Summary Table -->
+            <div id="summary-container"></div>
+
+            <!-- Filters and Country (if you want to allow "group by country") -->
+            <div id="widget-header" style="margin:8px 0;">
+              <button id="filter-lowest">Lowest Rate</button>
+              <button id="filter-shortest">Shortest Term</button>
+              <button id="filter-nhg">NHG Only</button>
+            </div>
+
+            <!-- Interactive Rates Table -->
+            <div id="widget-body" style="max-height:300px; overflow-y:auto; border:1px solid #ddd;">
+              <table id="rente-table" style="width:100%; border-collapse: collapse;">
+                <thead style="background-color:#f0f0f0;">
+                  <tr>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">Country</th>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">Bank</th>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">Term (yrs)</th>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">Type</th>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">NHG</th>
+                    <th style="padding:8px; border-bottom:1px solid #ccc;">Rate (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6" style="padding:12px; text-align:center; color:#666;">
+                      Loading rates…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer/Error -->
+            <div id="widget-footer" style="margin-top:8px; font-size:0.85em; color:#666;">
+              <span id="error-message"></span>
+            </div>
+          </div>
+        `;
+
+        // Attach filter button listeners
+        const filterLowest = element.querySelector("#filter-lowest");
+        const filterShortest = element.querySelector("#filter-shortest");
+        const filterNHG = element.querySelector("#filter-nhg");
+
+        if (filterLowest) {
+          filterLowest.addEventListener("click", () => {
+            activeFilter = (activeFilter === "lowest") ? null : "lowest";
+            applyFiltersAndRender();
+          });
+        }
+
+        if (filterShortest) {
+          filterShortest.addEventListener("click", () => {
+            activeFilter = (activeFilter === "shortest") ? null : "shortest";
+            applyFiltersAndRender();
+          });
+        }
+
+        if (filterNHG) {
+          filterNHG.addEventListener("click", () => {
+            activeFilter = (activeFilter === "nhg") ? null : "nhg";
+            applyFiltersAndRender();
+          });
+        }
+
+        // Parse and render payload
+        try {
+          console.log("Parsing payload:", trace.payload);
+          const payloadObj = JSON.parse(trace.payload || "{}");
+          console.log("Parsed payload:", payloadObj);
+          
+          // Handle the ratesApiResponse structure
+          if (payloadObj.ratesApiResponse) {
+            console.log("Found ratesApiResponse");
+            const apiResponse = JSON.parse(payloadObj.ratesApiResponse);
+            console.log("Parsed apiResponse:", apiResponse);
+            
+            if (apiResponse.records) {
+              currentRates = transformAirtableData(apiResponse);
+            } else if (Array.isArray(apiResponse.rates)) {
+              currentRates = apiResponse.rates;
+            } else {
+              throw new Error("Invalid ratesApiResponse format");
+            }
+          } else if (payloadObj.records) {
+            currentRates = transformAirtableData(payloadObj);
+          } else if (Array.isArray(payloadObj.rates)) {
+            currentRates = payloadObj.rates;
           } else {
-            throw new Error("Invalid ratesApiResponse format");
+            throw new Error("Invalid payload format");
           }
-        } else if (payloadObj.records) {
-          currentRates = transformAirtableData(payloadObj);
-        } else if (Array.isArray(payloadObj.rates)) {
-          currentRates = payloadObj.rates;
-        } else {
-          throw new Error("Invalid payload format");
-        }
 
-        // Handle average rates if provided
-        if (Array.isArray(payloadObj.averageRates)) {
-          renderAverageSummary(payloadObj.averageRates);
-        }
+          console.log("Transformed rates:", currentRates);
 
-        applyFiltersAndRender();
+          // Handle average rates if provided
+          if (Array.isArray(payloadObj.averageRates)) {
+            renderAverageSummary(payloadObj.averageRates);
+          }
+
+          applyFiltersAndRender();
+        } catch (err) {
+          console.error("Error processing payload:", err);
+          showError("Geen rentes beschikbaar. Probeer het later opnieuw.");
+        }
       } catch (err) {
-        showError("Geen rentes beschikbaar. Probeer het later opnieuw.");
-        console.error("Payload parse error:", err);
+        console.error("Error in initializeWidget:", err);
+        showError("Error initializing widget");
       }
     }
 
     // Start initialization
-    initializeWidget();
+    try {
+      initializeWidget();
+    } catch (err) {
+      console.error("Fatal error in extension:", err);
+      if (element) {
+        element.innerHTML = `
+          <div style="color: red; padding: 10px;">
+            Error initializing widget: ${err.message}
+          </div>
+        `;
+      }
+    }
   }
 }; 
