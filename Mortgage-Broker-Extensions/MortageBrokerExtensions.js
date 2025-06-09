@@ -182,16 +182,20 @@ export const RenteVergelijkerExtension = {
           <td style="padding:8px;border-bottom:1px solid #eee;">${rateObj.rate.toFixed(2)}</td>
         `;
         tr.addEventListener("click", () => {
-          VF.events.emit("RATE_SELECTED", {
-            country: rateObj.country,
-            bank: rateObj.bank || null,
-            term: rateObj.term,
-            type: rateObj.type,
-            nhg: rateObj.nhg,
-            rate: rateObj.rate,
-            source: rateObj.source,
-            dataDate: rateObj.dataDate
-          });
+          if (window.VF && window.VF.events) {
+            window.VF.events.emit("RATE_SELECTED", {
+              country: rateObj.country,
+              bank: rateObj.bank || null,
+              term: rateObj.term,
+              type: rateObj.type,
+              nhg: rateObj.nhg,
+              rate: rateObj.rate,
+              source: rateObj.source,
+              dataDate: rateObj.dataDate
+            });
+          } else {
+            console.error("VF events not available");
+          }
         });
         tbody.appendChild(tr);
       });
