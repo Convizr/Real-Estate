@@ -157,24 +157,24 @@ export const RenteVergelijkerExtension = {
         pointer-events: none;
       }
       .vf-loan-input-euro {
-        background: #fff;
-        color: #222;
-        font-weight: 700;
-        font-size: 1.25em;
-        border: 1.5px solid #dbe6ff;
-        border-radius: 8px;
-        padding: 12px 12px 10px 38px;
-        margin: 0;
-        outline: none;
-        box-shadow: none;
-        border-bottom: 3px solid #2d5fff;
-        width: 160px;
-        transition: border-color 0.15s;
-        text-align: left;
+        background: #fff !important;
+        color: #222 !important;
+        font-weight: 700 !important;
+        font-size: 1.25em !important;
+        border: 1.5px solid #dbe6ff !important;
+        border-radius: 8px !important;
+        padding: 12px 12px 10px 38px !important;
+        margin: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        border-bottom: 3px solid #2d5fff !important;
+        width: 160px !important;
+        transition: border-color 0.15s !important;
+        text-align: left !important;
       }
       .vf-loan-input-euro:focus {
-        border-color: #2d5fff;
-        border-bottom: 3px solid #1a3fd1;
+        border-color: #2d5fff !important;
+        border-bottom: 3px solid #1a3fd1 !important;
       }
       .vf-loan-badge-euro {
         background: #2d5fff;
