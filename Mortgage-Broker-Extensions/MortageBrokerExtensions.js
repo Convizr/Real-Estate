@@ -191,7 +191,7 @@ export const RenteVergelijkerExtension = {
         box-shadow: 0 2px 8px #0001;
       }
     `;
-    document.head.appendChild(style);
+    element.appendChild(style);
 
     // --- UI Root ---
     element.innerHTML = '';
