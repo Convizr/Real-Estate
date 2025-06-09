@@ -48,7 +48,7 @@ export const RenteVergelijkerExtension = {
       .vf-mortgage-col input, .vf-mortgage-col select { width: 100%; box-sizing: border-box; }
       .vf-mortgage-more { background: #f3f6ff; color: #2d5fff; border: none; border-radius: 8px; padding: 8px 0; font-weight: 600; font-size: 1em; cursor: pointer; }
       .vf-mortgage-filters { transition: max-height 0.3s; overflow: hidden; }
-      .vf-sort-menu { display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:1000; min-width:170px; padding: 4px 0; }
+      .vf-sort-menu { display:none; position:absolute; left:0; top:32px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 2px 8px #0002; z-index:9999; min-width:170px; padding: 4px 0; }
       .vf-sort-menu.vf-open { display:block; }
       .vf-sort-menu .sort-option { padding:8px 16px; cursor:pointer; font-size:1em; color:#222; transition:background 0.15s; }
       .vf-sort-menu .sort-option:hover { background:#f3f6ff; color:#2d5fff; }
@@ -120,6 +120,8 @@ export const RenteVergelijkerExtension = {
     // --- Sort menu logic ---
     const sortIcon = inputPanel.querySelector('#sort-icon');
     const sortMenu = inputPanel.querySelector('#sort-menu');
+    // Ensure menu is hidden by default
+    sortMenu.classList.remove('vf-open');
     sortIcon.addEventListener('click', (e) => {
       e.stopPropagation();
       sortMenu.classList.toggle('vf-open');
