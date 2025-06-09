@@ -208,7 +208,7 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement('div');
     inputPanel.id = 'user-inputs';
     inputPanel.innerHTML = `
-      <div class="vf-mortgage-row">
+      <div class="vf-mortgage-row" style="position:relative;">
         <div class="vf-mortgage-col">
           <label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br>
           <span class="vf-loan-input-currency-euro">
@@ -226,23 +226,23 @@ export const RenteVergelijkerExtension = {
           <span id="down-badge" class="vf-loan-badge-euro">0%</span>
           </label>
         </div>
-        <div style="position:absolute; right:24px; top:12px;">
-          <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:2em; color:#2d5fff; padding:0; width:40px; height:40px; vertical-align:middle;" title="Sort options">⇅</button>
+        <div style="position:absolute; right:0; top:0;">
+          <button id="sort-icon" style="background:none; border:none; cursor:pointer; font-size:1.5em; color:#2d5fff; padding:0; width:36px; height:36px; vertical-align:middle;" title="Sort options">⇅</button>
         </div>
       </div>
-      <div class="vf-mortgage-row" style="margin-top:18px; align-items:flex-end;">
+      <div class="vf-mortgage-row" style="margin-top:14px; align-items:flex-end; gap:16px;">
         <div class="vf-mortgage-col">
-          <label style="font-size:1.15em; font-weight:600;">Loan Term</label>
+          <label style="font-size:1em; font-weight:600;">Loan Term</label>
           <select id="input-term" class="vf-modern-select">
             <option value="">Any</option><option value="10">10 yrs</option><option value="15">15 yrs</option><option value="20">20 yrs</option><option value="30">30 yrs</option>
           </select>
         </div>
         <div class="vf-mortgage-col">
-          <label style="font-size:1.15em; font-weight:600;">Country</label>
+          <label style="font-size:1em; font-weight:600;">Country</label>
           <select id="input-country" class="vf-modern-select"></select>
         </div>
       </div>
-      <button id="btn-apply" style="display:block; width:100%; background:#226cff; color:#fff; border:none; border-radius:18px; padding:18px 0; font-weight:700; font-size:1.35em; margin:28px 0 0 0; box-shadow:0 2px 8px #226cff22; cursor:pointer;">Get Rates</button>
+      <button id="btn-apply" style="display:block; width:100%; background:#2d5fff; color:#fff; border:none; border-radius:18px; padding:14px 0; font-weight:700; font-size:1.08em; margin:22px 0 0 0; box-shadow:0 2px 8px #2d5fff22; cursor:pointer;">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
 
