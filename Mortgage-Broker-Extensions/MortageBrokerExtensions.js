@@ -4,59 +4,106 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
-    // Build container HTML
-    element.innerHTML = `
-      <div id="rente-widget" style="font-family: Arial, sans-serif; width:100%;">
-        <!-- (Optional) Average Rates Summary Table -->
-        <div id="summary-container"></div>
-
-        <!-- Filters and Country (if you want to allow "group by country") -->
-        <div id="widget-header" style="margin:8px 0;">
-          <button id="filter-lowest">Lowest Rate</button>
-          <button id="filter-shortest">Shortest Term</button>
-          <button id="filter-nhg">NHG Only</button>
-        </div>
-
-        <!-- Interactive Rates Table -->
-        <div id="widget-body" style="max-height:300px; overflow-y:auto; border:1px solid #ddd;">
-          <table id="rente-table" style="width:100%; border-collapse: collapse;">
-            <thead style="background-color:#f0f0f0;">
-              <tr>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">Country</th>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">Bank</th>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">Term (yrs)</th>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">Type</th>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">NHG</th>
-                <th style="padding:8px; border-bottom:1px solid #ccc;">Rate (%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="6" style="padding:12px; text-align:center; color:#666;">
-                  Loading rates…
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Footer/Error -->
-        <div id="widget-footer" style="margin-top:8px; font-size:0.85em; color:#666;">
-          <span id="error-message"></span>
-        </div>
-      </div>
-    `;
-
     // In-memory state
     let currentRates = [];
     let filteredRates = [];
     let activeFilter = null;
 
+    // Helper: transform Airtable data to our format
+    function transformAirtableData(airtableData) {
+      if (!airtableData || !Array.isArray(airtableData.records)) {
+        throw new Error("Invalid Airtable data format");
+      }
+
+      return airtableData.records.map(record => ({
+        country: record.fields.Country,
+        bank: record.fields.Bank,
+        term: record.fields.TermInYears,
+        type: record.fields.MortgageType,
+        nhg: record.fields.NHG === "✓",
+        rate: record.fields.Rate * 100, // Convert decimal to percentage
+        source: record.fields.Source,
+        dataDate: record.fields.DataDate
+      }));
+    }
+
+    // Create the widget container
+    const widgetContainer = document.createElement('div');
+    widgetContainer.style.cssText = 'font-family: Arial, sans-serif; width:100%;';
+
+    // Create summary container
+    const summaryContainer = document.createElement('div');
+    widgetContainer.appendChild(summaryContainer);
+
+    // Create header with filters
+    const headerDiv = document.createElement('div');
+    headerDiv.style.cssText = 'margin:8px 0;';
+
+    const filterLowest = document.createElement('button');
+    filterLowest.textContent = 'Lowest Rate';
+    headerDiv.appendChild(filterLowest);
+
+    const filterShortest = document.createElement('button');
+    filterShortest.textContent = 'Shortest Term';
+    headerDiv.appendChild(filterShortest);
+
+    const filterNHG = document.createElement('button');
+    filterNHG.textContent = 'NHG Only';
+    headerDiv.appendChild(filterNHG);
+
+    widgetContainer.appendChild(headerDiv);
+
+    // Create table container
+    const tableContainer = document.createElement('div');
+    tableContainer.style.cssText = 'max-height:300px; overflow-y:auto; border:1px solid #ddd;';
+
+    // Create table
+    const table = document.createElement('table');
+    table.style.cssText = 'width:100%; border-collapse: collapse;';
+
+    // Create table header
+    const thead = document.createElement('thead');
+    thead.style.cssText = 'background-color:#f0f0f0;';
+    thead.innerHTML = `
+      <tr>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">Country</th>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">Bank</th>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">Term (yrs)</th>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">Type</th>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">NHG</th>
+        <th style="padding:8px; border-bottom:1px solid #ccc;">Rate (%)</th>
+      </tr>
+    `;
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement('tbody');
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="padding:12px; text-align:center; color:#666;">
+          Loading rates…
+        </td>
+      </tr>
+    `;
+    table.appendChild(tbody);
+    tableContainer.appendChild(table);
+    widgetContainer.appendChild(tableContainer);
+
+    // Create footer
+    const footer = document.createElement('div');
+    footer.style.cssText = 'margin-top:8px; font-size:0.85em; color:#666;';
+    
+    const errorMessage = document.createElement('span');
+    footer.appendChild(errorMessage);
+    widgetContainer.appendChild(footer);
+
+    // Add the widget to the element
+    element.appendChild(widgetContainer);
+
     // Helper: show error
     function showError(message) {
-      document.getElementById("error-message").innerText = message;
-      // Also clear table
-      document.querySelector("#rente-table tbody").innerHTML = `
+      errorMessage.textContent = message;
+      tbody.innerHTML = `
         <tr>
           <td colspan="6" style="padding:12px; text-align:center; color:red;">
             ${message}
@@ -67,7 +114,6 @@ export const RenteVergelijkerExtension = {
 
     // Helper: render average summary if provided
     function renderAverageSummary(averageRates) {
-      const container = document.getElementById("summary-container");
       const rowsHtml = averageRates.map(r => `
         <tr>
           <td style="padding:6px;border-bottom:1px solid #eee;">${r.country}</td>
@@ -77,7 +123,8 @@ export const RenteVergelijkerExtension = {
           <td style="padding:6px;border-bottom:1px solid #eee;">${r.source}</td>
         </tr>
       `).join("");
-      container.innerHTML = `
+
+      summaryContainer.innerHTML = `
         <h3>Gemiddelde Hypotheekrentes (begin 2025)</h3>
         <table style="width:100%;border-collapse:collapse;margin-bottom:12px;">
           <thead>
@@ -109,9 +156,8 @@ export const RenteVergelijkerExtension = {
 
     // Helper: render the rates table
     function renderRatesTable(ratesArray) {
-      const tbodyEl = document.querySelector("#rente-table tbody");
       if (!Array.isArray(ratesArray) || ratesArray.length === 0) {
-        tbodyEl.innerHTML = `
+        tbody.innerHTML = `
           <tr>
             <td colspan="6" style="padding:12px; text-align:center; color:#666;">
               Geen rentes gevonden.
@@ -120,7 +166,8 @@ export const RenteVergelijkerExtension = {
         `;
         return;
       }
-      tbodyEl.innerHTML = ""; // clear
+
+      tbody.innerHTML = ""; // clear
       ratesArray.forEach(rateObj => {
         const tr = document.createElement("tr");
         tr.style.cursor = "pointer";
@@ -141,23 +188,27 @@ export const RenteVergelijkerExtension = {
             term: rateObj.term,
             type: rateObj.type,
             nhg: rateObj.nhg,
-            rate: rateObj.rate
+            rate: rateObj.rate,
+            source: rateObj.source,
+            dataDate: rateObj.dataDate
           });
         });
-        tbodyEl.appendChild(tr);
+        tbody.appendChild(tr);
       });
     }
 
     // Attach filter button listeners
-    document.getElementById("filter-lowest").addEventListener("click", () => {
+    filterLowest.addEventListener("click", () => {
       activeFilter = (activeFilter === "lowest") ? null : "lowest";
       applyFiltersAndRender();
     });
-    document.getElementById("filter-shortest").addEventListener("click", () => {
+
+    filterShortest.addEventListener("click", () => {
       activeFilter = (activeFilter === "shortest") ? null : "shortest";
       applyFiltersAndRender();
     });
-    document.getElementById("filter-nhg").addEventListener("click", () => {
+
+    filterNHG.addEventListener("click", () => {
       activeFilter = (activeFilter === "nhg") ? null : "nhg";
       applyFiltersAndRender();
     });
@@ -165,17 +216,34 @@ export const RenteVergelijkerExtension = {
     // Parse and render payload
     try {
       const payloadObj = JSON.parse(trace.payload || "{}");
+      
+      // Handle the ratesApiResponse structure
+      if (payloadObj.ratesApiResponse) {
+        const apiResponse = JSON.parse(payloadObj.ratesApiResponse);
+        if (apiResponse.records) {
+          currentRates = transformAirtableData(apiResponse);
+        } else if (Array.isArray(apiResponse.rates)) {
+          currentRates = apiResponse.rates;
+        } else {
+          throw new Error("Invalid ratesApiResponse format");
+        }
+      } else if (payloadObj.records) {
+        currentRates = transformAirtableData(payloadObj);
+      } else if (Array.isArray(payloadObj.rates)) {
+        currentRates = payloadObj.rates;
+      } else {
+        throw new Error("Invalid payload format");
+      }
+
+      // Handle average rates if provided
       if (Array.isArray(payloadObj.averageRates)) {
         renderAverageSummary(payloadObj.averageRates);
       }
-      if (!Array.isArray(payloadObj.rates)) {
-        throw new Error("Missing rates array");
-      }
-      currentRates = payloadObj.rates;
+
       applyFiltersAndRender();
     } catch (err) {
+      console.error("Error processing payload:", err);
       showError("Geen rentes beschikbaar. Probeer het later opnieuw.");
-      console.error("Payload parse error:", err);
     }
   }
-};
+}; 
