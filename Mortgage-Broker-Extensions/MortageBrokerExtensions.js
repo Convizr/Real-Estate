@@ -154,15 +154,20 @@ export const RenteVergelijkerExtension = {
     // --- Sort menu logic ---
     const sortIcon = inputPanel.querySelector('#sort-icon');
     const sortMenu = inputPanel.querySelector('#sort-menu');
+    console.log('Sort icon:', sortIcon, 'Sort menu:', sortMenu); // Debug log
     // Ensure menu is hidden by default
     sortMenu.style.display = 'none';
     sortIcon.addEventListener('click', (e) => {
       e.stopPropagation();
+      console.log('Sort icon clicked'); // Debug log
       if (sortMenu.style.display === 'block') {
         sortMenu.style.display = 'none';
       } else {
         sortMenu.style.display = 'block';
       }
+    });
+    sortMenu.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent document click from closing immediately
     });
     sortMenu.querySelectorAll('.sort-option').forEach(opt => {
       opt.addEventListener('click', e => {
