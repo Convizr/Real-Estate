@@ -219,11 +219,20 @@ export const RenteVergelijkerExtension = {
 
     // Parse and render payload
     try {
-      const payloadObj = JSON.parse(trace.payload || "{}");
+      console.log('Raw trace payload:', trace.payload);
+      console.log('Trace payload type:', typeof trace.payload);
+      
+      // If payload is already an object, use it directly
+      const payloadObj = typeof trace.payload === 'object' ? trace.payload : JSON.parse(trace.payload || "{}");
+      console.log('Parsed payload object:', payloadObj);
       
       // Handle the ratesApiResponse structure
       if (payloadObj.ratesApiResponse) {
-        const apiResponse = JSON.parse(payloadObj.ratesApiResponse);
+        console.log('Found ratesApiResponse:', payloadObj.ratesApiResponse);
+        const apiResponse = typeof payloadObj.ratesApiResponse === 'object' 
+          ? payloadObj.ratesApiResponse 
+          : JSON.parse(payloadObj.ratesApiResponse);
+        
         if (apiResponse.records) {
           currentRates = transformAirtableData(apiResponse);
         } else if (Array.isArray(apiResponse.rates)) {
@@ -247,6 +256,7 @@ export const RenteVergelijkerExtension = {
       applyFiltersAndRender();
     } catch (err) {
       console.error("Error processing payload:", err);
+      console.error("Payload that caused error:", trace.payload);
       showError("Geen rentes beschikbaar. Probeer het later opnieuw.");
     }
   }
