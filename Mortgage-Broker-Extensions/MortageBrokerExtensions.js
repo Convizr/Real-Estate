@@ -208,7 +208,7 @@ export const RenteVergelijkerExtension = {
           <label>Purchase Price <span title="The total price of the property you want to buy." style="cursor:help; color:#888;">?</span><br>
           <span class="vf-loan-input-currency-euro">
             <span>€</span>
-            <input id="input-price" type="number" placeholder="e.g. 300000" class="vf-loan-input-euro" />
+            <input id="input-price" type="text" placeholder="e.g. 300000" class="vf-loan-input-euro" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
           </span>
           </label>
         </div>
@@ -216,7 +216,7 @@ export const RenteVergelijkerExtension = {
           <label>Down Payment <span title="The amount you pay upfront. The loan amount is purchase price minus down payment." style="cursor:help; color:#888;">?</span><br>
           <span class="vf-loan-input-currency-euro">
             <span>€</span>
-            <input id="input-down" type="number" placeholder="e.g. 60000" class="vf-loan-input-euro" />
+            <input id="input-down" type="text" placeholder="e.g. 60000" class="vf-loan-input-euro" autocomplete="off" inputmode="numeric" pattern="[0-9]*" />
           </span>
           <span id="down-badge" class="vf-loan-badge-euro">0%</span>
           </label>
@@ -454,17 +454,29 @@ export const RenteVergelijkerExtension = {
     const inputPrice = inputPanel.querySelector('#input-price');
     const inputDown = inputPanel.querySelector('#input-down');
     const downBadge = inputPanel.querySelector('#down-badge');
-    function updateDownBadge() {
-      const price = parseFloat(inputPrice.value);
-      const down = parseFloat(inputDown.value);
-      let pct = 0;
-      if (price > 0 && down > 0) {
-        pct = Math.round((down / price) * 100);
+
+    // Numeric validation for text inputs
+    function validateNumericInput(input) {
+      const val = input.value;
+      if (!/^\d*$/.test(val)) {
+        input.value = val.replace(/[^\d]/g, '');
       }
-      downBadge.textContent = isNaN(pct) ? '0%' : pct + '%';
+      if (val !== '' && isNaN(Number(val))) {
+        input.style.borderColor = 'red';
+        input.title = 'Please enter a valid number';
+      } else {
+        input.style.borderColor = '';
+        input.title = '';
+      }
     }
-    inputPrice.addEventListener('input', updateDownBadge);
-    inputDown.addEventListener('input', updateDownBadge);
+    inputPrice.addEventListener('input', function() {
+      validateNumericInput(inputPrice);
+      updateDownBadge();
+    });
+    inputDown.addEventListener('input', function() {
+      validateNumericInput(inputDown);
+      updateDownBadge();
+    });
     updateDownBadge();
 
     // --- Parse and Render Payload ---
