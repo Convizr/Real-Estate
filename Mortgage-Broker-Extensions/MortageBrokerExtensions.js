@@ -49,12 +49,6 @@ export const RenteVergelijkerExtension = {
       currentRates = ratesArray;
     }
 
-      // ── FORCE THE HOST WRAPPER TO 300px ──
-  const host = element;
-  host.style.setProperty("display", "inline-block", "important");
-  host.style.setProperty("width", "300px", "important");
-  host.style.setProperty("box-sizing", "border-box", "important");
-
     // --- CONTAINER (300px inline-block) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
@@ -100,6 +94,22 @@ export const RenteVergelijkerExtension = {
       <button id="btn-apply">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
+
+    // Populate country dropdown with unique countries
+    const countrySelect = inputPanel.querySelector("#input-country");
+    const uniqueCountries = [...new Set(currentRates.map(r => r.country).filter(Boolean))].sort();
+    uniqueCountries.forEach(country => {
+      const option = document.createElement("option");
+      option.value = country;
+      option.textContent = country;
+      countrySelect.appendChild(option);
+    });
+
+    // ── FORCE THE HOST WRAPPER TO 300px ──
+    const host = element;
+    host.style.setProperty("display", "inline-block", "important");
+    host.style.setProperty("width", "300px", "important");
+    host.style.setProperty("box-sizing", "border-box", "important");
 
     // --- INLINE COMPACT STYLING ---
     [ "#input-price", "#input-down" ].forEach(sel => {
