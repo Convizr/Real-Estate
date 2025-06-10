@@ -288,7 +288,7 @@ export const RenteVergelijkerExtension = {
     }
 
     // --- FILTER & SORT ---
-    const sortSelect = widgetContainer.querySelector("#sort-select");
+    const sortSelect = inputPanel.querySelector("#sort-select");
     sortSelect.onchange = () => {
       activeSort = sortSelect.value;
       applyFiltersAndRender();
