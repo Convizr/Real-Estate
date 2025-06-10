@@ -25,17 +25,12 @@ export const RenteVergelijkerExtension = {
       }));
     }
 
-    // --- Setup Container with Responsive Max-Width ---
+    // --- Setup Container (max-width: 300px) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
-
-    // Cap to 300px when parent is narrow, else allow up to 600px
-    const parentWidth = element.clientWidth || window.innerWidth;
-    const maxWidth    = parentWidth < 350 ? "300px" : "600px";
-
     widgetContainer.style.cssText = `
       font-family: Inter, Arial, sans-serif;
-      max-width: ${maxWidth};
+      max-width: 300px;
       width: 100%;
       margin: 0 auto;
       background: #fff;
@@ -126,6 +121,7 @@ export const RenteVergelijkerExtension = {
         color:        "#2d5fff",
         fontWeight:   "700"
       });
+      // wrap & add arrow
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
       el.parentNode.replaceChild(wrapper, el);
@@ -146,9 +142,9 @@ export const RenteVergelijkerExtension = {
 
     inputPanel.querySelectorAll("label").forEach(lbl => {
       Object.assign(lbl.style, {
-        fontSize:   "1em",
-        fontWeight: "600",
-        display:    "block",
+        fontSize:    "1em",
+        fontWeight:  "600",
+        display:     "block",
         marginBottom: "4px"
       });
     });
@@ -230,7 +226,7 @@ export const RenteVergelijkerExtension = {
       let bestIdx = 0, bestScore = computed[0].score;
       computed.forEach((c,i)=>{ if(c.score<bestScore){ bestScore=c.score; bestIdx=i; } });
 
-      computed.forEach((c,i) => {
+      computed.forEach((c,i)=>{
         const { rateObj, monthly, fees } = c;
         const rec = i === bestIdx;
         const card = document.createElement("div");
@@ -294,8 +290,8 @@ export const RenteVergelijkerExtension = {
         more.style.cssText = `
           display:block;margin:24px auto 0;
           background:#f3f6ff;color:#2d5fff;
-          border:none;border-radius:8px;
-          padding:8px 16px;font-weight:600;
+         	border:none;border-radius:8px;
+         	padding:8px 16px;font-weight:600;
           cursor:pointer;
         `;
         more.onclick = () => { cardsToShow += 3; renderCards(rates); };
@@ -356,10 +352,13 @@ export const RenteVergelijkerExtension = {
 
     // --- Initialize from Payload ---
     try {
-      const pl = typeof trace.payload === "string" ? JSON.parse(trace.payload) : trace.payload || {};
+      const pl = typeof trace.payload === "string"
+        ? JSON.parse(trace.payload)
+        : trace.payload || {};
       if (pl.ratesApiResponse) {
         let arr = Array.isArray(pl.ratesApiResponse)
-          ? pl.ratesApiResponse : pl.ratesApiResponse.records;
+          ? pl.ratesApiResponse
+          : pl.ratesApiResponse.records;
         currentRates = Array.isArray(arr) && arr[0].fields
           ? transformAirtableData({ records: arr })
           : pl.ratesApiResponse;
@@ -370,13 +369,13 @@ export const RenteVergelijkerExtension = {
       } else throw 0;
 
       // Populate country dropdown
-      const opts = [...new Set(currentRates.map(r=>r.country).filter(Boolean))]  
+      const opts = [...new Set(currentRates.map(r=>r.country).filter(Boolean))]
         .map(c => `<option value="${c}">${c}</option>`).join("");
       widgetContainer.querySelector("#input-country").innerHTML =
         `<option value="">Any</option>` + opts;
 
       applyFiltersAndRender();
-    } catch {  
+    } catch {
       resultsArea.innerHTML = `<div style="color:red;padding:32px;text-align:center">
         Geen rentes beschikbaar. Probeer het later opnieuw.
       </div>`;
