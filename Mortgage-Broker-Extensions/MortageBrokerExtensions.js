@@ -45,7 +45,7 @@ export const RenteVergelijkerExtension = {
     }
     console.log("✅ Parsed payloadObj:", payloadObj);
 
-    // ratesApiResponse is the field your payload uses
+    // Pull the array
     let ratesArray = payloadObj.ratesApiResponse || [];
     if (typeof ratesArray === "string") {
       try { ratesArray = JSON.parse(ratesArray); }
@@ -53,12 +53,11 @@ export const RenteVergelijkerExtension = {
     }
     console.log("📊 Extracted ratesArray:", ratesArray);
 
+    // Transform if Airtable format
     if (Array.isArray(ratesArray) && ratesArray[0]?.fields) {
       currentRates = transformAirtableData({ records: ratesArray });
     } else if (Array.isArray(ratesArray)) {
       currentRates = ratesArray;
-    } else {
-      currentRates = [];
     }
 
     // --- CONTAINER (fixed 300px) ---
@@ -77,17 +76,15 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="position:relative; gap:12px; display:flex; flex-wrap:wrap;">
+      <div style="position:relative; display:flex; gap:12px; flex-wrap:wrap;">
         <div style="flex:1; min-width:0;">
-          <label>Purchase Price
-            <span title="Total property price" style="cursor:help;color:#888">?</span><br>
-            <input id="input-price" type="text" placeholder="€ e.g. 300000">
+          <label>Purchase Price?<br>
+            <input id="input-price" type="text" placeholder="e.g. 300000">
           </label>
         </div>
         <div style="flex:1; min-width:0;">
-          <label>Down Payment
-            <span title="Amount upfront" style="cursor:help;color:#888">?</span><br>
-            <input id="input-down" type="text" placeholder="€ e.g. 60000">
+          <label>Down Payment?<br>
+            <input id="input-down" type="text" placeholder="e.g. 60000">
             <span id="down-badge">0%</span>
           </label>
         </div>
@@ -98,35 +95,38 @@ export const RenteVergelijkerExtension = {
       </div>
       <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
         <div style="flex:1; min-width:0;">
-          <label>Loan Term</label><br>
-          <select id="input-term">
-            <option value="">Any</option><option value="10">10 yrs</option>
-            <option value="15">15 yrs</option><option value="20">20 yrs</option>
-            <option value="30">30 yrs</option>
-          </select>
+          <label>Loan Term<br>
+            <select id="input-term">
+              <option value="">Any</option>
+              <option value="10">10 yrs</option>
+              <option value="15">15 yrs</option>
+              <option value="20">20 yrs</option>
+              <option value="30">30 yrs</option>
+            </select>
+          </label>
         </div>
         <div style="flex:1; min-width:0;">
-          <label>Country</label><br>
-          <select id="input-country"><option value="">Any</option></select>
+          <label>Country<br>
+            <select id="input-country"><option value="">Any</option></select>
+          </label>
         </div>
       </div>
       <button id="btn-apply">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
 
-    // --- INLINE STYLES FOR COMPACT 300px ---
+    // --- INLINE STYLING (ultra-compact) ---
     [ "#input-price", "#input-down" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
       Object.assign(el.style, {
-        width:"100%", boxSizing:"border-box",
-        height:"28px", padding:"6px 10px",
-        fontSize:"0.85em",
-        background:"#eaf0ff", border:"none",
-        boxShadow:"0 1px 1px #0001",
-        borderRadius:"6px", outline:"none"
+        width:"100%",boxSizing:"border-box",
+        height:"28px",padding:"6px 10px",
+        fontSize:"0.85em",background:"#eaf0ff",
+        border:"none",boxShadow:"0 1px 1px #0001",
+        borderRadius:"6px",outline:"none"
       });
-      el.addEventListener("focus", ()=> el.style.boxShadow = "0 0 0 2px #2d5fff33");
-      el.addEventListener("blur",  ()=> el.style.boxShadow = "0 1px 1px #0001");
+      el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
+      el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
     });
     [ "#input-term", "#input-country" ].forEach(sel => {
       const el = inputPanel.querySelector(sel),
@@ -135,66 +135,61 @@ export const RenteVergelijkerExtension = {
       el.parentNode.replaceChild(wrapper, el);
       wrapper.appendChild(el);
       Object.assign(el.style, {
-        width:"100%", boxSizing:"border-box",
-        height:"28px", padding:"6px 24px 6px 10px",
-        fontSize:"0.85em",
-        background:"#eaf0ff", border:"none",
-        boxShadow:"0 1px 1px #0001",
-        borderRadius:"6px", outline:"none",
-        appearance:"none", color:"#2d5fff", fontWeight:"700"
+        width:"100%",boxSizing:"border-box",
+        height:"28px",padding:"6px 24px 6px 10px",
+        fontSize:"0.85em",background:"#eaf0ff",
+        border:"none",boxShadow:"0 1px 1px #0001",
+        borderRadius:"6px",outline:"none",
+        appearance:"none",color:"#2d5fff",fontWeight:"700"
       });
       const arrow = document.createElement("span");
       arrow.textContent="▼";
       Object.assign(arrow.style,{
-        position:"absolute", right:"8px",
-        top:"50%", transform:"translateY(-50%)",
-        pointerEvents:"none", color:"#2d5fff",
-        fontSize:"0.75em"
+        position:"absolute",right:"8px",top:"50%",
+        transform:"translateY(-50%)",pointerEvents:"none",
+        color:"#2d5fff",fontSize:"0.75em"
       });
       wrapper.appendChild(arrow);
     });
-    inputPanel.querySelectorAll("label").forEach(lbl => {
-      Object.assign(lbl.style, {
-        fontSize:"0.9em", fontWeight:"600",
-        display:"block", marginBottom:"3px"
+    inputPanel.querySelectorAll("label").forEach(lbl=>{
+      Object.assign(lbl.style,{
+        display:"block",marginBottom:"3px",
+        fontSize:"0.9em",fontWeight:"600"
       });
     });
-    Object.assign(inputPanel.querySelector("#down-badge").style, {
-      marginLeft:"6px",
-      background:"#2d5fff", color:"#fff",
-      fontSize:"0.75em", fontWeight:"700",
-      borderRadius:"4px", padding:"2px 4px",
-      display:"inline-block", verticalAlign:"middle"
+    Object.assign(inputPanel.querySelector("#down-badge").style,{
+      marginLeft:"6px",display:"inline-block",
+      background:"#2d5fff",color:"#fff",
+      fontSize:"0.75em",fontWeight:"700",
+      borderRadius:"4px",padding:"2px 4px",
+      verticalAlign:"middle"
     });
-    Object.assign(inputPanel.querySelector("#btn-apply").style, {
-      width:"100%", padding:"6px 0",
-      background:"#2d5fff", color:"#fff",
-      border:"none", borderRadius:"6px",
-      fontSize:"0.9em", fontWeight:"700",
+    Object.assign(inputPanel.querySelector("#btn-apply").style,{
+      width:"100%",padding:"6px 0",
+      background:"#2d5fff",color:"#fff",
+      border:"none",borderRadius:"6px",
+      fontSize:"0.9em",fontWeight:"700",
       boxShadow:"0 2px 8px #2d5fff22",
-      cursor:"pointer", margin:"12px 0"
+      cursor:"pointer",margin:"12px 0"
     });
 
-    // --- RESULTS AREA ---
+    // --- RESULTS AREA & HELPERS ---
     const resultsArea = document.createElement("div");
     resultsArea.id = "results-area";
     resultsArea.style.minHeight = "120px";
     widgetContainer.appendChild(resultsArea);
-
     function showLoading() {
       resultsArea.innerHTML = `
-        <div style="
-          text-align:center;color:#aaa;
-          padding:24px 0;font-size:0.85em">
+        <div style="text-align:center;color:#aaa;
+                    padding:24px 0;font-size:0.85em">
           Loading rates…
         </div>`;
     }
     function showNoResults() {
       resultsArea.innerHTML = `
-        <div style="
-          text-align:center;color:#888;
-          padding:24px;border-radius:6px;
-          background:#f8f9fb;font-size:0.85em">
+        <div style="text-align:center;color:#888;
+                    padding:24px;border-radius:6px;
+                    background:#f8f9fb;font-size:0.85em">
           No loans match your criteria.
         </div>`;
     }
@@ -205,22 +200,107 @@ export const RenteVergelijkerExtension = {
       resultsArea.innerHTML = "";
       const grid = document.createElement("div");
       grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;";
-      // … compute scores & build each card using cardsToShow …
-      rates.slice(0, cardsToShow).forEach((r,i) => {
-        // card creation here…
+      // normalize scores
+      const computed = rates.slice(0, cardsToShow).map(r => {
+        const principal = Number(userInput.price)-Number(userInput.down)||250000;
+        const nper = (r.term||20)*12;
+        const rateM = (r.rate||3)/100/12;
+        return {
+          rateObj: r,
+          monthly: calculatePMT(rateM,nper,principal),
+          fees:    r.fees||estimateFees(principal)
+        };
       });
+      const mins = {
+        pay:  Math.min(...computed.map(c=>c.monthly)),
+        fees: Math.min(...computed.map(c=>c.fees)),
+        rate: Math.min(...computed.map(c=>c.rateObj.rate))
+      };
+      const maxs = {
+        pay:  Math.max(...computed.map(c=>c.monthly)),
+        fees: Math.max(...computed.map(c=>c.fees)),
+        rate: Math.max(...computed.map(c=>c.rateObj.rate)),
+        term: Math.max(...computed.map(c=>c.rateObj.term||0))
+      };
+      computed.forEach(c => {
+        const np = maxs.pay!==mins.pay ? (c.monthly-mins.pay)/(maxs.pay-mins.pay):0;
+        const nf = maxs.fees!==mins.fees ? (c.fees-mins.fees)/(maxs.fees-mins.fees):0;
+        const nr = maxs.rate!==mins.rate ? (c.rateObj.rate-mins.rate)/(maxs.rate-mins.rate):0;
+        const nt = maxs.term? (c.rateObj.term||0)/maxs.term :0;
+        c.score = 0.4*np + 0.2*nf + 0.2*nr - 0.2*nt;
+      });
+      let bestIdx=0, bestScore=computed[0].score;
+      computed.forEach((c,i)=>{ if(c.score<bestScore){bestScore=c.score; bestIdx=i;}});
+
+      computed.forEach((c,i)=>{
+        const { rateObj, monthly, fees } = c;
+        const rec = i===bestIdx;
+        const card = document.createElement("div");
+        card.style.cssText = `
+          background:#fff;border-radius:8px;
+          box-shadow:0 1px 4px #0001;padding:12px;
+          border:2px solid ${rec? '#2d5fff':'#ddd'};
+          display:flex;flex-direction:column;
+        `;
+        card.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            <div style="
+              width:24px;height:24px;
+              background:#f3f6ff;border-radius:6px;
+              display:flex;align-items:center;
+              justify-content:center;font-size:1em;
+              color:#2d5fff">🏦</div>
+            <div>
+              <div style="font-weight:600;font-size:0.9em">${rateObj.bank||'–'}</div>
+              <div style="color:#888;font-size:0.75em">${rateObj.country||''}</div>
+            </div>
+            ${rec?`<span style="
+              background:#2d5fff;color:#fff;
+              font-size:0.7em;border-radius:4px;
+              padding:1px 4px;margin-left:auto">
+              Recommended
+            </span>`:``}
+          </div>
+          <div style="margin-bottom:6px">
+            <span style="font-weight:700;font-size:1em;color:#2d5fff">
+              ${rateObj.rate.toFixed(2)}%
+            </span>
+            <span style="margin-left:4px;color:#888;font-size:0.85em">
+              ${rateObj.term||'–'} yrs
+            </span>
+          </div>
+          <div style="margin-bottom:4px;font-size:0.8em">Type: <b>${rateObj.type||'–'}</b></div>
+          <div style="margin-bottom:4px;font-size:0.8em">NHG: <b>${rateObj.nhg?'Yes':'No'}</b></div>
+          <div style="margin-bottom:4px;font-size:0.8em">Monthly: <b>€${monthly.toFixed(0)}</b></div>
+          <div style="margin-bottom:8px;font-size:0.8em">Fees: <b>€${fees}</b></div>
+          <button class="btn-select" style="
+            background:#2d5fff;color:#fff;border:none;
+            border-radius:6px;padding:6px;
+            font-size:0.85em;font-weight:600;
+            cursor:pointer">Choose</button>
+        `;
+        card.querySelector(".btn-select").onclick = () => {
+          window.VF?.events?.emit("RATE_SELECTED", {
+            ...rateObj,
+            monthlyPayment: monthly,
+            fees
+          });
+        };
+        grid.appendChild(card);
+      });
+
       resultsArea.appendChild(grid);
-      if (rates.length > cardsToShow) {
+      if (filteredRates.length > cardsToShow) {
         const more = document.createElement("button");
-        more.textContent = "More";
-        more.style.cssText = `
+        more.textContent="More";
+        more.style.cssText=`
           display:block;margin:12px auto 0;
           background:#f3f6ff;color:#2d5fff;
           border:none;border-radius:6px;
           padding:6px 12px;font-size:0.85em;
           font-weight:600;cursor:pointer;
         `;
-        more.onclick = () => { cardsToShow += 3; renderCards(rates); };
+        more.onclick = ()=>{ cardsToShow+=3; renderCards(filteredRates); };
         resultsArea.appendChild(more);
       }
     }
@@ -228,31 +308,39 @@ export const RenteVergelijkerExtension = {
     // --- FILTER & SORT LOGIC ---
     function applyFiltersAndRender() {
       showLoading();
-      setTimeout(() => {
+      setTimeout(()=>{
         filteredRates = currentRates
-          .filter(r => userInput.country ? r.country === userInput.country : true)
-          .filter(r => userInput.term    ? String(r.term) === userInput.term : true);
-        // sorting…
+          .filter(r=> userInput.country? r.country===userInput.country : true)
+          .filter(r=> userInput.term   ? String(r.term)===userInput.term : true);
+        if(activeSort==="apr") filteredRates.sort((a,b)=>a.rate-b.rate);
+        else if(activeSort==="payment"){
+          const p=Number(userInput.price)-Number(userInput.down)||250000;
+          filteredRates.sort((a,b)=>
+            calculatePMT(a.rate/100/12,(a.term||20)*12,p)
+            -calculatePMT(b.rate/100/12,(b.term||20)*12,p)
+          );
+        } else if(activeSort==="fees"){
+          filteredRates.sort((a,b)=>(a.fees||0)-(b.fees||0));
+        }
         renderCards(filteredRates);
-      }, 300);
+      },300);
     }
 
-    // --- WIRE EVENTS & INIT ---
-    const ip = widgetContainer.querySelector("#input-price"),
-          id = widgetContainer.querySelector("#input-down"),
-          bd = widgetContainer.querySelector("#down-badge");
-
-    function updateDownBadge() {
-      const p = parseFloat(ip.value)||0, d = parseFloat(id.value)||0;
+    // --- WIRE EVENTS & INITIAL CALL ---
+    const ip=widgetContainer.querySelector("#input-price"),
+          id=widgetContainer.querySelector("#input-down"),
+          bd=widgetContainer.querySelector("#down-badge");
+    function updateDownBadge(){
+      const p=parseFloat(ip.value)||0, d=parseFloat(id.value)||0;
       bd.textContent = p>0? Math.round((d/p)*100)+"%":"0%";
     }
-    [ip,id].forEach(inp => inp.addEventListener("input", ()=>{
-      inp.value = inp.value.replace(/\D/g,"");
+    [ip,id].forEach(inp=>inp.addEventListener("input",()=>{
+      inp.value=inp.value.replace(/\D/g,"");
       updateDownBadge();
     }));
     updateDownBadge();
 
-    widgetContainer.querySelector("#btn-apply").onclick = () => {
+    widgetContainer.querySelector("#btn-apply").onclick = ()=>{
       userInput.price   = ip.value;
       userInput.down    = id.value;
       userInput.term    = widgetContainer.querySelector("#input-term").value;
