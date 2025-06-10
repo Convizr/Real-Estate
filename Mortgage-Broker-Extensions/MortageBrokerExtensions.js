@@ -66,8 +66,8 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;align-items:flex-start;">
-        <div style="flex:1;min-width:0">
+      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-start;position:relative;">
+        <div style="min-width:0">
           <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
             Purchase Price
             <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Purchase Price?">
@@ -82,7 +82,7 @@ export const RenteVergelijkerExtension = {
           </label>
           <input id="input-price" type="text" placeholder="e.g. 300000">
         </div>
-        <div style="flex:1;min-width:0">
+        <div style="min-width:0;position:relative;">
           <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
             Down Payment
             <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Down Payment?">
@@ -95,10 +95,8 @@ export const RenteVergelijkerExtension = {
               </div>
             </span>
           </label>
-          <div style="display:flex;align-items:center;width:100%;gap:8px;">
-            <input id="input-down" type="text" placeholder="e.g. 60000" style="flex:1 1 0;min-width:0;">
-            <span id="down-badge" style="flex:0 0 44px;min-width:44px;text-align:center;">0%</span>
-          </div>
+          <input id="input-down" type="text" placeholder="e.g. 60000" style="width:100%;">
+          <span id="down-badge" style="position:absolute;right:0;top:38px;z-index:2;">0%</span>
         </div>
         <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
           <button id="sort-icon" title="Sort by APR" style="
@@ -192,7 +190,8 @@ export const RenteVergelijkerExtension = {
       borderRadius:"4px",padding:"2px 8px",
       verticalAlign:"middle",
       minWidth:"44px",
-      textAlign:"center"
+      textAlign:"center",
+      boxShadow:"0 2px 8px #2d5fff22"
     });
     Object.assign(inputPanel.querySelector("#btn-apply").style,{
       width:"100%",padding:"6px 0",
