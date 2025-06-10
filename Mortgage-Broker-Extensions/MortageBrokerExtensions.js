@@ -25,12 +25,18 @@ export const RenteVergelijkerExtension = {
       }));
     }
 
-    // --- Setup Container ---
+    // --- Setup Container with Responsive Max-Width ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
+
+    // Cap to 300px when parent is narrow, else allow up to 600px
+    const parentWidth = element.clientWidth || window.innerWidth;
+    const maxWidth    = parentWidth < 350 ? "300px" : "600px";
+
     widgetContainer.style.cssText = `
       font-family: Inter, Arial, sans-serif;
-      max-width: 600px;
+      max-width: ${maxWidth};
+      width: 100%;
       margin: 0 auto;
       background: #fff;
       border-radius: 16px;
@@ -86,7 +92,6 @@ export const RenteVergelijkerExtension = {
     widgetContainer.appendChild(inputPanel);
 
     // --- Inline Styling for Fields ---
-    // Text inputs pill style
     [ "#input-price", "#input-down" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
       Object.assign(el.style, {
@@ -106,7 +111,6 @@ export const RenteVergelijkerExtension = {
       });
     });
 
-    // Selects pill style + arrow
     [ "#input-term", "#input-country" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
       Object.assign(el.style, {
@@ -122,7 +126,6 @@ export const RenteVergelijkerExtension = {
         color:        "#2d5fff",
         fontWeight:   "700"
       });
-      // wrap & add arrow
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
       el.parentNode.replaceChild(wrapper, el);
@@ -141,7 +144,6 @@ export const RenteVergelijkerExtension = {
       wrapper.appendChild(arrow);
     });
 
-    // Style labels, badge & button
     inputPanel.querySelectorAll("label").forEach(lbl => {
       Object.assign(lbl.style, {
         fontSize:   "1em",
@@ -201,7 +203,6 @@ export const RenteVergelijkerExtension = {
       grid.className = "vf-card-grid";
       grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;";
 
-      // compute scores…
       const computed = rates.slice(0, cardsToShow).map(r => {
         const principal = Number(userInput.price) - Number(userInput.down) || 250000;
         const nper = (r.term||20)*12;
@@ -368,14 +369,14 @@ export const RenteVergelijkerExtension = {
         currentRates = pl.rates;
       } else throw 0;
 
-      // populate country dropdown
-      const opts = [...new Set(currentRates.map(r=>r.country).filter(Boolean))]
-        .map(c=>`<option value="${c}">${c}</option>`).join("");
+      // Populate country dropdown
+      const opts = [...new Set(currentRates.map(r=>r.country).filter(Boolean))]  
+        .map(c => `<option value="${c}">${c}</option>`).join("");
       widgetContainer.querySelector("#input-country").innerHTML =
         `<option value="">Any</option>` + opts;
 
       applyFiltersAndRender();
-    } catch {
+    } catch {  
       resultsArea.innerHTML = `<div style="color:red;padding:32px;text-align:center">
         Geen rentes beschikbaar. Probeer het later opnieuw.
       </div>`;
