@@ -302,11 +302,6 @@ export const RenteVergelijkerExtension = {
       }
     }
 
-    // --- Filter & Sort Logic ---
-    let currentRates = [], filteredRates = [];
-    let activeSort = "apr", cardsToShow = 3;
-    let userInput = { price:"", down:"", term:"", country:"" };
-
     function applyFiltersAndRender() {
       showLoading();
       setTimeout(() => {
