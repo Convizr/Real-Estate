@@ -4,38 +4,17 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
-    console.log("🔍 RenteVergelijker payload (raw):", trace.payload);
+    // --- DEBUG: see what payload actually is ---
+    console.log("🔍 Raw payload:", trace.payload);
 
-    // --- Top-level State ---
-    let currentRates = [];
+    // --- Top‐level state ---
+    let currentRates  = [];
     let filteredRates = [];
-    let activeSort = "apr";
-    let userInput = { price: "", down: "", term: "", country: "" };
+    let activeSort    = "apr";
+    let cardsToShow   = 3;                     // <— defined here
+    let userInput     = { price:"", down:"", term:"", country:"" };
 
-    // Declare once at top
-    let cardsToShow = 3;
-
-    function calculatePMT(ratePerMonth, nper, pv) {
-      if (!ratePerMonth) return pv / nper;
-      return (pv * ratePerMonth) / (1 - Math.pow(1 + ratePerMonth, -nper));
-    }
-    function estimateFees(principal) {
-      return Math.round(principal * 0.01 + 500);
-    }
-    function transformAirtableData(data) {
-      return data.records.map(r => ({
-        country: r.fields.Country,
-        bank: r.fields.Bank,
-        term: r.fields.TermInYears,
-        type: r.fields.MortgageType,
-        nhg: r.fields.NHG === "✓",
-        rate: r.fields.Rate * 100,
-        source: r.fields.Source,
-        dataDate: r.fields.DataDate
-      }));
-    }
-
-    // --- Parse Payload (robust) ---
+    // --- Robust payload parsing (like RealEstateExtension) ---
     let payloadObj;
     if (typeof trace.payload === "string") {
       try {
@@ -47,28 +26,34 @@ export const RenteVergelijkerExtension = {
     } else {
       payloadObj = trace.payload || {};
     }
-    console.log("Parsed payloadObj:", payloadObj);
+    console.log("✅ Parsed payloadObj:", payloadObj);
 
-    let ratesArray = payloadObj.rates || payloadObj.records || payloadObj.ratesApiResponse || [];
+    // Extract array of rates from whichever field is present
+    let ratesArray = payloadObj.ratesApiResponse 
+                  || payloadObj.records 
+                  || payloadObj.rates 
+                  || [];
     if (typeof ratesArray === "string") {
       try {
         ratesArray = JSON.parse(ratesArray);
       } catch (e) {
-        console.error("Error parsing rates field:", e);
+        console.error("Error parsing ratesArray string:", e);
         ratesArray = [];
       }
     }
-    console.log("Extracted ratesArray:", ratesArray);
+    console.log("📊 Extracted ratesArray:", ratesArray);
 
-    if (Array.isArray(ratesArray) && ratesArray.length && ratesArray[0].fields) {
+    // Normalize Airtable format or raw array
+    if (Array.isArray(ratesArray) && ratesArray[0]?.fields) {
       currentRates = transformAirtableData({ records: ratesArray });
     } else if (Array.isArray(ratesArray)) {
       currentRates = ratesArray;
     } else {
-      console.warn("No valid rates found in payload");
+      console.warn("No valid rates array found, using empty list");
+      currentRates = [];
     }
 
-    // --- Container (exactly 300px) ---
+    // --- Container (force 300px wide) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
@@ -83,7 +68,7 @@ export const RenteVergelijkerExtension = {
     `;
     element.appendChild(widgetContainer);
 
-    // --- Filter Panel Markup ---
+    // --- Filter Panel Markup & Ultra-compact Styling ---
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
@@ -127,107 +112,71 @@ export const RenteVergelijkerExtension = {
     `;
     widgetContainer.appendChild(inputPanel);
 
-    // --- Ultra-compact inline styling for 300px width ---
+    // Ultra-compact inline styles (fields, labels, badge, button)
     [ "#input-price", "#input-down" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
       Object.assign(el.style, {
-        background:   "#eaf0ff",
-        border:       "none",
-        boxShadow:    "0 1px 1px #0001",
-        borderRadius: "6px",
-        fontSize:     "0.85em",
-        padding:      "6px 10px",
-        height:       "28px",
-        outline:      "none",
-        width:        "100%",
-        boxSizing:    "border-box",
+        background:"#eaf0ff", border:"none",
+        boxShadow:"0 1px 1px #0001", borderRadius:"6px",
+        fontSize:"0.85em", padding:"6px 10px", height:"28px",
+        outline:"none", width:"100%", boxSizing:"border-box"
       });
-      el.addEventListener("focus", () =>  el.style.boxShadow = "0 0 0 2px #2d5fff33");
-      el.addEventListener("blur",  () =>  el.style.boxShadow = "0 1px 1px #0001");
+      el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
+      el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
     });
-
     [ "#input-term", "#input-country" ].forEach(sel => {
-      const el = inputPanel.querySelector(sel);
-      // wrap to contain overflow
-      const wrapper = document.createElement("div");
+      const el = inputPanel.querySelector(sel),
+            wrapper = document.createElement("div");
       wrapper.style.cssText = "position:relative;width:100%;box-sizing:border-box";
       el.parentNode.replaceChild(wrapper, el);
       wrapper.appendChild(el);
 
       Object.assign(el.style, {
-        background:   "#eaf0ff",
-        border:       "none",
-        boxShadow:    "0 1px 1px #0001",
-        borderRadius: "6px",
-        fontSize:     "0.85em",
-        padding:      "6px 24px 6px 10px", // room for arrow
-        height:       "28px",
-        outline:      "none",
-        appearance:   "none",
-        width:        "100%",
-        boxSizing:    "border-box",
-        color:        "#2d5fff",
-        fontWeight:   "700"
+        background:"#eaf0ff", border:"none",
+        boxShadow:"0 1px 1px #0001", borderRadius:"6px",
+        fontSize:"0.85em", padding:"6px 24px 6px 10px", height:"28px",
+        outline:"none", appearance:"none",
+        width:"100%", boxSizing:"border-box",
+        color:"#2d5fff", fontWeight:"700"
       });
-
-      // custom arrow
       const arrow = document.createElement("span");
-      arrow.textContent = "▼";
-      Object.assign(arrow.style, {
-        position:      "absolute",
-        right:         "8px",
-        top:           "50%",
-        transform:     "translateY(-50%)",
-        pointerEvents: "none",
-        color:         "#2d5fff",
-        fontSize:      "0.75em",
+      arrow.textContent="▼";
+      Object.assign(arrow.style,{
+        position:"absolute", right:"8px",
+        top:"50%", transform:"translateY(-50%)",
+        pointerEvents:"none", color:"#2d5fff", fontSize:"0.75em"
       });
       wrapper.appendChild(arrow);
     });
-
-    // shrink labels, badge, button
-    inputPanel.querySelectorAll("label").forEach(lbl => {
+    inputPanel.querySelectorAll("label").forEach(lbl=>{
       Object.assign(lbl.style, {
-        fontSize:    "0.9em",
-        fontWeight:  "600",
-        display:     "block",
-        marginBottom:"3px"
+        fontSize:"0.9em", fontWeight:"600",
+        display:"block", marginBottom:"3px"
       });
     });
     Object.assign(inputPanel.querySelector("#down-badge").style, {
-      display:       "inline-block",
-      background:    "#2d5fff",
-      color:         "#fff",
-      fontSize:      "0.75em",
-      fontWeight:    "700",
-      borderRadius:  "4px",
-      padding:       "2px 4px",
-      verticalAlign: "middle",
-      marginLeft:    "6px"
+      display:"inline-block", background:"#2d5fff", color:"#fff",
+      fontSize:"0.75em", fontWeight:"700",
+      borderRadius:"4px", padding:"2px 4px",
+      verticalAlign:"middle", marginLeft:"6px"
     });
     Object.assign(inputPanel.querySelector("#btn-apply").style, {
-      width:        "100%",
-      background:   "#2d5fff",
-      color:        "#fff",
-      border:       "none",
-      borderRadius: "6px",
-      padding:      "6px 0",
-      fontSize:     "0.9em",
-      fontWeight:   "700",
-      boxShadow:    "0 2px 8px #2d5fff22",
-      cursor:       "pointer",
-      margin:       "12px 0"
+      width:"100%", background:"#2d5fff", color:"#fff",
+      border:"none", borderRadius:"6px", padding:"6px 0",
+      fontSize:"0.9em", fontWeight:"700",
+      boxShadow:"0 2px 8px #2d5fff22", cursor:"pointer",
+      margin:"12px 0"
     });
 
-    // --- Results Area ---
+    // --- Results Area & helpers ---
     const resultsArea = document.createElement("div");
     resultsArea.id = "results-area";
     resultsArea.style.minHeight = "120px";
     widgetContainer.appendChild(resultsArea);
-
     function showLoading() {
       resultsArea.innerHTML = `
-        <div style="text-align:center;color:#aaa;padding:24px 0;font-size:0.85em">
+        <div style="text-align:center;color:#aaa;
+                    padding:24px 0;font-size:0.85em">
           Loading rates…
         </div>`;
     }
