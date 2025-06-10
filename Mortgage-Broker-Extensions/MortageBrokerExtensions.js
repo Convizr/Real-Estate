@@ -4,14 +4,15 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
+    // --- DEBUG payload ---
     console.log("🔍 Raw payload:", trace.payload);
 
     // --- STATE ---
-    let currentRates   = [];
-    let filteredRates  = [];
-    let activeSort     = "apr";
-    let cardsToShow    = 3;
-    let userInput      = { price:"", down:"", term:"", country:"" };
+    let currentRates  = [];
+    let filteredRates = [];
+    let activeSort    = "apr";
+    let cardsToShow   = 3;
+    let userInput     = { price: "", down: "", term: "", country: "" };
 
     // --- HELPERS ---
     function calculatePMT(ratePerMonth, nper, pv) {
@@ -22,15 +23,15 @@ export const RenteVergelijkerExtension = {
       return Math.round(principal * 0.01 + 500);
     }
     function transformAirtableData(airtableData) {
-      return airtableData.records.map(record => ({
-        country:  record.fields.Country,
-        bank:     record.fields.Bank,
-        term:     record.fields.TermInYears,
-        type:     record.fields.MortgageType,
-        nhg:      record.fields.NHG === "✓",
-        rate:     record.fields.Rate * 100,
-        source:   record.fields.Source,
-        dataDate: record.fields.DataDate
+      return airtableData.records.map(r => ({
+        country:  r.fields.Country,
+        bank:     r.fields.Bank,
+        term:     r.fields.TermInYears,
+        type:     r.fields.MortgageType,
+        nhg:      r.fields.NHG === "✓",
+        rate:     r.fields.Rate * 100,
+        source:   r.fields.Source,
+        dataDate: r.fields.DataDate
       }));
     }
 
@@ -48,7 +49,7 @@ export const RenteVergelijkerExtension = {
       currentRates = ratesArray;
     }
 
-    // --- CONTAINER (inline-block 300px) ---
+    // --- CONTAINER (300px inline-block) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
@@ -61,7 +62,7 @@ export const RenteVergelijkerExtension = {
     `;
     element.appendChild(widgetContainer);
 
-    // --- FILTER PANEL (native select for sorting) ---
+    // --- FILTER PANEL ---
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
@@ -73,21 +74,10 @@ export const RenteVergelijkerExtension = {
           <label>Down Payment?<br><input id="input-down" type="text" placeholder="e.g. 60000"></label>
           <span id="down-badge">0%</span>
         </div>
-        <label style="margin-left:auto;display:flex;align-items:center;">
-          Sort<br>
-          <select id="sort-select" style="
-            margin-left:6px;
-            background:none;
-            border:none;
-            font-size:1.2em;
-            color:#2d5fff;
-            cursor:pointer;
-          ">
-            <option value="apr">⇅ APR</option>
-            <option value="payment">⇅ Payment</option>
-            <option value="fees">⇅ Fees</option>
-          </select>
-        </label>
+        <button id="sort-icon" title="Sort by APR" style="
+          background:none;border:none;cursor:pointer;
+          color:#2d5fff;font-size:1.2em;width:28px;height:28px;
+          position:absolute;right:0;top:0;">⇅</button>
       </div>
       <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
         <div style="flex:1;min-width:0">
@@ -213,7 +203,7 @@ export const RenteVergelijkerExtension = {
         c.score = 0.4*np + 0.2*nf + 0.2*nr - 0.2*nt;
       });
       let bestIdx=0,bestScore=computed[0].score;
-      computed.forEach((c,i)=>{ if(c.score<bestScore){ bestScore=c.score; bestIdx=i;} });
+      computed.forEach((c,i)=>{ if(c.score<bestScore){bestScore=c.score;bestIdx=i;} });
 
       computed.forEach((c,i)=>{
         const { rateObj, monthly, fees } = c;
@@ -275,7 +265,8 @@ export const RenteVergelijkerExtension = {
       resultsArea.appendChild(grid);
       if (filteredRates.length > cardsToShow) {
         const more = document.createElement("button");
-        more.textContent="More"; more.style.cssText=`
+        more.textContent="More";
+        more.style.cssText=`
           display:block;margin:12px auto 0;
           background:#f3f6ff;color:#2d5fff;
           border:none;border-radius:6px;
@@ -287,16 +278,24 @@ export const RenteVergelijkerExtension = {
       }
     }
 
-    // --- FILTER & SORT ---
-    const sortSelect = inputPanel.querySelector("#sort-select");
-    sortSelect.onchange = () => {
-      activeSort = sortSelect.value;
+    // --- SORT ICON CLICK CYCLE ---
+    const sortIcon = widgetContainer.querySelector("#sort-icon");
+    sortIcon.onclick = () => {
+      const modes = ["apr","payment","fees"];
+      const idx   = modes.indexOf(activeSort);
+      activeSort  = modes[(idx+1) % modes.length];
+      sortIcon.title = {
+        apr:     "Sort by APR",
+        payment: "Sort by Payment",
+        fees:    "Sort by Fees"
+      }[activeSort];
       applyFiltersAndRender();
     };
 
+    // --- APPLY FILTERS & INITIALIZE ---
     function applyFiltersAndRender() {
       showLoading();
-      setTimeout(()=>{
+      setTimeout(() => {
         filteredRates = currentRates
           .filter(r=> userInput.country? r.country===userInput.country:true)
           .filter(r=> userInput.term?   String(r.term)===userInput.term:true);
@@ -309,28 +308,28 @@ export const RenteVergelijkerExtension = {
             -calculatePMT(b.rate/100/12,(b.term||20)*12,p)
           );
         } else {
-          filteredRates.sort((a,b)=> (a.fees||0)-(b.fees||0));
+          filteredRates.sort((a,b)=>(a.fees||0)-(b.fees||0));
         }
         cardsToShow = 3;
         renderCards(filteredRates);
       },300);
     }
 
-    // --- WIRE INPUTS & INITIAL CALL ---
+    // --- WIRE INPUTS & RUN ---
     const ip=widgetContainer.querySelector("#input-price"),
           id=widgetContainer.querySelector("#input-down"),
           bd=widgetContainer.querySelector("#down-badge");
     function updateDownBadge(){
-      const p=parseFloat(ip.value)||0,d=parseFloat(id.value)||0;
-      bd.textContent=p>0? Math.round((d/p)*100)+"%":"0%";
+      const p=parseFloat(ip.value)||0, d=parseFloat(id.value)||0;
+      bd.textContent = p>0? Math.round((d/p)*100)+"%":"0%";
     }
-    [ip,id].forEach(inp=>inp.addEventListener("input",()=>{
+    [ip,id].forEach(inp => inp.addEventListener("input",()=>{
       inp.value=inp.value.replace(/\D/g,"");
       updateDownBadge();
     }));
     updateDownBadge();
 
-    widgetContainer.querySelector("#btn-apply").onclick = ()=>{
+    widgetContainer.querySelector("#btn-apply").onclick = () => {
       userInput.price   = ip.value;
       userInput.down    = id.value;
       userInput.term    = widgetContainer.querySelector("#input-term").value;
