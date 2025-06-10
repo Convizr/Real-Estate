@@ -13,6 +13,9 @@ export const RenteVergelijkerExtension = {
     let activeSort    = "apr";
     let cardsToShow   = 3;
     let userInput     = { price: "", down: "", term: "", country: "" };
+    let page          = 'compare'; // 'compare' or 'book'
+    let selectedMortgage = null;
+    let bookingInfo   = { name: '', address: '', phone: '', date: '', time: '' };
 
     // --- HELPERS ---
     function calculatePMT(ratePerMonth, nper, pv) {
@@ -213,6 +216,68 @@ export const RenteVergelijkerExtension = {
       </div>`;
     }
 
+    // --- RENDER BOOKING PAGE ---
+    function renderBookingPage() {
+      widgetContainer.innerHTML = '';
+      const form = document.createElement('form');
+      form.style.display = 'flex';
+      form.style.flexDirection = 'column';
+      form.style.gap = '12px';
+      form.innerHTML = `
+        <div style="font-weight:700;font-size:1.1em;margin-bottom:4px;">Book Appointment</div>
+        <div style="background:#f3f6ff;padding:10px 12px;border-radius:8px;font-size:0.95em;margin-bottom:8px;">
+          <div><b>Bank:</b> ${selectedMortgage.bank || '-'} (${selectedMortgage.country || '-'})</div>
+          <div><b>Rate:</b> ${selectedMortgage.rate}% for ${selectedMortgage.term} yrs</div>
+          <div><b>Type:</b> ${selectedMortgage.type || '-'}</div>
+        </div>
+        <input type="text" id="book-name" placeholder="Your Name" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <input type="text" id="book-address" placeholder="Address" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <input type="tel" id="book-phone" placeholder="Phone Number" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <div style="font-weight:600;margin-top:8px;">Select Date</div>
+        <input type="date" id="book-date" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <div style="font-weight:600;margin-top:8px;">Select Time Slot</div>
+        <div id="time-slots" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+        <button type="submit" style="margin-top:8px;padding:10px 0;background:#2d5fff;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;">Book Appointment</button>
+      `;
+      widgetContainer.appendChild(form);
+
+      // Simple time slots for demo
+      const slots = ['09:00','10:00','11:00','13:00','14:00','15:00'];
+      const slotsDiv = form.querySelector('#time-slots');
+      let selectedTime = '';
+      slots.forEach(slot => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = slot;
+        btn.style.cssText = 'padding:6px 12px;border-radius:5px;border:1px solid #2d5fff;background:#f3f6ff;color:#2d5fff;font-weight:600;cursor:pointer;';
+        btn.onclick = () => {
+          selectedTime = slot;
+          Array.from(slotsDiv.children).forEach(b=>b.style.background='#f3f6ff');
+          btn.style.background = '#2d5fff';
+          btn.style.color = '#fff';
+        };
+        slotsDiv.appendChild(btn);
+      });
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const name = form.querySelector('#book-name').value.trim();
+        const address = form.querySelector('#book-address').value.trim();
+        const phone = form.querySelector('#book-phone').value.trim();
+        const date = form.querySelector('#book-date').value;
+        if (!selectedTime) {
+          alert('Please select a time slot.');
+          return;
+        }
+        const payload = {
+          mortgage: selectedMortgage,
+          personal: { name, address, phone, date, time: selectedTime }
+        };
+        window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
+        widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
+      };
+    }
+
     // --- CARD RENDERER ---
     function renderCards(rates) {
       if (!rates.length) return showNoResults();
@@ -300,11 +365,9 @@ export const RenteVergelijkerExtension = {
             cursor:pointer">Choose</button>
         `;
         card.querySelector(".btn-select").onclick = () => {
-          window.VF?.events?.emit("RATE_SELECTED", {
-            ...rateObj,
-            monthlyPayment: monthly,
-            fees
-          });
+          selectedMortgage = rateObj;
+          page = 'book';
+          renderBookingPage();
         };
         grid.appendChild(card);
       });
