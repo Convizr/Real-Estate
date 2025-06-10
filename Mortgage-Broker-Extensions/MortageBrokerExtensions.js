@@ -49,6 +49,12 @@ export const RenteVergelijkerExtension = {
       currentRates = ratesArray;
     }
 
+      // ── FORCE THE HOST WRAPPER TO 300px ──
+  const host = element;
+  host.style.setProperty("display", "inline-block", "important");
+  host.style.setProperty("width", "300px", "important");
+  host.style.setProperty("box-sizing", "border-box", "important");
+
     // --- CONTAINER (300px inline-block) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
