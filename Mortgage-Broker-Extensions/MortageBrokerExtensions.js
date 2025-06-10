@@ -30,13 +30,14 @@ export const RenteVergelijkerExtension = {
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
       font-family:Inter,Arial,sans-serif;
-      max-width:300px;
-      width:100%;
+      width:300px !important;
+      max-width:300px !important;
       margin:0 auto;
       background:#fff;
       border-radius:16px;
       box-shadow:0 2px 16px #0001;
       padding:24px;
+      box-sizing:border-box;
     `;
     element.appendChild(widgetContainer);
 
