@@ -66,44 +66,42 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-start;position:relative;">
-        <div style="min-width:0">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
-            Purchase Price
-            <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Purchase Price?">
-              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
-                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
-              </svg>
-              <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
-                The total price of the property you want to buy.
-              </div>
-            </span>
-          </label>
-          <input id="input-price" type="text" placeholder="e.g. 300000">
-        </div>
-        <div style="min-width:0;position:relative;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
-            Down Payment
-            <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Down Payment?">
-              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
-                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
-              </svg>
-              <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
-                The amount you pay upfront, reducing your loan amount.
-              </div>
-            </span>
-          </label>
-          <input id="input-down" type="text" placeholder="e.g. 60000" style="width:calc(100% - 48px);display:inline-block;">
-          <span id="down-badge" style="position:absolute;right:0;top:38px;z-index:2;">0%</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 56px;grid-template-rows:auto auto;gap:12px;align-items:end;position:relative;">
+        <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;grid-column:1;grid-row:1;">
+          Purchase Price
+          <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Purchase Price?">
+            <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+              <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+              <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+            </svg>
+            <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
+              The total price of the property you want to buy.
+            </div>
+          </span>
+        </label>
+        <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;grid-column:2;grid-row:1;">
+          Down Payment
+          <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Down Payment?">
+            <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+              <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+              <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+            </svg>
+            <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
+              The amount you pay upfront, reducing your loan amount.
+            </div>
+          </span>
+        </label>
+        <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;grid-column:3;grid-row:1;">
           <button id="sort-icon" title="Sort by APR" style="
             background:none;border:none;cursor:pointer;
             color:#2d5fff;font-size:1.2em;width:28px;height:28px;">
             ⇅
           </button>
+        </div>
+        <input id="input-price" type="text" placeholder="e.g. 300000" style="grid-column:1;grid-row:2;width:100%;">
+        <input id="input-down" type="text" placeholder="e.g. 60000" style="grid-column:2;grid-row:2;width:100%;">
+        <div style="grid-column:3;grid-row:2;display:flex;align-items:center;justify-content:flex-end;height:100%;">
+          <span id="down-badge">0%</span>
         </div>
       </div>
       <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
