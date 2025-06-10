@@ -35,17 +35,12 @@ export const RenteVergelijkerExtension = {
     }
 
     // --- PARSE PAYLOAD ---
-    let payloadObj;
-    if (typeof trace.payload === "string") {
-      try { payloadObj = JSON.parse(trace.payload); }
-      catch (e) { console.error("Error parsing payload:", e); payloadObj = {}; }
-    } else {
-      payloadObj = trace.payload || {};
-    }
+    let payloadObj = typeof trace.payload === "string"
+      ? (() => { try { return JSON.parse(trace.payload); } catch { return {}; } })()
+      : (trace.payload || {});
     let ratesArray = payloadObj.ratesApiResponse || [];
     if (typeof ratesArray === "string") {
-      try { ratesArray = JSON.parse(ratesArray); }
-      catch { ratesArray = []; }
+      try { ratesArray = JSON.parse(ratesArray); } catch { ratesArray = []; }
     }
     if (Array.isArray(ratesArray) && ratesArray[0]?.fields) {
       currentRates = transformAirtableData({ records: ratesArray });
@@ -53,26 +48,24 @@ export const RenteVergelijkerExtension = {
       currentRates = ratesArray;
     }
 
-    // --- CONTAINER (inline-block at 300px) ---
+    // --- CONTAINER (inline-block 300px) ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
-      display: inline-block !important;
-      width: 300px !important;
-      font-family: Inter, Arial, sans-serif;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px #0001;
-      padding: 24px;
-      box-sizing: border-box;
+      display:inline-block!important;
+      width:300px!important;max-width:300px!important;
+      font-family:Inter,Arial,sans-serif;
+      background:#fff;border-radius:16px;
+      box-shadow:0 2px 16px #0001;
+      padding:24px;box-sizing:border-box;
     `;
     element.appendChild(widgetContainer);
 
-    // --- FILTER PANEL ---
+    // --- FILTER PANEL (native select for sorting) ---
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="position:relative;display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;">
         <div style="flex:1;min-width:0">
           <label>Purchase Price?<br><input id="input-price" type="text" placeholder="e.g. 300000"></label>
         </div>
@@ -80,24 +73,28 @@ export const RenteVergelijkerExtension = {
           <label>Down Payment?<br><input id="input-down" type="text" placeholder="e.g. 60000"></label>
           <span id="down-badge">0%</span>
         </div>
-        <button id="sort-icon" title="Sort by APR" style="
-          background:none;border:none;cursor:pointer;
-          color:#2d5fff;font-size:1.2em;width:28px;height:28px;
-          position:absolute;right:0;top:0;">⇅</button>
-        <div id="sort-menu" style="
-          display:none;position:absolute;top:32px;right:0;
-          background:#fff;border:1px solid #eee;border-radius:8px;
-          box-shadow:0 2px 8px #0002;z-index:999;">
-          <div class="sort-option" data-sort="apr"    style="padding:8px 12px;cursor:pointer">APR</div>
-          <div class="sort-option" data-sort="payment"style="padding:8px 12px;cursor:pointer">Payment</div>
-          <div class="sort-option" data-sort="fees"   style="padding:8px 12px;cursor:pointer">Fees</div>
-        </div>
+        <label style="margin-left:auto;display:flex;align-items:center;">
+          Sort<br>
+          <select id="sort-select" style="
+            margin-left:6px;
+            background:none;
+            border:none;
+            font-size:1.2em;
+            color:#2d5fff;
+            cursor:pointer;
+          ">
+            <option value="apr">⇅ APR</option>
+            <option value="payment">⇅ Payment</option>
+            <option value="fees">⇅ Fees</option>
+          </select>
+        </label>
       </div>
       <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
         <div style="flex:1;min-width:0">
-          <label>Loan Term<br><select id="input-term"><option value="">Any</option>
-            <option value="10">10 yrs</option><option value="15">15 yrs</option>
-            <option value="20">20 yrs</option><option value="30">30 yrs</option>
+          <label>Loan Term<br><select id="input-term">
+            <option value="">Any</option><option value="10">10 yrs</option>
+            <option value="15">15 yrs</option><option value="20">20 yrs</option>
+            <option value="30">30 yrs</option>
           </select></label>
         </div>
         <div style="flex:1;min-width:0">
@@ -108,7 +105,7 @@ export const RenteVergelijkerExtension = {
     `;
     widgetContainer.appendChild(inputPanel);
 
-    // --- INLINE STYLING (compact) ---
+    // --- INLINE COMPACT STYLING ---
     [ "#input-price", "#input-down" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
       Object.assign(el.style, {
@@ -143,7 +140,7 @@ export const RenteVergelijkerExtension = {
       });
       wrapper.appendChild(arrow);
     });
-    inputPanel.querySelectorAll("label").forEach(lbl => {
+    inputPanel.querySelectorAll("label").forEach(lbl=>{
       Object.assign(lbl.style,{
         display:"block",marginBottom:"3px",
         fontSize:"0.9em",fontWeight:"600"
@@ -212,11 +209,11 @@ export const RenteVergelijkerExtension = {
         const np = maxs.pay!==mins.pay ? (c.monthly-mins.pay)/(maxs.pay-mins.pay):0;
         const nf = maxs.fees!==mins.fees ? (c.fees-mins.fees)/(maxs.fees-mins.fees):0;
         const nr = maxs.rate!==mins.rate ? (c.rateObj.rate-mins.rate)/(maxs.rate-mins.rate):0;
-        const nt = maxs.term ? (c.rateObj.term||0)/maxs.term :0;
+        const nt = maxs.term ? (c.rateObj.term||0)/maxs.term:0;
         c.score = 0.4*np + 0.2*nf + 0.2*nr - 0.2*nt;
       });
-      let bestIdx=0, bestScore=computed[0].score;
-      computed.forEach((c,i)=>{ if(c.score<bestScore){bestScore=c.score;bestIdx=i;} });
+      let bestIdx=0,bestScore=computed[0].score;
+      computed.forEach((c,i)=>{ if(c.score<bestScore){ bestScore=c.score; bestIdx=i;} });
 
       computed.forEach((c,i)=>{
         const { rateObj, monthly, fees } = c;
@@ -278,8 +275,7 @@ export const RenteVergelijkerExtension = {
       resultsArea.appendChild(grid);
       if (filteredRates.length > cardsToShow) {
         const more = document.createElement("button");
-        more.textContent="More";
-        more.style.cssText=`
+        more.textContent="More"; more.style.cssText=`
           display:block;margin:12px auto 0;
           background:#f3f6ff;color:#2d5fff;
           border:none;border-radius:6px;
@@ -291,29 +287,16 @@ export const RenteVergelijkerExtension = {
       }
     }
 
-    // --- WIRE SORT MENU ---
-    const sortIcon = widgetContainer.querySelector("#sort-icon");
-    const sortMenu = widgetContainer.querySelector("#sort-menu");
-    sortIcon.addEventListener("click", () => {
-      sortMenu.style.display = sortMenu.style.display === "block" ? "none" : "block";
-    });
-    sortMenu.querySelectorAll(".sort-option").forEach(opt => {
-      opt.onclick = (e) => {
-        activeSort = e.currentTarget.dataset.sort;
-        sortMenu.style.display = "none";
-        applyFiltersAndRender();
-      };
-    });
-    document.addEventListener("click", e => {
-      if (!sortMenu.contains(e.target) && e.target !== sortIcon) {
-        sortMenu.style.display = "none";
-      }
-    });
+    // --- FILTER & SORT ---
+    const sortSelect = widgetContainer.querySelector("#sort-select");
+    sortSelect.onchange = () => {
+      activeSort = sortSelect.value;
+      applyFiltersAndRender();
+    };
 
-    // --- FILTER & SORT LOGIC ---
     function applyFiltersAndRender() {
       showLoading();
-      setTimeout(() => {
+      setTimeout(()=>{
         filteredRates = currentRates
           .filter(r=> userInput.country? r.country===userInput.country:true)
           .filter(r=> userInput.term?   String(r.term)===userInput.term:true);
@@ -326,7 +309,7 @@ export const RenteVergelijkerExtension = {
             -calculatePMT(b.rate/100/12,(b.term||20)*12,p)
           );
         } else {
-          filteredRates.sort((a,b)=>(a.fees||0)-(b.fees||0));
+          filteredRates.sort((a,b)=> (a.fees||0)-(b.fees||0));
         }
         cardsToShow = 3;
         renderCards(filteredRates);
@@ -334,12 +317,12 @@ export const RenteVergelijkerExtension = {
     }
 
     // --- WIRE INPUTS & INITIAL CALL ---
-    const ip = widgetContainer.querySelector("#input-price"),
-          id = widgetContainer.querySelector("#input-down"),
-          bd = widgetContainer.querySelector("#down-badge");
-    function updateDownBadge() {
-      const p=parseFloat(ip.value)||0, d=parseFloat(id.value)||0;
-      bd.textContent = p>0? Math.round((d/p)*100)+"%":"0%";
+    const ip=widgetContainer.querySelector("#input-price"),
+          id=widgetContainer.querySelector("#input-down"),
+          bd=widgetContainer.querySelector("#down-badge");
+    function updateDownBadge(){
+      const p=parseFloat(ip.value)||0,d=parseFloat(id.value)||0;
+      bd.textContent=p>0? Math.round((d/p)*100)+"%":"0%";
     }
     [ip,id].forEach(inp=>inp.addEventListener("input",()=>{
       inp.value=inp.value.replace(/\D/g,"");
@@ -347,7 +330,7 @@ export const RenteVergelijkerExtension = {
     }));
     updateDownBadge();
 
-    widgetContainer.querySelector("#btn-apply").onclick = () => {
+    widgetContainer.querySelector("#btn-apply").onclick = ()=>{
       userInput.price   = ip.value;
       userInput.down    = id.value;
       userInput.term    = widgetContainer.querySelector("#input-term").value;
