@@ -234,44 +234,139 @@ export const RenteVergelijkerExtension = {
         <input type="text" id="book-address" placeholder="Address" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="tel" id="book-phone" placeholder="Phone Number" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <div style="font-weight:600;margin-top:8px;">Select Date</div>
-        <input type="date" id="book-date" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
-        <div style="font-weight:600;margin-top:8px;">Select Time Slot</div>
-        <div id="time-slots" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+        <div id="custom-calendar"></div>
+        <div id="calendar-error" style="color:#d32f2f;font-size:0.85em;display:none;margin-top:2px;"></div>
+        <div id="timeslot-section" style="display:none;flex-direction:column;gap:8px;margin-top:8px;">
+          <div style="font-weight:600;">Select Time Slot</div>
+          <div id="time-slots" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+        </div>
         <button type="submit" style="margin-top:8px;padding:10px 0;background:#2d5fff;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;">Book Appointment</button>
       `;
       widgetContainer.appendChild(form);
 
-      // Simple time slots for demo
-      const slots = ['09:00','10:00','11:00','13:00','14:00','15:00'];
+      // --- Modern Calendar ---
+      const calendarDiv = form.querySelector('#custom-calendar');
+      let today = new Date();
+      let selectedDate = null;
+      let calendarMonth = today.getMonth();
+      let calendarYear = today.getFullYear();
+      renderCalendar();
+
+      function renderCalendar() {
+        calendarDiv.innerHTML = '';
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'space-between';
+        header.style.marginBottom = '6px';
+        header.innerHTML = `
+          <span style="font-weight:600;font-size:1em;">${getMonthName(calendarMonth)} ${calendarYear}</span>
+          <div>
+            <button type="button" id="cal-prev" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;margin-right:6px;">&#8592;</button>
+            <button type="button" id="cal-next" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;">&#8594;</button>
+          </div>
+        `;
+        calendarDiv.appendChild(header);
+        header.querySelector('#cal-prev').onclick = () => { calendarMonth--; if(calendarMonth<0){calendarMonth=11;calendarYear--;} renderCalendar(); };
+        header.querySelector('#cal-next').onclick = () => { calendarMonth++; if(calendarMonth>11){calendarMonth=0;calendarYear++;} renderCalendar(); };
+
+        const daysRow = document.createElement('div');
+        daysRow.style.display = 'grid';
+        daysRow.style.gridTemplateColumns = 'repeat(7,1fr)';
+        daysRow.style.fontWeight = '600';
+        daysRow.style.fontSize = '0.85em';
+        daysRow.style.marginBottom = '2px';
+        daysRow.style.color = '#888';
+        daysRow.innerHTML = ['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=>`<div style="text-align:center;">${d}</div>`).join('');
+        calendarDiv.appendChild(daysRow);
+
+        const grid = document.createElement('div');
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns = 'repeat(7,1fr)';
+        grid.style.gap = '2px';
+        grid.style.marginBottom = '4px';
+        const firstDay = new Date(calendarYear, calendarMonth, 1);
+        let startDay = firstDay.getDay();
+        if(startDay===0) startDay=7; // Sunday fix
+        let daysInMonth = new Date(calendarYear, calendarMonth+1, 0).getDate();
+        for(let i=1;i<startDay;i++) grid.appendChild(document.createElement('div'));
+        for(let d=1;d<=daysInMonth;d++) {
+          const dateBtn = document.createElement('button');
+          dateBtn.type = 'button';
+          dateBtn.textContent = d;
+          dateBtn.style.cssText = `
+            width:32px;height:32px;border-radius:50%;border:none;
+            background:${selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear ? '#2d5fff' : 'transparent'};
+            color:${selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear ? '#fff' : '#222'};
+            font-weight:600;font-size:1em;cursor:pointer;transition:background 0.2s;
+          `;
+          dateBtn.onmouseenter = () => { if(!isSelected(d)) dateBtn.style.background='#eaf0ff'; };
+          dateBtn.onmouseleave = () => { if(!isSelected(d)) dateBtn.style.background='transparent'; };
+          dateBtn.onclick = () => {
+            selectedDate = new Date(calendarYear, calendarMonth, d);
+            renderCalendar();
+            showTimeslots();
+          };
+          grid.appendChild(dateBtn);
+        }
+        calendarDiv.appendChild(grid);
+      }
+      function isSelected(day) {
+        return selectedDate && selectedDate.getDate()===day && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear;
+      }
+      function getMonthName(m) {
+        return ["January","February","March","April","May","June","July","August","September","October","November","December"][m];
+      }
+
+      // --- Timeslots ---
+      const timeslotSection = form.querySelector('#timeslot-section');
       const slotsDiv = form.querySelector('#time-slots');
       let selectedTime = '';
-      slots.forEach(slot => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = slot;
-        btn.style.cssText = 'padding:6px 12px;border-radius:5px;border:1px solid #2d5fff;background:#f3f6ff;color:#2d5fff;font-weight:600;cursor:pointer;';
-        btn.onclick = () => {
-          selectedTime = slot;
-          Array.from(slotsDiv.children).forEach(b=>b.style.background='#f3f6ff');
-          btn.style.background = '#2d5fff';
-          btn.style.color = '#fff';
-        };
-        slotsDiv.appendChild(btn);
-      });
+      function showTimeslots() {
+        timeslotSection.style.display = 'flex';
+        slotsDiv.innerHTML = '';
+        selectedTime = '';
+        const slots = ['09:00','10:00','11:00','13:00','14:00','15:00'];
+        slots.forEach(slot => {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.textContent = slot;
+          pill.style.cssText = `
+            display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:24px;
+            border:none;background:#f3f6ff;color:#2d5fff;font-weight:600;font-size:1em;cursor:pointer;
+            box-shadow:0 1px 4px #0001;margin-bottom:2px;transition:background 0.2s,color 0.2s;
+          `;
+          pill.onclick = () => {
+            selectedTime = slot;
+            Array.from(slotsDiv.children).forEach(b=>{
+              b.style.background='#f3f6ff';b.style.color='#2d5fff';
+            });
+            pill.style.background = '#2d5fff';
+            pill.style.color = '#fff';
+          };
+          slotsDiv.appendChild(pill);
+        });
+      }
 
       form.onsubmit = (e) => {
         e.preventDefault();
         const name = form.querySelector('#book-name').value.trim();
         const address = form.querySelector('#book-address').value.trim();
         const phone = form.querySelector('#book-phone').value.trim();
-        const date = form.querySelector('#book-date').value;
+        if (!selectedDate) {
+          form.querySelector('#calendar-error').textContent = 'Please select a date.';
+          form.querySelector('#calendar-error').style.display = 'block';
+          return;
+        } else {
+          form.querySelector('#calendar-error').style.display = 'none';
+        }
         if (!selectedTime) {
           alert('Please select a time slot.');
           return;
         }
         const payload = {
           mortgage: selectedMortgage,
-          personal: { name, address, phone, date, time: selectedTime }
+          personal: { name, address, phone, date: selectedDate.toISOString().slice(0,10), time: selectedTime }
         };
         window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
         widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
