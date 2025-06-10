@@ -4,30 +4,30 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
-    // --- Helper functions (unchanged) ---
+    // --- Helpers (unchanged) ---
     function calculatePMT(ratePerMonth, nper, pv) {
-      if (ratePerMonth === 0) return pv / nper;
+      if (!ratePerMonth) return pv / nper;
       return (pv * ratePerMonth) / (1 - Math.pow(1 + ratePerMonth, -nper));
     }
     function estimateFees(principal) {
       return Math.round(principal * 0.01 + 500);
     }
-    function transformAirtableData(airtableData) {
-      return airtableData.records.map(r => ({
-        country: r.fields.Country,
-        bank: r.fields.Bank,
-        term: r.fields.TermInYears,
-        type: r.fields.MortgageType,
-        nhg: r.fields.NHG === "✓",
-        rate: r.fields.Rate * 100,
-        source: r.fields.Source,
+    function transformAirtableData(data) {
+      return data.records.map(r => ({
+        country:  r.fields.Country,
+        bank:     r.fields.Bank,
+        term:     r.fields.TermInYears,
+        type:     r.fields.MortgageType,
+        nhg:      r.fields.NHG === "✓",
+        rate:     r.fields.Rate * 100,
+        source:   r.fields.Source,
         dataDate: r.fields.DataDate
       }));
     }
 
-    // --- Clear host and build container ---
-    element.innerHTML = '';
-    const widgetContainer = document.createElement('div');
+    // --- Clear host & container ---
+    element.innerHTML = "";
+    const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
       font-family: Inter, Arial, sans-serif;
       max-width: 600px;
@@ -38,104 +38,39 @@ export const RenteVergelijkerExtension = {
       padding: 24px;
     `;
 
-    // --- Inject stylesheet into widgetContainer ---
-    const style = document.createElement('style');
-    style.textContent = `
-      /* Responsive rows & cols */
-      @media (max-width: 600px) {
-        .vf-mortgage-row { flex-direction: row; gap: 8px; }
-        .vf-mortgage-col { flex:1; min-width:0 }
-        .vf-mortgage-filters { display: none }
-        .vf-mortgage-filters.vf-open { display:flex; flex-direction:column; gap:12px; margin-top:12px }
-      }
-      @media (min-width: 601px) {
-        .vf-mortgage-row { flex-direction: row; gap: 16px; }
-        .vf-mortgage-col { flex:1; min-width:0 }
-        .vf-mortgage-filters { display:flex !important; flex-direction:row; gap:16px; }
-      }
-
-      /* Base typography */
-      .vf-mortgage-col label {
-        display: block;
-        font-size: 1em !important;
-        font-weight: 600 !important;
-        margin-bottom: 4px;
-      }
-      #btn-apply {
-        font-size: 1em !important;
-        font-weight: 700 !important;
-        margin-bottom: 24px !important;
-      }
-
-      /* Inputs & selects as pills */
-      .vf-loan-input-euro,
-      .vf-modern-select {
-        background: #f8faff !important;
-        border: 1px solid #d0e0ff !important;
-        box-shadow: 0 1px 3px #0002 !important;
-        border-radius: 12px !important;
-        font-size: 1em !important;
-        padding: 10px 14px !important;
-        outline: none !important;
-        transition: border-color 0.15s, box-shadow 0.15s !important;
-      }
-      .vf-loan-input-euro { padding-left: 36px !important; }
-      .vf-loan-input-euro:focus,
-      .vf-modern-select:focus {
-        border-color: #2d5fff !important;
-        box-shadow: 0 0 0 3px #2d5fff33 !important;
-      }
-
-      /* Card grid gap */
-      .vf-card-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-        gap: 16px !important;
-      }
-
-      /* Results area min-height */
-      #results-area {
-        min-height: 180px;
-      }
-    `;
-    widgetContainer.appendChild(style);
-
     // --- Filter Panel HTML ---
-    const inputPanel = document.createElement('div');
-    inputPanel.id = 'user-inputs';
+    const inputPanel = document.createElement("div");
+    inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div class="vf-mortgage-row" style="position:relative;">
+      <div class="vf-mortgage-row" style="position:relative; gap:16px;">
         <div class="vf-mortgage-col">
-          <label>
-            Purchase Price
-            <span title="The total price of the property you want to buy." style="cursor:help;color:#888">?</span><br>
-            <span class="vf-loan-input-currency-euro">
-              <span>€</span>
-              <input id="input-price" class="vf-loan-input-euro" type="text" placeholder="e.g. 300000" autocomplete="off" inputmode="numeric"/>
+          <label>Purchase Price 
+            <span title="Total price of the property." style="cursor:help;color:#888">?</span><br>
+            <span class="vf-loan-input-currency-euro"><span>€</span>
+              <input id="input-price" type="text" placeholder="e.g. 300000" autocomplete="off" inputmode="numeric">
             </span>
           </label>
         </div>
         <div class="vf-mortgage-col">
-          <label>
-            Down Payment
-            <span title="The amount you pay upfront." style="cursor:help;color:#888">?</span><br>
-            <span class="vf-loan-input-currency-euro">
-              <span>€</span>
-              <input id="input-down" class="vf-loan-input-euro" type="text" placeholder="e.g. 60000" autocomplete="off" inputmode="numeric"/>
+          <label>Down Payment 
+            <span title="Amount you pay upfront." style="cursor:help;color:#888">?</span><br>
+            <span class="vf-loan-input-currency-euro"><span>€</span>
+              <input id="input-down" type="text" placeholder="e.g. 60000" autocomplete="off" inputmode="numeric">
             </span>
-            <span id="down-badge" class="vf-loan-badge-euro">0%</span>
+            <span id="down-badge">0%</span>
           </label>
         </div>
-        <button id="sort-icon" style="
-            background:none;border:none;cursor:pointer;
-            color:#2d5fff;font-size:1.2em;width:36px;height:36px;
-            position:absolute;right:0;top:0;"
-          title="Sort options">⇅</button>
+        <button id="sort-icon" title="Sort options" style="
+          background:none;border:none;cursor:pointer;
+          color:#2d5fff;font-size:1.2em;width:36px;height:36px;
+          position:absolute;right:0;top:0;">
+          ⇅
+        </button>
       </div>
-      <div class="vf-mortgage-row" style="margin-top:16px;align-items:flex-end;gap:16px;">
+      <div class="vf-mortgage-row" style="margin-top:16px; align-items:flex-end; gap:16px;">
         <div class="vf-mortgage-col">
           <label>Loan Term</label>
-          <select id="input-term" class="vf-modern-select">
+          <select id="input-term">
             <option value="">Any</option>
             <option value="10">10 yrs</option>
             <option value="15">15 yrs</option>
@@ -145,21 +80,88 @@ export const RenteVergelijkerExtension = {
         </div>
         <div class="vf-mortgage-col">
           <label>Country</label>
-          <select id="input-country" class="vf-modern-select"></select>
+          <select id="input-country">
+            <option value="">Any</option>
+          </select>
         </div>
       </div>
       <button id="btn-apply">Get Rates</button>
     `;
     widgetContainer.appendChild(inputPanel);
 
-    // --- Results Area ---
-    const resultsArea = document.createElement('div');
-    resultsArea.id = 'results-area';
+    // --- Inline Styles for Filter Panel ---
+    // Shared style props for inputs & selects
+    const sharedFieldStyle = {
+      background:   "#f8faff",
+      border:       "1px solid #d0e0ff",
+      boxShadow:    "0 1px 3px #0002",
+      borderRadius: "12px",
+      fontSize:     "1em",
+      padding:      "10px 14px",
+      outline:      "none",
+      transition:   "border-color 0.15s, box-shadow 0.15s"
+    };
+
+    // Style the two text inputs
+    const inputPrice   = inputPanel.querySelector("#input-price");
+    const inputDown    = inputPanel.querySelector("#input-down");
+    Object.assign(inputPrice.style, sharedFieldStyle, { paddingLeft: "36px" });
+    Object.assign(inputDown.style,  sharedFieldStyle, { paddingLeft: "36px" });
+
+    // Style the selects
+    const inputTerm    = inputPanel.querySelector("#input-term");
+    const inputCountry = inputPanel.querySelector("#input-country");
+    Object.assign(inputTerm.style,    sharedFieldStyle);
+    Object.assign(inputCountry.style, sharedFieldStyle);
+
+    // Style the labels
+    inputPanel.querySelectorAll("label").forEach(lbl => {
+      lbl.style.fontSize   = "1em";
+      lbl.style.fontWeight = "600";
+      lbl.style.marginBottom = "4px";
+      lbl.style.display = "block";
+    });
+
+    // Style the down-badge
+    const downBadge = inputPanel.querySelector("#down-badge");
+    Object.assign(downBadge.style, {
+      background: "#2d5fff",
+      color:      "#fff",
+      fontWeight: "700",
+      fontSize:   "0.9em",
+      borderRadius: "8px",
+      padding:      "4px 8px",
+      marginLeft:   "8px",
+    });
+
+    // Style the “Get Rates” button
+    const btnApply = inputPanel.querySelector("#btn-apply");
+    Object.assign(btnApply.style, {
+      width:        "100%",
+      background:   "#2d5fff",
+      color:        "#fff",
+      border:       "none",
+      borderRadius: "14px",
+      padding:      "10px 0",
+      fontSize:     "1em",
+      fontWeight:   "700",
+      boxShadow:    "0 2px 8px #2d5fff22",
+      cursor:       "pointer",
+      marginTop:    "24px",
+      marginBottom: "24px",
+    });
+
+    // --- Results Area Container ---
+    const resultsArea = document.createElement("div");
+    resultsArea.id = "results-area";
+    resultsArea.style.minHeight = "180px";
     widgetContainer.appendChild(resultsArea);
 
-    // --- Loading & No-Results Helpers ---
+    // --- showLoading & showNoResults (unchanged) ---
     function showLoading() {
-      resultsArea.innerHTML = `<div style="text-align:center;color:#aaa;padding:48px 0;font-size:1.1em">Loading rates…</div>`;
+      resultsArea.innerHTML = `<div style="text-align:center;color:#aaa;padding:48px 0;font-size:1.1em">
+        Loading rates…
+      </div>`;
     }
     function showNoResults() {
       resultsArea.innerHTML = `<div style="text-align:center;color:#888;padding:48px;border-radius:12px;background:#f8f9fb;font-size:1.1em">
