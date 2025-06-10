@@ -54,7 +54,7 @@ export const RenteVergelijkerExtension = {
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
       display:inline-block!important;
-      width:300px!important;max-width:300px!important;
+      width:300px!important;
       font-family:Inter,Arial,sans-serif;
       background:#fff;border-radius:16px;
       box-shadow:0 2px 16px #0001;
