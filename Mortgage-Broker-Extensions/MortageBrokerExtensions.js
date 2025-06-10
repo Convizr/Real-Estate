@@ -95,7 +95,7 @@ export const RenteVergelijkerExtension = {
               </div>
             </span>
           </label>
-          <input id="input-down" type="text" placeholder="e.g. 60000" style="width:100%;">
+          <input id="input-down" type="text" placeholder="e.g. 60000" style="width:calc(100% - 48px);display:inline-block;">
           <span id="down-badge" style="position:absolute;right:0;top:38px;z-index:2;">0%</span>
         </div>
         <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
@@ -189,7 +189,6 @@ export const RenteVergelijkerExtension = {
       fontSize:"0.75em",fontWeight:"700",
       borderRadius:"4px",padding:"2px 8px",
       verticalAlign:"middle",
-      minWidth:"44px",
       textAlign:"center",
       boxShadow:"0 2px 8px #2d5fff22"
     });
