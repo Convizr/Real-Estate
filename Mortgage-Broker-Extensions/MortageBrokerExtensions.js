@@ -246,7 +246,9 @@ export const RenteVergelijkerExtension = {
             ${rec? `<span style="
               background:#2d5fff;color:#fff;
               font-size:0.7em;border-radius:4px;
-              padding:1px 4px;margin-left:auto">
+              padding:1px 4px;margin-left:auto;
+              width:90px; display:inline-block;
+              text-align:center; white-space:nowrap;">
               Recommended
             </span>` : ""}
           </div>
