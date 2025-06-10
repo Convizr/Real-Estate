@@ -143,12 +143,14 @@ export const RenteVergelijkerExtension = {
     // --- INLINE COMPACT STYLING ---
     [ "#input-price", "#input-down" ].forEach(sel => {
       const el = inputPanel.querySelector(sel);
+      const isPrice = sel === "#input-price";
       Object.assign(el.style, {
-        width:"100%",boxSizing:"border-box",
+        boxSizing:"border-box",
         height:"28px",padding:"6px 10px",fontSize:"0.85em",
         background:"#eaf0ff",border:"none",
         boxShadow:"0 1px 1px #0001",borderRadius:"6px",outline:"none",
-        marginTop: "4px"
+        marginTop: "4px",
+        ...(isPrice ? { width: "100%" } : {})
       });
       el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
       el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
