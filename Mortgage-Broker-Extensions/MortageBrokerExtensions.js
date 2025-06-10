@@ -97,7 +97,7 @@ export const RenteVergelijkerExtension = {
           </label>
           <div style="display:flex;align-items:center;width:100%;gap:8px;">
             <input id="input-down" type="text" placeholder="e.g. 60000" style="flex:1 1 0;min-width:0;">
-            <span id="down-badge">0%</span>
+            <span id="down-badge" style="flex:0 0 44px;min-width:44px;text-align:center;">0%</span>
           </div>
         </div>
         <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
@@ -186,14 +186,12 @@ export const RenteVergelijkerExtension = {
       });
     });
     Object.assign(inputPanel.querySelector("#down-badge").style,{
-      marginLeft:"0",
-      marginRight:"0",
       display:"inline-block",
       background:"#2d5fff",color:"#fff",
       fontSize:"0.75em",fontWeight:"700",
       borderRadius:"4px",padding:"2px 8px",
       verticalAlign:"middle",
-      minWidth:"32px",
+      minWidth:"44px",
       textAlign:"center"
     });
     Object.assign(inputPanel.querySelector("#btn-apply").style,{
