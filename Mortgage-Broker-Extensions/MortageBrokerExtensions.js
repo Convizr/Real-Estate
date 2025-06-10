@@ -1,13 +1,17 @@
-// RenteVergelijker Extension
 export const RenteVergelijkerExtension = {
   name: "RenteVergelijker",
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
-    // --- DEBUG: inspect incoming payload ---
-    console.log("🔍 RenteVergelijker payload:", trace.payload);
+    console.log("🔍 RenteVergelijker payload (raw):", trace.payload);
 
-    // --- Helper Functions ---
+    // --- Top-level State ---
+    let currentRates = [];
+    let filteredRates = [];
+    let activeSort = "apr";
+    let cardsToShow = 3;
+    let userInput = { price: "", down: "", term: "", country: "" };
+
     function calculatePMT(ratePerMonth, nper, pv) {
       if (!ratePerMonth) return pv / nper;
       return (pv * ratePerMonth) / (1 - Math.pow(1 + ratePerMonth, -nper));
@@ -17,15 +21,48 @@ export const RenteVergelijkerExtension = {
     }
     function transformAirtableData(data) {
       return data.records.map(r => ({
-        country:  r.fields.Country,
-        bank:     r.fields.Bank,
-        term:     r.fields.TermInYears,
-        type:     r.fields.MortgageType,
-        nhg:      r.fields.NHG === "✓",
-        rate:     r.fields.Rate * 100,
-        source:   r.fields.Source,
+        country: r.fields.Country,
+        bank: r.fields.Bank,
+        term: r.fields.TermInYears,
+        type: r.fields.MortgageType,
+        nhg: r.fields.NHG === "✓",
+        rate: r.fields.Rate * 100,
+        source: r.fields.Source,
         dataDate: r.fields.DataDate
       }));
+    }
+
+    // --- Parse Payload (robust) ---
+    let payloadObj;
+    if (typeof trace.payload === "string") {
+      try {
+        payloadObj = JSON.parse(trace.payload);
+      } catch (e) {
+        console.error("Error parsing trace.payload:", e);
+        payloadObj = {};
+      }
+    } else {
+      payloadObj = trace.payload || {};
+    }
+    console.log("Parsed payloadObj:", payloadObj);
+
+    let ratesArray = payloadObj.rates || payloadObj.records || payloadObj.ratesApiResponse || [];
+    if (typeof ratesArray === "string") {
+      try {
+        ratesArray = JSON.parse(ratesArray);
+      } catch (e) {
+        console.error("Error parsing rates field:", e);
+        ratesArray = [];
+      }
+    }
+    console.log("Extracted ratesArray:", ratesArray);
+
+    if (Array.isArray(ratesArray) && ratesArray.length && ratesArray[0].fields) {
+      currentRates = transformAirtableData({ records: ratesArray });
+    } else if (Array.isArray(ratesArray)) {
+      currentRates = ratesArray;
+    } else {
+      console.warn("No valid rates found in payload");
     }
 
     // --- Container (exactly 300px) ---
