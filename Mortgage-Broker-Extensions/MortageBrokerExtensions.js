@@ -33,6 +33,13 @@ export const RenteVergelijkerExtension = {
       currentRates = ratesArray;
     }
 
+      // ——— HOST SHRINK-WRAP ———
+  element.style.cssText = `
+    display: inline-block !important;
+    width: 300px !important;
+    box-sizing: border-box !important;
+  `;
+
     // --- CONTAINER ---
     element.innerHTML = "";
     const widgetContainer = document.createElement("div");
