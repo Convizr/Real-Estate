@@ -67,7 +67,7 @@ export const RenteVergelijkerExtension = {
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
       <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;align-items:flex-start;">
-        <div style="flex:1;min-width:0">
+        <div style="flex:1 1 0;min-width:0;">
           <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
             Purchase Price
             <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
@@ -82,7 +82,7 @@ export const RenteVergelijkerExtension = {
           </label>
           <input id="input-price" type="text" placeholder="e.g. 300000">
         </div>
-        <div style="flex:1;min-width:0">
+        <div style="flex:1 1 0;min-width:0;">
           <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
             Down Payment
             <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
