@@ -66,30 +66,39 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;align-items:flex-start;">
         <div style="flex:1;min-width:0">
-          <label>Purchase Price
-            <span style="margin-left:4px;vertical-align:middle;cursor:pointer;" title="Total price of the property">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+            Purchase Price
+            <span style="display:inline-flex;align-items:center;cursor:pointer;" title="Total price of the property">
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
                 <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
-            </span><br><input id="input-price" type="text" placeholder="e.g. 300000"></label>
+            </span>
+          </label>
+          <input id="input-price" type="text" placeholder="e.g. 300000">
         </div>
         <div style="flex:1;min-width:0">
-          <label>Down Payment
-            <span style="margin-left:4px;vertical-align:middle;cursor:pointer;" title="Amount you pay upfront">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+            Down Payment
+            <span style="display:inline-flex;align-items:center;cursor:pointer;" title="Amount you pay upfront">
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
                 <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
-            </span><br><input id="input-down" type="text" placeholder="e.g. 60000"></label>
+            </span>
+          </label>
+          <input id="input-down" type="text" placeholder="e.g. 60000">
           <span id="down-badge">0%</span>
         </div>
-        <button id="sort-icon" title="Sort by APR" style="
-          background:none;border:none;cursor:pointer;
-          color:#2d5fff;font-size:1.2em;width:28px;height:28px;
-          position:absolute;right:0;top:0;">⇅</button>
+        <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
+          <button id="sort-icon" title="Sort by APR" style="
+            background:none;border:none;cursor:pointer;
+            color:#2d5fff;font-size:1.2em;width:28px;height:28px;">
+            ⇅
+          </button>
+        </div>
       </div>
       <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
         <div style="flex:1;min-width:0">
