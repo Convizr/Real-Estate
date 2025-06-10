@@ -241,7 +241,6 @@ export const RenteVergelijkerExtension = {
     }
 
     // --- Card Renderer & Pagination ---
-    let cardsToShow = 3;
     function renderCards(rates) {
       if (!rates.length) return showNoResults();
       resultsArea.innerHTML = "";
