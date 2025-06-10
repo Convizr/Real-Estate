@@ -75,7 +75,7 @@ export const RenteVergelijkerExtension = {
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
                 <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
-              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 10px;border-radius:4px;font-size:0.85em;white-space:nowrap;z-index:10;">
+              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(45,95,255,0.92);color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;">
                 The total price you are paying for the property.
               </span>
             </span>
@@ -90,7 +90,7 @@ export const RenteVergelijkerExtension = {
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
                 <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
-              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:6px 10px;border-radius:4px;font-size:0.85em;white-space:nowrap;z-index:10;">
+              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(45,95,255,0.92);color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;">
                 The amount you pay upfront. The rest will be financed by your mortgage.
               </span>
             </span>
