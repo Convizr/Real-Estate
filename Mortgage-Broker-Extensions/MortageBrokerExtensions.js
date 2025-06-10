@@ -1,3 +1,4 @@
+// RenteVergelijker Extension
 export const RenteVergelijkerExtension = {
   name: "RenteVergelijker",
   type: "response",
@@ -9,8 +10,10 @@ export const RenteVergelijkerExtension = {
     let currentRates = [];
     let filteredRates = [];
     let activeSort = "apr";
-    let cardsToShow = 3;
     let userInput = { price: "", down: "", term: "", country: "" };
+
+    // Declare once at top
+    let cardsToShow = 3;
 
     function calculatePMT(ratePerMonth, nper, pv) {
       if (!ratePerMonth) return pv / nper;
