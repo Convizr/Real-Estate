@@ -68,29 +68,37 @@ export const RenteVergelijkerExtension = {
     inputPanel.innerHTML = `
       <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;align-items:flex-start;">
         <div style="flex:1;min-width:0">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
             Purchase Price
-            <span style="display:inline-flex;align-items:center;cursor:pointer;" title="Total price of the property">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+            <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Purchase Price?">
+              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
+              <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
+                The total price of the property you want to buy.
+              </div>
             </span>
           </label>
           <input id="input-price" type="text" placeholder="e.g. 300000">
         </div>
         <div style="flex:1;min-width:0">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;">
             Down Payment
-            <span style="display:inline-flex;align-items:center;cursor:pointer;" title="Amount you pay upfront">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+            <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Down Payment?">
+              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
                 <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
               </svg>
+              <div class="custom-tooltip" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:120%;background:#2d5fff;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.85em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px #0002;">
+                The amount you pay upfront, reducing your loan amount.
+              </div>
             </span>
           </label>
-          <input id="input-down" type="text" placeholder="e.g. 60000">
-          <span id="down-badge">0%</span>
+          <div style="display:flex;align-items:center;width:100%;gap:8px;">
+            <input id="input-down" type="text" placeholder="e.g. 60000" style="flex:1 1 0;min-width:0;">
+            <span id="down-badge">0%</span>
+          </div>
         </div>
         <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
           <button id="sort-icon" title="Sort by APR" style="
@@ -176,11 +184,15 @@ export const RenteVergelijkerExtension = {
       });
     });
     Object.assign(inputPanel.querySelector("#down-badge").style,{
-      marginLeft:"6px",display:"inline-block",
+      marginLeft:"0",
+      marginRight:"0",
+      display:"inline-block",
       background:"#2d5fff",color:"#fff",
       fontSize:"0.75em",fontWeight:"700",
-      borderRadius:"4px",padding:"2px 4px",
-      verticalAlign:"middle"
+      borderRadius:"4px",padding:"2px 8px",
+      verticalAlign:"middle",
+      minWidth:"32px",
+      textAlign:"center"
     });
     Object.assign(inputPanel.querySelector("#btn-apply").style,{
       width:"100%",padding:"6px 0",
@@ -380,5 +392,17 @@ export const RenteVergelijkerExtension = {
 
     // --- INITIAL RENDER ---
     applyFiltersAndRender();
+
+    // Add JS to handle tooltip show/hide for info icons
+    setTimeout(() => {
+      document.querySelectorAll('.info-icon').forEach(icon => {
+        const tooltip = icon.querySelector('.custom-tooltip');
+        icon.addEventListener('mouseenter', () => { tooltip.style.display = 'block'; });
+        icon.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+        icon.addEventListener('focus',     () => { tooltip.style.display = 'block'; });
+        icon.addEventListener('blur',      () => { tooltip.style.display = 'none'; });
+        icon.addEventListener('click',     e => { e.stopPropagation(); tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block'; });
+      });
+    }, 0);
   }
 };
