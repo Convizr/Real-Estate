@@ -68,10 +68,22 @@ export const RenteVergelijkerExtension = {
     inputPanel.innerHTML = `
       <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;">
         <div style="flex:1;min-width:0">
-          <label>Purchase Price?<br><input id="input-price" type="text" placeholder="e.g. 300000"></label>
+          <label>Purchase Price
+            <span style="margin-left:4px;vertical-align:middle;cursor:pointer;" title="Total price of the property">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+                <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+              </svg>
+            </span><br><input id="input-price" type="text" placeholder="e.g. 300000"></label>
         </div>
         <div style="flex:1;min-width:0">
-          <label>Down Payment?<br><input id="input-down" type="text" placeholder="e.g. 60000"></label>
+          <label>Down Payment
+            <span style="margin-left:4px;vertical-align:middle;cursor:pointer;" title="Amount you pay upfront">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+                <text x="10" y="15" text-anchor="middle" font-size="12" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+              </svg>
+            </span><br><input id="input-down" type="text" placeholder="e.g. 60000"></label>
           <span id="down-badge">0%</span>
         </div>
         <button id="sort-icon" title="Sort by APR" style="
@@ -118,7 +130,8 @@ export const RenteVergelijkerExtension = {
         width:"100%",boxSizing:"border-box",
         height:"28px",padding:"6px 10px",fontSize:"0.85em",
         background:"#eaf0ff",border:"none",
-        boxShadow:"0 1px 1px #0001",borderRadius:"6px",outline:"none"
+        boxShadow:"0 1px 1px #0001",borderRadius:"6px",outline:"none",
+        marginTop: "4px"
       });
       el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
       el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
@@ -135,7 +148,8 @@ export const RenteVergelijkerExtension = {
         fontSize:"0.85em",background:"#eaf0ff",
         border:"none",boxShadow:"0 1px 1px #0001",
         borderRadius:"6px",outline:"none",appearance:"none",
-        color:"#2d5fff",fontWeight:"700"
+        color:"#2d5fff",fontWeight:"700",
+        marginTop: "4px"
       });
       const arrow = document.createElement("span");
       arrow.textContent="▼";
@@ -246,7 +260,7 @@ export const RenteVergelijkerExtension = {
             ${rec? `<span style="
               background:#2d5fff;color:#fff;
               font-size:0.7em;border-radius:4px;
-              padding:1px 4px;margin-left:auto;
+              padding:5px 4px;margin-left:auto;
               width:90px; display:inline-block;
               text-align:center; white-space:nowrap;">
               Recommended
