@@ -66,7 +66,7 @@ export const RenteVergelijkerExtension = {
     const inputPanel = document.createElement("div");
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 56px;grid-template-rows:auto auto;gap:12px;align-items:end;position:relative;">
+      <div style="display:grid;grid-template-columns:1fr 1fr auto auto;grid-template-rows:auto auto;gap:12px;align-items:end;position:relative;">
         <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;position:relative;grid-column:1;grid-row:1;">
           Purchase Price
           <span class="info-icon" tabindex="0" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" aria-label="What is Purchase Price?">
@@ -91,7 +91,8 @@ export const RenteVergelijkerExtension = {
             </div>
           </span>
         </label>
-        <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;grid-column:3;grid-row:1;">
+        <div style="grid-column:3;grid-row:1/span 2;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;gap:4px;height:100%;">
+          <span id="down-badge">0%</span>
           <button id="sort-icon" title="Sort by APR" style="
             background:none;border:none;cursor:pointer;
             color:#2d5fff;font-size:1.2em;width:28px;height:28px;">
@@ -100,9 +101,6 @@ export const RenteVergelijkerExtension = {
         </div>
         <input id="input-price" type="text" placeholder="e.g. 300000" style="grid-column:1;grid-row:2;width:100%;">
         <input id="input-down" type="text" placeholder="e.g. 60000" style="grid-column:2;grid-row:2;width:100%;">
-        <div style="grid-column:3;grid-row:2;display:flex;align-items:center;justify-content:flex-end;height:100%;">
-          <span id="down-badge">0%</span>
-        </div>
       </div>
       <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
         <div style="flex:1;min-width:0">
