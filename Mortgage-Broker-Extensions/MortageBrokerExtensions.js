@@ -80,7 +80,7 @@ export const RenteVergelijkerExtension = {
     inputPanel.innerHTML = `
       <div style="display:flex;gap:16px;flex-wrap:wrap;position:relative;align-items:flex-start;">
         <div style="flex:1 1 0;min-width:0;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;margin-left:15px;">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
             Purchase Price
             <span style="display:inline-flex;align-items:center;cursor:pointer;" title="The total price you are paying for the property.">
               <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
