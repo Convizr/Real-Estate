@@ -267,7 +267,7 @@ export const RenteVergelijkerExtension = {
         header.style.justifyContent = 'space-between';
         header.style.marginBottom = '6px';
         header.innerHTML = `
-          <span style="font-weight:600;font-size:1em;">${getMonthName(calendarMonth)} ${calendarYear}</span>
+          <span style="font-weight:200;font-size:1em;">${getMonthName(calendarMonth)} ${calendarYear}</span>
           <div>
             <button type="button" id="cal-prev" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;margin-right:6px;">&#8592;</button>
             <button type="button" id="cal-next" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;">&#8594;</button>
@@ -395,7 +395,8 @@ export const RenteVergelijkerExtension = {
         }
         const payload = {
           mortgage: selectedMortgage,
-          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime }
+          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime },
+          __vfGoto: 'appointment'
         };
         window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
         widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
