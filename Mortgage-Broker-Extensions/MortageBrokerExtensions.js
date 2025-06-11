@@ -79,8 +79,8 @@ export const RenteVergelijkerExtension = {
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
       <div style="display:flex;gap:16px;flex-wrap:wrap;position:relative;align-items:flex-start;">
-        <div style="flex:1 1 0;min-width:0;margin-left:8px;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+        <div style="flex:1 1 0;min-width:0;">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;margin-left:15px;">
             Purchase Price
             <span style="display:inline-flex;align-items:center;cursor:pointer;" title="The total price you are paying for the property.">
               <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
@@ -92,7 +92,7 @@ export const RenteVergelijkerExtension = {
           <input id="input-price" type="text" placeholder="e.g. 300000">
         </div>
         <div style="flex:1 1 0;min-width:0;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;margin-left:15px;">
             Down Payment
             <span style="display:inline-flex;align-items:center;cursor:pointer;" title="The amount you pay upfront. The rest will be financed by your mortgage.">
               <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
@@ -101,8 +101,8 @@ export const RenteVergelijkerExtension = {
               </svg>
             </span>
           </label>
-          <input id="input-down" type="text" placeholder="e.g. 60000">
-          <span id="down-badge">0%</span>
+          <input id="input-down" type="text" placeholder="e.g. 60000" style="margin-left:15px;">
+          <span id="down-badge" style="margin-left:15px;">0%</span>
         </div>
         <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
           <button id="sort-icon" title="Sort by APR" style="
