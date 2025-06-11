@@ -255,6 +255,120 @@ export const RenteVergelijkerExtension = {
       </div>`;
     }
 
+    // --- CARD RENDERER ---
+    function renderCards(rates) {
+      if (!rates.length) return showNoResults();
+      resultsArea.innerHTML = "";
+      const grid = document.createElement("div");
+      grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;";
+      const computed = rates.slice(0, cardsToShow).map(r => {
+        const principal = Number(userInput.price)-Number(userInput.down)||250000;
+        const nper = (r.term||20)*12;
+        const rateM = (r.rate||3)/100/12;
+        return {
+          rateObj: r,
+          monthly: calculatePMT(rateM,nper,principal),
+          fees:    r.fees||estimateFees(principal)
+        };
+      });
+      const mins = {
+        pay:  Math.min(...computed.map(c=>c.monthly)),
+        fees: Math.min(...computed.map(c=>c.fees)),
+        rate: Math.min(...computed.map(c=>c.rateObj.rate))
+      };
+      const maxs = {
+        pay:  Math.max(...computed.map(c=>c.monthly)),
+        fees: Math.max(...computed.map(c=>c.fees)),
+        rate: Math.max(...computed.map(c=>c.rateObj.rate)),
+        term: Math.max(...computed.map(c=>c.rateObj.term||0))
+      };
+      computed.forEach(c => {
+        const np = maxs.pay!==mins.pay ? (c.monthly-mins.pay)/(maxs.pay-mins.pay):0;
+        const nf = maxs.fees!==mins.fees ? (c.fees-mins.fees)/(maxs.fees-mins.fees):0;
+        const nr = maxs.rate!==mins.rate ? (c.rateObj.rate-mins.rate)/(maxs.rate-mins.rate):0;
+        const nt = maxs.term ? (c.rateObj.term||0)/maxs.term:0;
+        c.score = 0.4*np + 0.2*nf + 0.2*nr - 0.2*nt;
+      });
+      let bestIdx=0,bestScore=computed[0].score;
+      computed.forEach((c,i)=>{ if(c.score<bestScore){bestScore=c.score;bestIdx=i;} });
+
+      computed.forEach((c,i)=>{
+        const { rateObj, monthly, fees } = c;
+        const rec = i===bestIdx;
+        const card = document.createElement("div");
+        card.style.cssText = `
+          background:#fff;border-radius:8px;
+          box-shadow:0 1px 4px #0001;padding:12px;
+          border:2px solid ${rec? '#2d5fff':'#ddd'};
+          display:flex;flex-direction:column;
+        `;
+        card.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            <div style="
+              width:24px;height:24px;
+              background:#f3f6ff;border-radius:6px;
+              display:flex;align-items:center;
+              justify-content:center;font-size:1em;
+              color:#2d5fff">🏦</div>
+            <div>
+              <div style="font-weight:600;font-size:0.9em">${rateObj.bank||'–'}</div>
+              <div style="color:#888;font-size:0.75em">${rateObj.country||''}</div>
+            </div>
+            ${rec? `<span style="
+              background:#2d5fff;color:#fff;
+              font-size:0.7em;border-radius:4px;
+              padding:5px 4px;margin-left:auto;
+              width:90px; display:inline-block;
+              text-align:center; white-space:nowrap;">
+              Recommended
+            </span>` : ""}
+          </div>
+          <div style="margin-bottom:6px">
+            <span style="font-weight:700;font-size:1em;color:#2d5fff">
+              ${rateObj.rate.toFixed(2)}%
+            </span>
+            <span style="margin-left:4px;color:#888;font-size:0.85em">
+              ${rateObj.term||'–'} yrs
+            </span>
+          </div>
+          <div style="margin-bottom:4px;font-size:0.8em">Type: <b>${rateObj.type||'–'}</b></div>
+          <div style="margin-bottom:4px;font-size:0.8em">NHG: <b>${rateObj.nhg?'Yes':'No'}</b></div>
+          <div style="margin-bottom:4px;font-size:0.8em">Monthly: <b>€${monthly.toFixed(0)}</b></div>
+          <div style="margin-bottom:8px;font-size:0.8em">Fees: <b>€${fees}</b></div>
+          <button class="btn-select" style="
+            background:#2d5fff;color:#fff;border:none;
+            border-radius:6px;padding:6px;
+            font-size:0.85em;font-weight:600;
+            cursor:pointer;transition:background 0.2s;">Choose</button>
+        `;
+        card.querySelector(".btn-select").onclick = () => {
+          selectedMortgage = rateObj;
+          page = 'book';
+          renderPage();
+        };
+        // Add hover effect to choose button
+        const chooseBtn = card.querySelector('.btn-select');
+        chooseBtn.onmouseenter = () => { chooseBtn.style.background = '#1a3bb3'; };
+        chooseBtn.onmouseleave = () => { chooseBtn.style.background = '#2d5fff'; };
+        grid.appendChild(card);
+      });
+      resultsArea.appendChild(grid);
+      if (filteredRates.length > cardsToShow) {
+        const more = document.createElement("button");
+        more.textContent="More";
+        more.style.cssText=`
+          display:block;margin:12px auto 0;
+          background:#f3f6ff;color:#2d5fff;
+          border:none;border-radius:6px;
+          padding:6px 12px;font-size:0.85em;
+          font-weight:600;cursor:pointer;transition:background 0.2s;`;
+        more.onclick = ()=>{ cardsToShow+=3; renderCards(filteredRates); };
+        more.onmouseenter = () => { more.style.background = '#2d5fff'; more.style.color = '#fff'; };
+        more.onmouseleave = () => { more.style.background = '#f3f6ff'; more.style.color = '#2d5fff'; };
+        resultsArea.appendChild(more);
+      }
+    }
+
     // --- RENDER BOOKING PAGE ---
     function renderBookingPage(widgetContainer) {
       widgetContainer.innerHTML = '';
@@ -445,116 +559,6 @@ export const RenteVergelijkerExtension = {
 
       // Add hover effect to back button, book button, and time slot pills
       // ... (rest of booking page logic)
-    }
-
-    // --- CARD RENDERER ---
-    function renderCards(rates) {
-      if (!rates.length) return showNoResults();
-      resultsArea.innerHTML = "";
-      const grid = document.createElement("div");
-      grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;";
-      const computed = rates.slice(0, cardsToShow).map(r => {
-        const principal = Number(userInput.price)-Number(userInput.down)||250000;
-        const nper = (r.term||20)*12;
-        const rateM = (r.rate||3)/100/12;
-        return {
-          rateObj: r,
-          monthly: calculatePMT(rateM,nper,principal),
-          fees:    r.fees||estimateFees(principal)
-        };
-      });
-      const mins = {
-        pay:  Math.min(...computed.map(c=>c.monthly)),
-        fees: Math.min(...computed.map(c=>c.fees)),
-        rate: Math.min(...computed.map(c=>c.rateObj.rate))
-      };
-      const maxs = {
-        pay:  Math.max(...computed.map(c=>c.monthly)),
-        fees: Math.max(...computed.map(c=>c.fees)),
-        rate: Math.max(...computed.map(c=>c.rateObj.rate)),
-        term: Math.max(...computed.map(c=>c.rateObj.term||0))
-      };
-      computed.forEach(c => {
-        const np = maxs.pay!==mins.pay ? (c.monthly-mins.pay)/(maxs.pay-mins.pay):0;
-        const nf = maxs.fees!==mins.fees ? (c.fees-mins.fees)/(maxs.fees-mins.fees):0;
-        const nr = maxs.rate!==mins.rate ? (c.rateObj.rate-mins.rate)/(maxs.rate-mins.rate):0;
-        const nt = maxs.term ? (c.rateObj.term||0)/maxs.term:0;
-        c.score = 0.4*np + 0.2*nf + 0.2*nr - 0.2*nt;
-      });
-      let bestIdx=0,bestScore=computed[0].score;
-      computed.forEach((c,i)=>{ if(c.score<bestScore){bestScore=c.score;bestIdx=i;} });
-
-      computed.forEach((c,i)=>{
-        const { rateObj, monthly, fees } = c;
-        const rec = i===bestIdx;
-        const card = document.createElement("div");
-        card.style.cssText = `
-          background:#fff;border-radius:8px;
-          box-shadow:0 1px 4px #0001;padding:12px;
-          border:2px solid ${rec? '#2d5fff':'#ddd'};
-          display:flex;flex-direction:column;
-        `;
-        card.innerHTML = `
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
-            <div style="
-              width:24px;height:24px;
-              background:#f3f6ff;border-radius:6px;
-              display:flex;align-items:center;
-              justify-content:center;font-size:1em;
-              color:#2d5fff">🏦</div>
-            <div>
-              <div style="font-weight:600;font-size:0.9em">${rateObj.bank||'–'}</div>
-              <div style="color:#888;font-size:0.75em">${rateObj.country||''}</div>
-            </div>
-            ${rec? `<span style="
-              background:#2d5fff;color:#fff;
-              font-size:0.7em;border-radius:4px;
-              padding:5px 4px;margin-left:auto;
-              width:90px; display:inline-block;
-              text-align:center; white-space:nowrap;">
-              Recommended
-            </span>` : ""}
-          </div>
-          <div style="margin-bottom:6px">
-            <span style="font-weight:700;font-size:1em;color:#2d5fff">
-              ${rateObj.rate.toFixed(2)}%
-            </span>
-            <span style="margin-left:4px;color:#888;font-size:0.85em">
-              ${rateObj.term||'–'} yrs
-            </span>
-          </div>
-          <div style="margin-bottom:4px;font-size:0.8em">Type: <b>${rateObj.type||'–'}</b></div>
-          <div style="margin-bottom:4px;font-size:0.8em">NHG: <b>${rateObj.nhg?'Yes':'No'}</b></div>
-          <div style="margin-bottom:4px;font-size:0.8em">Monthly: <b>€${monthly.toFixed(0)}</b></div>
-          <div style="margin-bottom:8px;font-size:0.8em">Fees: <b>€${fees}</b></div>
-          <button class="btn-select" style="
-            background:#2d5fff;color:#fff;border:none;
-            border-radius:6px;padding:6px;
-            font-size:0.85em;font-weight:600;
-            cursor:pointer">Choose</button>
-        `;
-        card.querySelector(".btn-select").onclick = () => {
-          selectedMortgage = rateObj;
-          page = 'book';
-          renderPage();
-        };
-        grid.appendChild(card);
-      });
-
-      resultsArea.appendChild(grid);
-      if (filteredRates.length > cardsToShow) {
-        const more = document.createElement("button");
-        more.textContent="More";
-        more.style.cssText=`
-          display:block;margin:12px auto 0;
-          background:#f3f6ff;color:#2d5fff;
-          border:none;border-radius:6px;
-          padding:6px 12px;font-size:0.85em;
-          font-weight:600;cursor:pointer;
-        `;
-        more.onclick = ()=>{ cardsToShow+=3; renderCards(filteredRates); };
-        resultsArea.appendChild(more);
-      }
     }
 
     // --- SORT ICON CLICK CYCLE ---
