@@ -230,6 +230,7 @@ export const RenteVergelijkerExtension = {
           <div><b>Rate:</b> ${selectedMortgage.rate}% for ${selectedMortgage.term} yrs</div>
           <div><b>Type:</b> ${selectedMortgage.type || '-'}</div>
         </div>
+        <input type="text" id="book-country" placeholder="Country of Residence" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="text" id="book-name" placeholder="Your Name" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="text" id="book-address" placeholder="Address" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="tel" id="book-phone" placeholder="Phone Number" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
@@ -267,8 +268,8 @@ export const RenteVergelijkerExtension = {
           </div>
         `;
         calendarDiv.appendChild(header);
-        header.querySelector('#cal-prev').onclick = () => { calendarMonth--; if(calendarMonth<0){calendarMonth=11;calendarYear--;} renderCalendar(); };
-        header.querySelector('#cal-next').onclick = () => { calendarMonth++; if(calendarMonth>11){calendarMonth=0;calendarYear++;} renderCalendar(); };
+        header.querySelector('#cal-prev').onclick = () => { calendarMonth--; if(calendarMonth<0){calendarMonth=11;calendarYear--;} selectedDate=null; timeslotSection.style.display='none'; renderCalendar(); };
+        header.querySelector('#cal-next').onclick = () => { calendarMonth++; if(calendarMonth>11){calendarMonth=0;calendarYear++;} selectedDate=null; timeslotSection.style.display='none'; renderCalendar(); };
 
         const daysRow = document.createElement('div');
         daysRow.style.display = 'grid';
@@ -303,6 +304,12 @@ export const RenteVergelijkerExtension = {
           dateBtn.onmouseenter = () => { if(!isSelected(d)) dateBtn.style.background='#eaf0ff'; };
           dateBtn.onmouseleave = () => { if(!isSelected(d)) dateBtn.style.background='transparent'; };
           dateBtn.onclick = () => {
+            if (selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear) {
+              selectedDate = null;
+              timeslotSection.style.display = 'none';
+              renderCalendar();
+              return;
+            }
             selectedDate = new Date(calendarYear, calendarMonth, d);
             renderCalendar();
             showTimeslots();
@@ -353,6 +360,7 @@ export const RenteVergelijkerExtension = {
         const name = form.querySelector('#book-name').value.trim();
         const address = form.querySelector('#book-address').value.trim();
         const phone = form.querySelector('#book-phone').value.trim();
+        const country = form.querySelector('#book-country').value.trim();
         if (!selectedDate) {
           form.querySelector('#calendar-error').textContent = 'Please select a date.';
           form.querySelector('#calendar-error').style.display = 'block';
@@ -366,7 +374,7 @@ export const RenteVergelijkerExtension = {
         }
         const payload = {
           mortgage: selectedMortgage,
-          personal: { name, address, phone, date: selectedDate.toISOString().slice(0,10), time: selectedTime }
+          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime }
         };
         window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
         widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
