@@ -398,7 +398,10 @@ export const RenteVergelijkerExtension = {
           personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime },
           __vfGoto: 'appointment'
         };
-        window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
+        window.voiceflow.chat.interact({
+          type: 'complete',
+          payload: payload,
+        });
         widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
       };
 
