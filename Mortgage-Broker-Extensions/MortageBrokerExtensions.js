@@ -620,7 +620,7 @@ export const RenteVergelijkerExtension = {
       };
 
       // --- INITIAL RENDER ---
-      renderPage();
+      // (Removed renderPage() call to prevent infinite loop)
     }
   }
 };
