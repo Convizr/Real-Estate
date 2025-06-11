@@ -79,7 +79,7 @@ export const RenteVergelijkerExtension = {
     inputPanel.id = "user-inputs";
     inputPanel.innerHTML = `
       <div style="display:flex;gap:16px;flex-wrap:wrap;position:relative;align-items:flex-start;">
-        <div style="flex:1 1 0;min-width:0;">
+        <div style="flex:1 1 0;min-width:0;margin-left:8px;">
           <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
             Purchase Price
             <span style="display:inline-flex;align-items:center;cursor:pointer;" title="The total price you are paying for the property.">
@@ -591,14 +591,16 @@ export const RenteVergelijkerExtension = {
         // Choose and Book Appointment buttons: strong blue hover
         if (btn.classList.contains('btn-select') || btn.textContent.trim().toLowerCase().includes('book appointment')) {
           btn.onmouseenter = () => {
-            btn.style.background = '#1741b6';
+            btn.style.background = '#1a2e6c';
             btn.style.color = '#fff';
-            btn.style.boxShadow = '0 2px 8px #2d5fff22';
+            btn.style.boxShadow = '0 4px 16px #2d5fff44';
+            btn.style.transform = 'scale(1.04)';
           };
           btn.onmouseleave = () => {
             btn.style.background = '#2d5fff';
             btn.style.color = '#fff';
             btn.style.boxShadow = '';
+            btn.style.transform = '';
           };
           return;
         }
