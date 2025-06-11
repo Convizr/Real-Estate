@@ -236,6 +236,8 @@ export const RenteVergelijkerExtension = {
           <div><b>Rate:</b> ${selectedMortgage.rate}% for ${selectedMortgage.term} yrs</div>
           <div><b>Type:</b> ${selectedMortgage.type || '-'}</div>
         </div>
+        <input type="number" id="book-purchase-price" placeholder="Purchase Price" required style="padding:8px;border-radius:6px;border:1px solid #ccc;" value="${userInput.price || ''}">
+        <input type="number" id="book-down-payment" placeholder="Down Payment" required style="padding:8px;border-radius:6px;border:1px solid #ccc;" value="${userInput.down || ''}">
         <input type="text" id="book-country" placeholder="Country of Residence" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="text" id="book-name" placeholder="Your Name" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
         <input type="text" id="book-address" placeholder="Address" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
@@ -382,6 +384,8 @@ export const RenteVergelijkerExtension = {
         const address = form.querySelector('#book-address').value.trim();
         const phone = form.querySelector('#book-phone').value.trim();
         const country = form.querySelector('#book-country').value.trim();
+        const purchasePrice = form.querySelector('#book-purchase-price').value.trim();
+        const downPayment = form.querySelector('#book-down-payment').value.trim();
         if (!selectedDate) {
           form.querySelector('#calendar-error').textContent = 'Please select a date.';
           form.querySelector('#calendar-error').style.display = 'block';
@@ -395,7 +399,7 @@ export const RenteVergelijkerExtension = {
         }
         const payload = {
           mortgage: selectedMortgage,
-          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime },
+          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime, purchasePrice, downPayment },
           __vfGoto: 'appointment'
         };
         window.voiceflow.chat.interact({
