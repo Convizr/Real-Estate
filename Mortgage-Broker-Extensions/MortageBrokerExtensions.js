@@ -188,7 +188,7 @@ export const RenteVergelijkerExtension = {
       });
     });
     Object.assign(inputPanel.querySelector("#down-badge").style,{
-      marginLeft:"6px",display:"inline-block",
+      marginLeft:"15px",display:"inline-block",
       background:"#2d5fff",color:"#fff",
       fontSize:"0.75em",fontWeight:"700",
       borderRadius:"4px",padding:"2px 4px",
