@@ -577,9 +577,32 @@ export const RenteVergelijkerExtension = {
       applyFiltersAndRender();
     };
 
-    // Add hover effects to all buttons
+    // Add hover effects to all buttons except the sort icon
     function addButtonHoverEffects(container) {
       container.querySelectorAll('button').forEach(btn => {
+        // Remove hover effect for sort icon
+        if (btn.id === 'sort-icon') {
+          btn.onmouseenter = null;
+          btn.onmouseleave = null;
+          btn.style.filter = '';
+          btn.style.boxShadow = '';
+          return;
+        }
+        // Choose and Book Appointment buttons: strong blue hover
+        if (btn.classList.contains('btn-select') || btn.textContent.trim().toLowerCase().includes('book appointment')) {
+          btn.onmouseenter = () => {
+            btn.style.background = '#1741b6';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '0 2px 8px #2d5fff22';
+          };
+          btn.onmouseleave = () => {
+            btn.style.background = '#2d5fff';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '';
+          };
+          return;
+        }
+        // Default hover for other buttons (e.g., time slot, back)
         btn.onmouseenter = () => {
           btn.style.filter = 'brightness(0.92)';
           btn.style.boxShadow = '0 2px 8px #2d5fff22';
