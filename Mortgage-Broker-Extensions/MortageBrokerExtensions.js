@@ -245,7 +245,7 @@ export const RenteVergelijkerExtension = {
         <div id="calendar-error" style="color:#d32f2f;font-size:0.85em;display:none;margin-top:2px;"></div>
         <div id="timeslot-section" style="display:none;flex-direction:column;gap:8px;margin-top:8px;">
           <div style="font-weight:600;">Select Time Slot</div>
-          <div id="time-slots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;"></div>
+          <div id="time-slots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;"></div>
         </div>
         <button type="submit" style="margin-top:8px;padding:10px 0;background:#2d5fff;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;">Book Appointment</button>
       `;
@@ -360,9 +360,9 @@ export const RenteVergelijkerExtension = {
           pill.type = 'button';
           pill.textContent = slot;
           pill.style.cssText = `
-            display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:24px;
-            border:none;background:#f3f6ff;color:#2d5fff;font-weight:600;font-size:1em;cursor:pointer;
-            box-shadow:0 1px 4px #0001;margin-bottom:2px;transition:background 0.2s,color 0.2s;
+            display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:14px;
+            border:none;background:#f3f6ff;color:#2d5fff;font-weight:600;font-size:0.95em;cursor:pointer;
+            box-shadow:0 1px 4px #0001;margin-bottom:0;transition:background 0.2s,color 0.2s;
           `;
           pill.onclick = () => {
             selectedTime = slot;
