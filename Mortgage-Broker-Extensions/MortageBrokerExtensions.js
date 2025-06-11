@@ -406,6 +406,9 @@ export const RenteVergelijkerExtension = {
         page = 'compare';
         render({ trace, element });
       };
+
+      // Re-apply button hover effects after rendering booking page
+      addButtonHoverEffects(widgetContainer);
     }
 
     // --- CARD RENDERER ---
@@ -608,7 +611,7 @@ export const RenteVergelijkerExtension = {
           return;
         }
         // Book Appointment button: match Get Rates/Choose hover
-        if (btn.textContent.trim().toLowerCase().includes('book appointment')) {
+        if (btn.type === 'submit' || btn.textContent.trim().toLowerCase().includes('book appointment')) {
           btn.onmouseenter = () => {
             btn.style.background = '#1741b6';
             btn.style.color = '#fff';
