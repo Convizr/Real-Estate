@@ -503,6 +503,8 @@ export const RenteVergelijkerExtension = {
       });
 
       resultsArea.appendChild(grid);
+      // Re-apply button hover effects after rendering
+      addButtonHoverEffects(resultsArea);
       if (filteredRates.length > cardsToShow) {
         const more = document.createElement("button");
         more.textContent="More";
@@ -515,6 +517,7 @@ export const RenteVergelijkerExtension = {
         `;
         more.onclick = ()=>{ cardsToShow+=3; renderCards(filteredRates); };
         resultsArea.appendChild(more);
+        addButtonHoverEffects(resultsArea);
       }
     }
 
