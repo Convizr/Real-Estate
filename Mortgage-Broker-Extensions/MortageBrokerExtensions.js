@@ -607,13 +607,13 @@ export const RenteVergelijkerExtension = {
           };
           return;
         }
-        // Book Appointment button: strong blue hover
+        // Book Appointment button: match Get Rates/Choose hover
         if (btn.textContent.trim().toLowerCase().includes('book appointment')) {
           btn.onmouseenter = () => {
-            btn.style.background = '#1a2e6c';
+            btn.style.background = '#1741b6';
             btn.style.color = '#fff';
-            btn.style.boxShadow = '0 4px 16px #2d5fff44';
-            btn.style.transform = 'scale(1.04)';
+            btn.style.boxShadow = '0 2px 8px #2d5fff22';
+            btn.style.transform = '';
           };
           btn.onmouseleave = () => {
             btn.style.background = '#2d5fff';
