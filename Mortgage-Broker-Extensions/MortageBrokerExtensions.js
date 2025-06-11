@@ -61,153 +61,183 @@ export const RenteVergelijkerExtension = {
       availableTimeslots = timeslotsArray;
     }
 
-    // --- CONTAINER (300px inline-block) ---
-    element.innerHTML = "";
-    const widgetContainer = document.createElement("div");
-    widgetContainer.style.cssText = `
-      display:inline-block!important;
-      width:300px!important;
-      font-family:Inter,Arial,sans-serif;
-      background:#fff;border-radius:16px;
-      box-shadow:0 2px 16px #0001;
-      padding:24px;box-sizing:border-box;
-    `;
-    element.appendChild(widgetContainer);
+    // --- MAIN RENDER FUNCTION ---
+    function renderPage() {
+      element.innerHTML = "";
+      const widgetContainer = document.createElement("div");
+      widgetContainer.style.cssText = `
+        display:inline-block!important;
+        width:300px!important;
+        font-family:Inter,Arial,sans-serif;
+        background:#fff;border-radius:16px;
+        box-shadow:0 2px 16px #0001;
+        padding:24px;box-sizing:border-box;
+      `;
+      element.appendChild(widgetContainer);
+      if (page === 'compare') {
+        renderComparePage(widgetContainer);
+      } else if (page === 'book') {
+        renderBookingPage(widgetContainer);
+      }
+    }
 
     // --- FILTER PANEL ---
-    const inputPanel = document.createElement("div");
-    inputPanel.id = "user-inputs";
-    inputPanel.innerHTML = `
-      <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative;align-items:flex-start;">
-        <div style="flex:1 1 0;min-width:0;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
-            Purchase Price
-            <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
-              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
-                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
-              </svg>
-              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(45,95,255,0.92);color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;">
-                The total price you are paying for the property.
+    function renderComparePage(widgetContainer) {
+      const inputPanel = document.createElement("div");
+      inputPanel.id = "user-inputs";
+      inputPanel.innerHTML = `
+        <div style="display:flex;gap:16px;flex-wrap:wrap;position:relative;align-items:flex-start;">
+          <div style="flex:1 1 0;min-width:0;">
+            <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+              Purchase Price
+              <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+                  <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+                  <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+                </svg>
+                <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;transition:opacity 0.2s;opacity:0;pointer-events:none;">
+                  The total price you are paying for the property.
+                </span>
               </span>
-            </span>
-          </label>
-          <input id="input-price" type="text" placeholder="e.g. 300000">
-        </div>
-        <div style="flex:1 1 0;min-width:0;">
-          <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
-            Down Payment
-            <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
-              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
-                <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
-                <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
-              </svg>
-              <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(45,95,255,0.92);color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;">
-                The amount you pay upfront. The rest will be financed by your mortgage.
+            </label>
+            <input id="input-price" type="text" placeholder="e.g. 300000" style="margin-bottom:8px;">
+          </div>
+          <div style="flex:1 1 0;min-width:0;">
+            <label style="display:flex;align-items:center;font-weight:600;font-size:0.9em;gap:4px;margin-bottom:3px;">
+              Down Payment
+              <span class="info-icon" style="display:inline-flex;align-items:center;cursor:pointer;position:relative;" tabindex="0">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="none" style="display:inline;vertical-align:middle;">
+                  <circle cx="10" cy="10" r="9" stroke="#2d5fff" stroke-width="2" fill="#eaf0ff"/>
+                  <text x="10" y="15" text-anchor="middle" font-size="9" fill="#2d5fff" font-family="Arial" font-weight="bold">i</text>
+                </svg>
+                <span class="custom-tooltip" style="display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.78em;font-weight:400;white-space:nowrap;z-index:10;transition:opacity 0.2s;opacity:0;pointer-events:none;">
+                  The amount you pay upfront. The rest will be financed by your mortgage.
+                </span>
               </span>
-            </span>
-          </label>
-          <input id="input-down" type="text" placeholder="e.g. 60000">
-          <span id="down-badge">0%</span>
+            </label>
+            <input id="input-down" type="text" placeholder="e.g. 60000">
+            <span id="down-badge">0%</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
+            <button id="sort-icon" title="Sort by APR" style="
+              background:none;border:none;cursor:pointer;
+              color:#2d5fff;font-size:1.2em;width:28px;height:28px;transition:background 0.2s, color 0.2s;">
+              ⇅
+            </button>
+          </div>
         </div>
-        <div style="display:flex;align-items:flex-start;height:100%;padding-top:2px;">
-          <button id="sort-icon" title="Sort by APR" style="
-            background:none;border:none;cursor:pointer;
-            color:#2d5fff;font-size:1.2em;width:28px;height:28px;">
-            ⇅
-          </button>
+        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+          <div style="flex:1;min-width:0">
+            <label>Loan Term<br><select id="input-term">
+              <option value="">Any</option><option value="10">10 yrs</option>
+              <option value="15">15 yrs</option><option value="20">20 yrs</option>
+              <option value="30">30 yrs</option>
+            </select></label>
+          </div>
+          <div style="flex:1;min-width:0">
+            <label>Country<br><select id="input-country"><option value="">Any</option></select></label>
+          </div>
         </div>
-      </div>
-      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
-        <div style="flex:1;min-width:0">
-          <label>Loan Term<br><select id="input-term">
-            <option value="">Any</option><option value="10">10 yrs</option>
-            <option value="15">15 yrs</option><option value="20">20 yrs</option>
-            <option value="30">30 yrs</option>
-          </select></label>
-        </div>
-        <div style="flex:1;min-width:0">
-          <label>Country<br><select id="input-country"><option value="">Any</option></select></label>
-        </div>
-      </div>
-      <button id="btn-apply">Get Rates</button>
-    `;
-    widgetContainer.appendChild(inputPanel);
+        <button id="btn-apply" style="transition:background 0.2s;">Get Rates</button>
+      `;
+      widgetContainer.appendChild(inputPanel);
 
-    // Populate country dropdown with unique countries
-    const countrySelect = inputPanel.querySelector("#input-country");
-    const uniqueCountries = [...new Set(currentRates.map(r => r.country).filter(Boolean))].sort();
-    uniqueCountries.forEach(country => {
-      const option = document.createElement("option");
-      option.value = country;
-      option.textContent = country;
-      countrySelect.appendChild(option);
-    });
+      // Populate country dropdown with unique countries
+      const countrySelect = inputPanel.querySelector("#input-country");
+      const uniqueCountries = [...new Set(currentRates.map(r => r.country).filter(Boolean))].sort();
+      uniqueCountries.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country;
+        option.textContent = country;
+        countrySelect.appendChild(option);
+      });
 
-    // ── FORCE THE HOST WRAPPER TO 300px ──
-    const host = element;
-    host.style.setProperty("display", "inline-block", "important");
-    host.style.setProperty("width", "300px", "important");
-    host.style.setProperty("box-sizing", "border-box", "important");
+      // ── FORCE THE HOST WRAPPER TO 300px ──
+      const host = element;
+      host.style.setProperty("display", "inline-block", "important");
+      host.style.setProperty("width", "300px", "important");
+      host.style.setProperty("box-sizing", "border-box", "important");
 
-    // --- INLINE COMPACT STYLING ---
-    [ "#input-price", "#input-down" ].forEach(sel => {
-      const el = inputPanel.querySelector(sel);
-      Object.assign(el.style, {
-        width:"100%",minWidth:"120px",boxSizing:"border-box",
-        height:"28px",padding:"6px 10px",fontSize:"0.85em",
-        background:"#eaf0ff",border:"none",
-        boxShadow:"0 1px 1px #0001",borderRadius:"6px",outline:"none",
-        marginTop: "4px"
+      // --- INLINE COMPACT STYLING ---
+      [ "#input-price", "#input-down" ].forEach(sel => {
+        const el = inputPanel.querySelector(sel);
+        Object.assign(el.style, {
+          width:"100%",minWidth:"120px",boxSizing:"border-box",
+          height:"28px",padding:"6px 10px",fontSize:"0.85em",
+          background:"#eaf0ff",border:"none",
+          boxShadow:"0 1px 1px #0001",borderRadius:"6px",outline:"none",
+          marginTop: "4px"
+        });
+        el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
+        el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
       });
-      el.onfocus = () => el.style.boxShadow = "0 0 0 2px #2d5fff33";
-      el.onblur  = () => el.style.boxShadow = "0 1px 1px #0001";
-    });
-    [ "#input-term", "#input-country" ].forEach(sel => {
-      const el = inputPanel.querySelector(sel),
-            wrapper = document.createElement("div");
-      wrapper.style.cssText = "position:relative;width:100%;box-sizing:border-box";
-      el.parentNode.replaceChild(wrapper, el);
-      wrapper.appendChild(el);
-      Object.assign(el.style, {
-        width:"100%",boxSizing:"border-box",
-        height:"28px",padding:"6px 24px 6px 10px",
-        fontSize:"0.85em",background:"#eaf0ff",
-        border:"none",boxShadow:"0 1px 1px #0001",
-        borderRadius:"6px",outline:"none",appearance:"none",
-        color:"#2d5fff",fontWeight:"700",
-        marginTop: "4px"
+      [ "#input-term", "#input-country" ].forEach(sel => {
+        const el = inputPanel.querySelector(sel),
+              wrapper = document.createElement("div");
+        wrapper.style.cssText = "position:relative;width:100%;box-sizing:border-box";
+        el.parentNode.replaceChild(wrapper, el);
+        wrapper.appendChild(el);
+        Object.assign(el.style, {
+          width:"100%",boxSizing:"border-box",
+          height:"28px",padding:"6px 24px 6px 10px",
+          fontSize:"0.85em",background:"#eaf0ff",
+          border:"none",boxShadow:"0 1px 1px #0001",
+          borderRadius:"6px",outline:"none",appearance:"none",
+          color:"#2d5fff",fontWeight:"700",
+          marginTop: "4px"
+        });
+        const arrow = document.createElement("span");
+        arrow.textContent="▼";
+        Object.assign(arrow.style,{
+          position:"absolute",right:"8px",top:"50%",
+          transform:"translateY(-50%)",pointerEvents:"none",
+          color:"#2d5fff",fontSize:"0.75em"
+        });
+        wrapper.appendChild(arrow);
       });
-      const arrow = document.createElement("span");
-      arrow.textContent="▼";
-      Object.assign(arrow.style,{
-        position:"absolute",right:"8px",top:"50%",
-        transform:"translateY(-50%)",pointerEvents:"none",
-        color:"#2d5fff",fontSize:"0.75em"
+      inputPanel.querySelectorAll("label").forEach(lbl=>{
+        Object.assign(lbl.style,{
+          display:"block",marginBottom:"3px",
+          fontSize:"0.9em",fontWeight:"600"
+        });
       });
-      wrapper.appendChild(arrow);
-    });
-    inputPanel.querySelectorAll("label").forEach(lbl=>{
-      Object.assign(lbl.style,{
-        display:"block",marginBottom:"3px",
-        fontSize:"0.9em",fontWeight:"600"
+      Object.assign(inputPanel.querySelector("#down-badge").style,{
+        marginLeft:"6px",display:"inline-block",
+        background:"#2d5fff",color:"#fff",
+        fontSize:"0.75em",fontWeight:"700",
+        borderRadius:"4px",padding:"2px 4px",
+        verticalAlign:"middle"
       });
-    });
-    Object.assign(inputPanel.querySelector("#down-badge").style,{
-      marginLeft:"6px",display:"inline-block",
-      background:"#2d5fff",color:"#fff",
-      fontSize:"0.75em",fontWeight:"700",
-      borderRadius:"4px",padding:"2px 4px",
-      verticalAlign:"middle"
-    });
-    Object.assign(inputPanel.querySelector("#btn-apply").style,{
-      width:"100%",padding:"6px 0",
-      background:"#2d5fff",color:"#fff",
-      border:"none",borderRadius:"6px",
-      fontSize:"0.9em",fontWeight:"700",
-      boxShadow:"0 2px 8px #2d5fff22",
-      cursor:"pointer",margin:"12px 0"
-    });
+      Object.assign(inputPanel.querySelector("#btn-apply").style,{
+        width:"100%",padding:"6px 0",
+        background:"#2d5fff",color:"#fff",
+        border:"none",borderRadius:"6px",
+        fontSize:"0.9em",fontWeight:"700",
+        boxShadow:"0 2px 8px #2d5fff22",
+        cursor:"pointer",margin:"12px 0"
+      });
+
+      // Add hover effect to sort and apply buttons
+      const sortBtn = inputPanel.querySelector('#sort-icon');
+      sortBtn.onmouseenter = () => { sortBtn.style.background = '#eaf0ff'; sortBtn.style.color = '#1a3bb3'; };
+      sortBtn.onmouseleave = () => { sortBtn.style.background = 'none'; sortBtn.style.color = '#2d5fff'; };
+      const applyBtn = inputPanel.querySelector('#btn-apply');
+      applyBtn.onmouseenter = () => { applyBtn.style.background = '#1a3bb3'; };
+      applyBtn.onmouseleave = () => { applyBtn.style.background = '#2d5fff'; };
+      // Info tooltip logic with delay
+      inputPanel.querySelectorAll('.info-icon').forEach(icon => {
+        const tooltip = icon.querySelector('.custom-tooltip');
+        let hoverTimeout;
+        icon.addEventListener('mouseenter', () => {
+          hoverTimeout = setTimeout(() => { tooltip.style.display = 'block'; tooltip.style.opacity = '1'; }, 300);
+        });
+        icon.addEventListener('mouseleave', () => {
+          clearTimeout(hoverTimeout); tooltip.style.opacity = '0'; setTimeout(()=>{tooltip.style.display='none';},200);
+        });
+        icon.addEventListener('focus', () => { tooltip.style.display = 'block'; tooltip.style.opacity = '1'; });
+        icon.addEventListener('blur', () => { tooltip.style.opacity = '0'; setTimeout(()=>{tooltip.style.display='none';},200); });
+      });
+    }
 
     // --- RESULTS AREA & HELPERS ---
     const resultsArea = document.createElement("div");
@@ -226,7 +256,7 @@ export const RenteVergelijkerExtension = {
     }
 
     // --- RENDER BOOKING PAGE ---
-    function renderBookingPage() {
+    function renderBookingPage(widgetContainer) {
       widgetContainer.innerHTML = '';
       const form = document.createElement('form');
       form.style.display = 'flex';
@@ -251,7 +281,7 @@ export const RenteVergelijkerExtension = {
         <div id="calendar-error" style="color:#d32f2f;font-size:0.85em;display:none;margin-top:2px;"></div>
         <div id="timeslot-section" style="display:none;flex-direction:column;gap:8px;margin-top:8px;">
           <div style="font-weight:600;">Select Time Slot</div>
-          <div id="time-slots" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+          <div id="time-slots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;"></div>
         </div>
         <button type="submit" style="margin-top:8px;padding:10px 0;background:#2d5fff;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;">Book Appointment</button>
       `;
@@ -410,8 +440,11 @@ export const RenteVergelijkerExtension = {
       // Add back button logic
       form.querySelector('#back-to-compare').onclick = () => {
         page = 'compare';
-        render({ trace, element });
+        renderPage();
       };
+
+      // Add hover effect to back button, book button, and time slot pills
+      // ... (rest of booking page logic)
     }
 
     // --- CARD RENDERER ---
@@ -503,7 +536,7 @@ export const RenteVergelijkerExtension = {
         card.querySelector(".btn-select").onclick = () => {
           selectedMortgage = rateObj;
           page = 'book';
-          renderBookingPage();
+          renderPage();
         };
         grid.appendChild(card);
       });
@@ -583,16 +616,7 @@ export const RenteVergelijkerExtension = {
       applyFiltersAndRender();
     };
 
-    // Add tooltip show/hide logic for info icons
-    inputPanel.querySelectorAll('.info-icon').forEach(icon => {
-      const tooltip = icon.querySelector('.custom-tooltip');
-      icon.addEventListener('mouseenter', () => { tooltip.style.display = 'block'; });
-      icon.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-      icon.addEventListener('focus', () => { tooltip.style.display = 'block'; });
-      icon.addEventListener('blur', () => { tooltip.style.display = 'none'; });
-    });
-
     // --- INITIAL RENDER ---
-    applyFiltersAndRender();
+    renderPage();
   }
 };
