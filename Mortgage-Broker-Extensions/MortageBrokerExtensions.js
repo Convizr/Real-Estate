@@ -16,6 +16,7 @@ export const RenteVergelijkerExtension = {
     let page          = 'compare'; // 'compare' or 'book'
     let selectedMortgage = null;
     let bookingInfo   = { name: '', address: '', phone: '', date: '', time: '' };
+    let availableTimeslots = [];
 
     // --- HELPERS ---
     function calculatePMT(ratePerMonth, nper, pv) {
@@ -50,6 +51,14 @@ export const RenteVergelijkerExtension = {
       currentRates = transformAirtableData({ records: ratesArray });
     } else if (Array.isArray(ratesArray)) {
       currentRates = ratesArray;
+    }
+    // Parse available timeslots from payload
+    let timeslotsArray = payloadObj.timeslotsApiResponse || [];
+    if (typeof timeslotsArray === "string") {
+      try { timeslotsArray = JSON.parse(timeslotsArray); } catch { timeslotsArray = []; }
+    }
+    if (Array.isArray(timeslotsArray)) {
+      availableTimeslots = timeslotsArray;
     }
 
     // --- CONTAINER (300px inline-block) ---
@@ -224,7 +233,10 @@ export const RenteVergelijkerExtension = {
       form.style.flexDirection = 'column';
       form.style.gap = '12px';
       form.innerHTML = `
-        <div style="font-weight:700;font-size:1.1em;margin-bottom:4px;">Book Appointment</div>
+        <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.1em;margin-bottom:4px;">
+          <button type="button" id="back-to-compare" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;padding:0 4px 0 0;">&#8592;</button>
+          <span>Book Appointment</span>
+        </div>
         <div style="background:#f3f6ff;padding:10px 12px;border-radius:8px;font-size:0.95em;margin-bottom:8px;">
           <div><b>Bank:</b> ${selectedMortgage.bank || '-'} (${selectedMortgage.country || '-'})</div>
           <div><b>Rate:</b> ${selectedMortgage.rate}% for ${selectedMortgage.term} yrs</div>
@@ -333,7 +345,22 @@ export const RenteVergelijkerExtension = {
         timeslotSection.style.display = 'flex';
         slotsDiv.innerHTML = '';
         selectedTime = '';
-        const slots = ['09:00','10:00','11:00','13:00','14:00','15:00'];
+        // Get weekday name for selectedDate
+        const weekday = selectedDate ? ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][selectedDate.getDay()] : null;
+        let slots = [];
+        if (weekday) {
+          const slotObj = availableTimeslots.find(s => s.fields && s.fields.Day === weekday);
+          if (slotObj && Array.isArray(slotObj.fields["Time Slots"])) {
+            slots = slotObj.fields["Time Slots"];
+          }
+        }
+        if (slots.length === 0) {
+          const msg = document.createElement('div');
+          msg.textContent = 'No available time slots for this day.';
+          msg.style.cssText = 'color:#888;font-size:0.95em;padding:8px 0;';
+          slotsDiv.appendChild(msg);
+          return;
+        }
         slots.forEach(slot => {
           const pill = document.createElement('button');
           pill.type = 'button';
@@ -346,7 +373,7 @@ export const RenteVergelijkerExtension = {
           pill.onclick = () => {
             selectedTime = slot;
             Array.from(slotsDiv.children).forEach(b=>{
-              b.style.background='#f3f6ff';b.style.color='#2d5fff';
+              if(b.tagName==='BUTTON'){b.style.background='#f3f6ff';b.style.color='#2d5fff';}
             });
             pill.style.background = '#2d5fff';
             pill.style.color = '#fff';
@@ -378,6 +405,12 @@ export const RenteVergelijkerExtension = {
         };
         window.VF?.events?.emit('BOOK_APPOINTMENT', payload);
         widgetContainer.innerHTML = '<div style="text-align:center;padding:32px 0;font-size:1.1em;">Thank you! Your appointment has been booked.</div>';
+      };
+
+      // Add back button logic
+      form.querySelector('#back-to-compare').onclick = () => {
+        page = 'compare';
+        render({ trace, element });
       };
     }
 
