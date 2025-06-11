@@ -591,8 +591,24 @@ export const RenteVergelijkerExtension = {
           btn.style.boxShadow = '';
           return;
         }
-        // Choose and Book Appointment buttons: strong blue hover
-        if (btn.classList.contains('btn-select') || btn.textContent.trim().toLowerCase().includes('book appointment')) {
+        // Choose and Book Appointment buttons: match Get Rates hover
+        if (btn.classList.contains('btn-select')) {
+          btn.onmouseenter = () => {
+            btn.style.background = '#1741b6';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '0 2px 8px #2d5fff22';
+            btn.style.transform = '';
+          };
+          btn.onmouseleave = () => {
+            btn.style.background = '#2d5fff';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '';
+            btn.style.transform = '';
+          };
+          return;
+        }
+        // Book Appointment button: strong blue hover
+        if (btn.textContent.trim().toLowerCase().includes('book appointment')) {
           btn.onmouseenter = () => {
             btn.style.background = '#1a2e6c';
             btn.style.color = '#fff';
