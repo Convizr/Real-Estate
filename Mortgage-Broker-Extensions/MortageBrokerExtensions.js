@@ -673,6 +673,19 @@ export const AppointmentBookingExtension = {
     `;
     element.appendChild(widgetContainer);
 
+    // Parse payload to get mortgage details if available
+    let payloadObj = typeof trace.payload === "string"
+      ? (() => { try { return JSON.parse(trace.payload); } catch { return {}; } })()
+      : (trace.payload || {});
+
+    const mortgageDetails = {
+      country: payloadObj.user_mortgage_country || '',
+      bank: payloadObj.user_mortgage_bank || '',
+      term: payloadObj.user_mortgage_term || '',
+      type: payloadObj.user_mortgage_type || '',
+      rate: payloadObj.user_mortgage_rate || ''
+    };
+
     // --- FORM ---
     const form = document.createElement('form');
     form.style.display = 'flex';
@@ -682,6 +695,13 @@ export const AppointmentBookingExtension = {
       <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.1em;margin-bottom:4px;">
         <span>Book Appointment</span>
       </div>
+      ${Object.values(mortgageDetails).some(v => v) ? `
+        <div style="background:#f3f6ff;padding:10px 12px;border-radius:8px;font-size:0.95em;margin-bottom:8px;">
+          ${mortgageDetails.bank ? `<div><b>Bank:</b> ${mortgageDetails.bank} (${mortgageDetails.country || '-'})</div>` : ''}
+          ${mortgageDetails.rate ? `<div><b>Rate:</b> ${mortgageDetails.rate}% for ${mortgageDetails.term || '-'} yrs</div>` : ''}
+          ${mortgageDetails.type ? `<div><b>Type:</b> ${mortgageDetails.type}</div>` : ''}
+        </div>
+      ` : ''}
       <input type="number" id="book-purchase-price" placeholder="Purchase Price" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
       <input type="number" id="book-down-payment" placeholder="Down Payment" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
       <input type="text" id="book-property-address" placeholder="Property Address" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
@@ -784,11 +804,7 @@ export const AppointmentBookingExtension = {
     const timeslotSection = form.querySelector('#timeslot-section');
     const slotsDiv = form.querySelector('#time-slots');
     let selectedTime = '';
-    // Use timeslotsApiResponse from payload if available
     let availableTimeslots = [];
-    let payloadObj = typeof trace.payload === "string"
-      ? (() => { try { return JSON.parse(trace.payload); } catch { return {}; } })()
-      : (trace.payload || {});
     let timeslotsArray = payloadObj.timeslotsApiResponse || [];
     if (typeof timeslotsArray === "string") {
       try { timeslotsArray = JSON.parse(timeslotsArray); } catch { timeslotsArray = []; }
@@ -800,7 +816,6 @@ export const AppointmentBookingExtension = {
       timeslotSection.style.display = 'flex';
       slotsDiv.innerHTML = '';
       selectedTime = '';
-      // Get weekday name for selectedDate
       const weekday = selectedDate ? ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][selectedDate.getDay()] : null;
       let slots = [];
       if (weekday) {
@@ -857,10 +872,28 @@ export const AppointmentBookingExtension = {
         alert('Please select a time slot.');
         return;
       }
+
+      // Construct payload based on available mortgage details
       const payload = {
-        personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime, purchasePrice, downPayment, propertyAddress },
+        personal: { 
+          name, 
+          address, 
+          phone, 
+          country, 
+          date: selectedDate.toISOString().slice(0,10), 
+          time: selectedTime, 
+          purchasePrice, 
+          downPayment, 
+          propertyAddress 
+        },
         __vfGoto: 'appointment'
       };
+
+      // Add mortgage details to payload if they exist
+      if (Object.values(mortgageDetails).some(v => v)) {
+        payload.mortgage = mortgageDetails;
+      }
+
       window.voiceflow.chat.interact({
         type: 'complete',
         payload: payload,

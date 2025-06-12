@@ -10,6 +10,71 @@
 - Allow end users to filter ("Lowest rate," "Shortest term," "NHG only") and click a rate
 - Emit a RATE_SELECTED event back to Voiceflow, with the chosen rate details
 
+## 2. Styling Guide
+
+This guide summarizes the visual and UI style for the Dynamic Interest Rate Comparison Widget, inspired by modern SaaS mortgage comparison platforms (see reference image).
+
+### 2.1 Color Palette
+- **Primary Blue:** #3366FF (used for CTAs, highlights, and active elements)
+- **Accent Blue:** #E6EEFF (background for highlighted text, subtle accents)
+- **Success Green:** #B6F5C6 (for positive indicators, e.g., checkmarks)
+- **Warning Yellow:** #FFE9B3 (for info/warning steps)
+- **Soft Purple:** #E6D6FF (for step highlights, e.g., Step 2)
+- **Text:** #222B45 (main), #666 (secondary), #A3AED0 (muted/disabled)
+- **Background:** #FAFAFB (main), #FFF (cards, panels)
+- **Borders:** #E5EAF2 (light), #DDD (table borders)
+
+### 2.2 Typography
+- **Font Family:** 'Inter', 'Arial', sans-serif (clean, modern, highly readable)
+- **Headings:** Bold, large (e.g., 2.2rem for main headline)
+- **Body:** Regular, 1rem–1.1rem
+- **Highlight:** Use colored backgrounds and bold for key phrases (e.g., "for you")
+
+### 2.3 Spacing & Layout
+- **Spacing:** 8px, 12px, 16px increments for padding/margins
+- **Card/Table Padding:** 12–16px inside cards, 8–12px in table cells
+- **Section Gaps:** 16–32px between major sections (inputs, results, steps)
+- **Max Width:** 600–700px for main widget, centered/fluid on desktop
+
+### 2.4 Buttons & Inputs
+- **Buttons:**
+  - Rounded corners (6–8px radius)
+  - Primary: Blue background, white text, bold
+  - Secondary: White background, blue border/text
+  - Hover: Slight shadow or color darken
+- **Inputs:**
+  - Rounded, subtle border (#E5EAF2)
+  - Padding: 10–14px
+  - Placeholder: #A3AED0
+
+### 2.5 Table & Card Styles
+- **Table:**
+  - Header: Light gray background (#F0F0F0), bold text
+  - Rows: White, hover = #F9F9F9
+  - Borders: #E5EAF2 or #DDD
+- **Cards:**
+  - White background, soft shadow, rounded corners
+  - Bank logo (if available), clear hierarchy
+  - Highlight best/selected card with blue border or badge
+
+### 2.6 UI/UX Details
+- **Step Indicators:**
+  - Use colored icons/boxes (yellow, purple, green) for each step
+  - Bold step number, regular description
+- **Filter/Sort Controls:**
+  - Grouped, clear labels, use select dropdowns or pill buttons
+- **Feedback:**
+  - Show skeleton loaders or subtle spinners during loading
+  - Friendly empty/error states with icons and clear text
+- **Accessibility:**
+  - Sufficient color contrast
+  - Large clickable areas for buttons/rows
+  - Focus/hover states for all interactive elements
+
+---
+
+(For implementation, see the HTML/CSS/JS snippets in later sections. Adjust color codes and spacing as needed to match your brand or product.)
+
 ## 2. Functional Requirements
 
 ### 2.1 Rendering
