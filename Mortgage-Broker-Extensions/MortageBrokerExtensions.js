@@ -82,6 +82,34 @@ export const RenteVergelijkerExtension = {
       /* Sort icon */
       #sort-icon {
         color: #a5d2ca;
+        font-size: 1.2em !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        padding: 0;
+      }
+      #sort-icon:hover {
+        background: #eaf0ff;
+      }
+      /* Recommended badge */
+      .recommended-badge {
+        background: #a5d2ca;
+        color: #fff;
+        font-size: 0.75em;
+        border-radius: 4px;
+        padding: 5px 4px;
+        margin-left: auto;
+        width: 90px;
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+        font-weight: 700;
+        letter-spacing: 0.02em;
       }
     `;
     shadow.appendChild(style);
@@ -550,14 +578,7 @@ export const RenteVergelijkerExtension = {
               <div style="font-weight:600;font-size:0.9em">${rateObj.bank||'–'}</div>
               <div style="color:#888;font-size:0.75em">${rateObj.country||''}</div>
             </div>
-            ${rec? `<span style="
-              background:#2d5fff;color:#fff;
-              font-size:0.7em;border-radius:4px;
-              padding:5px 4px;margin-left:auto;
-              width:90px; display:inline-block;
-              text-align:center; white-space:nowrap;">
-              Recommended
-            </span>` : ""}
+            ${rec? `<span class="recommended-badge">Recommended</span>` : ""}
           </div>
           <div style="margin-bottom:6px">
             <span style="font-weight:700;font-size:1em;color:#2d5fff">
