@@ -661,17 +661,72 @@ export const AppointmentBookingExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_AppointmentBooking",
   render: ({ trace, element }) => {
+    // Use Shadow DOM for style isolation
     element.innerHTML = "";
+    const shadow = element.attachShadow({ mode: 'open' });
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
       display:inline-block!important;
       width:300px!important;
       font-family:Inter,Arial,sans-serif;
+      font-size:15px;
       background:#fff;border-radius:16px;
       box-shadow:0 2px 16px #0001;
       padding:24px;box-sizing:border-box;
     `;
-    element.appendChild(widgetContainer);
+    // Add style tag for all widget styles
+    const style = document.createElement('style');
+    style.textContent = `
+      * { box-sizing: border-box; }
+      div, input, select, button, label, span {
+        font-family: Inter, Arial, sans-serif !important;
+        font-size: 15px !important;
+      }
+      button[type="submit"] {
+        background: #f6c65e;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1em;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+        padding: 10px 0;
+      }
+      button[type="submit"]:hover {
+        background: #e5b84d;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(246, 198, 94, 0.3);
+      }
+      /* Accent color for calendar and pills */
+      .accent {
+        color: #a5d2ca !important;
+      }
+      .accent-bg {
+        background: #a5d2ca !important;
+        color: #fff !important;
+      }
+      .pill {
+        background: #f3f6ff;
+        color: #a5d2ca;
+        font-weight: 600;
+        font-size: 0.95em;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 1px 4px #0001;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+        padding: 8px 10px;
+      }
+      .pill.selected {
+        background: #a5d2ca !important;
+        color: #fff !important;
+      }
+    `;
+    shadow.appendChild(style);
+    shadow.appendChild(widgetContainer);
 
     // Parse payload to get mortgage details if available
     let payloadObj = typeof trace.payload === "string"
@@ -804,14 +859,6 @@ export const AppointmentBookingExtension = {
     const timeslotSection = form.querySelector('#timeslot-section');
     const slotsDiv = form.querySelector('#time-slots');
     let selectedTime = '';
-    let availableTimeslots = [];
-    let timeslotsArray = payloadObj.timeslotsApiResponse || [];
-    if (typeof timeslotsArray === "string") {
-      try { timeslotsArray = JSON.parse(timeslotsArray); } catch { timeslotsArray = []; }
-    }
-    if (Array.isArray(timeslotsArray)) {
-      availableTimeslots = timeslotsArray;
-    }
     function showTimeslots() {
       timeslotSection.style.display = 'flex';
       slotsDiv.innerHTML = '';
