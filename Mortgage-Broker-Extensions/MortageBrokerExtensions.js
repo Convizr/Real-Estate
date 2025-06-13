@@ -716,7 +716,7 @@ export const AppointmentBookingExtension = {
         <div style="font-weight:600;">Select Time Slot</div>
         <div id="time-slots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;"></div>
       </div>
-      <button type="submit" style="margin-top:8px;padding:10px 0;background:#2d5fff;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;">Book Appointment</button>
+      <button type="submit" style="margin-top:8px;padding:10px 0;background:#f6c65e;color:#fff;border:none;border-radius:6px;font-size:1em;font-weight:700;cursor:pointer;transition:all 0.2s ease;">Book Appointment</button>
     `;
     widgetContainer.appendChild(form);
 
@@ -738,8 +738,8 @@ export const AppointmentBookingExtension = {
       header.innerHTML = `
         <span style="font-weight:200;font-size:1em;">${getMonthName(calendarMonth)} ${calendarYear}</span>
         <div>
-          <button type="button" id="cal-prev" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;margin-right:6px;">&#8592;</button>
-          <button type="button" id="cal-next" style="background:none;border:none;color:#2d5fff;font-size:1.2em;cursor:pointer;">&#8594;</button>
+          <button type="button" id="cal-prev" style="background:none;border:none;color:#a5d2ca;font-size:1.2em;cursor:pointer;margin-right:6px;">&#8592;</button>
+          <button type="button" id="cal-next" style="background:none;border:none;color:#a5d2ca;font-size:1.2em;cursor:pointer;">&#8594;</button>
         </div>
       `;
       calendarDiv.appendChild(header);
@@ -772,7 +772,7 @@ export const AppointmentBookingExtension = {
         dateBtn.textContent = d;
         dateBtn.style.cssText = `
           width:32px;height:32px;border-radius:50%;border:none;
-          background:${selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear ? '#2d5fff' : 'transparent'};
+          background:${selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear ? '#a5d2ca' : 'transparent'};
           color:${selectedDate && selectedDate.getDate()===d && selectedDate.getMonth()===calendarMonth && selectedDate.getFullYear()===calendarYear ? '#fff' : '#222'};
           font-weight:600;font-size:1em;cursor:pointer;transition:background 0.2s;
         `;
@@ -837,20 +837,33 @@ export const AppointmentBookingExtension = {
         pill.textContent = slot;
         pill.style.cssText = `
           display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:14px;
-          border:none;background:#f3f6ff;color:#2d5fff;font-weight:600;font-size:0.95em;cursor:pointer;
+          border:none;background:#f3f6ff;color:#a5d2ca;font-weight:600;font-size:0.95em;cursor:pointer;
           box-shadow:0 1px 4px #0001;margin-bottom:0;transition:background 0.2s,color 0.2s;
         `;
         pill.onclick = () => {
           selectedTime = slot;
           Array.from(slotsDiv.children).forEach(b=>{
-            if(b.tagName==='BUTTON'){b.style.background='#f3f6ff';b.style.color='#2d5fff';}
+            if(b.tagName==='BUTTON'){b.style.background='#f3f6ff';b.style.color='#a5d2ca';}
           });
-          pill.style.background = '#2d5fff';
+          pill.style.background = '#a5d2ca';
           pill.style.color = '#fff';
         };
         slotsDiv.appendChild(pill);
       });
     }
+
+    // Add hover effects for CTA buttons
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.onmouseenter = () => {
+      submitButton.style.background = '#e5b84d';
+      submitButton.style.transform = 'translateY(-1px)';
+      submitButton.style.boxShadow = '0 4px 12px rgba(246, 198, 94, 0.3)';
+    };
+    submitButton.onmouseleave = () => {
+      submitButton.style.background = '#f6c65e';
+      submitButton.style.transform = 'translateY(0)';
+      submitButton.style.boxShadow = 'none';
+    };
 
     form.onsubmit = (e) => {
       e.preventDefault();
