@@ -4,6 +4,89 @@ export const RenteVergelijkerExtension = {
   type: "response",
   match: ({ trace }) => trace.type === "Custom_RenteVergelijker",
   render: ({ trace, element }) => {
+    // Use Shadow DOM for style isolation
+    element.innerHTML = "";
+    const shadow = element.attachShadow({ mode: 'open' });
+    const widgetContainer = document.createElement("div");
+    widgetContainer.style.cssText = `
+      display:inline-block!important;
+      width:300px!important;
+      font-family:Inter,Arial,sans-serif;
+      font-size:15px;
+      background:#fff;border-radius:16px;
+      box-shadow:0 2px 16px #0001;
+      padding:24px;box-sizing:border-box;
+    `;
+    // Add style tag for all widget styles
+    const style = document.createElement('style');
+    style.textContent = `
+      * { box-sizing: border-box; }
+      div, input, select, button, label, span {
+        font-family: Inter, Arial, sans-serif !important;
+        font-size: 15px !important;
+      }
+      button, .btn-select, #btn-apply {
+        transition: all 0.2s ease;
+      }
+      #btn-apply, .btn-select {
+        background: #f6c65e;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1em;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px #f6c65e22;
+        margin-top: 12px;
+        padding: 6px 0;
+      }
+      #btn-apply:hover, .btn-select:hover {
+        background: #e5b84d;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(246, 198, 94, 0.3);
+      }
+      .accent {
+        color: #a5d2ca !important;
+      }
+      .accent-bg {
+        background: #a5d2ca !important;
+        color: #fff !important;
+      }
+      .pill {
+        background: #f3f6ff;
+        color: #a5d2ca;
+        font-weight: 600;
+        font-size: 0.95em;
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 1px 4px #0001;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+        padding: 8px 10px;
+      }
+      .pill.selected {
+        background: #a5d2ca !important;
+        color: #fff !important;
+      }
+      /* Dropdown arrow color */
+      select {
+        color: #a5d2ca;
+        font-weight: 700;
+      }
+      /* Info badge */
+      #down-badge {
+        background: #a5d2ca;
+        color: #fff;
+      }
+      /* Sort icon */
+      #sort-icon {
+        color: #a5d2ca;
+      }
+    `;
+    shadow.appendChild(style);
+    shadow.appendChild(widgetContainer);
+
     // --- DEBUG payload ---
     console.log("🔍 Raw payload:", trace.payload);
 
@@ -60,19 +143,6 @@ export const RenteVergelijkerExtension = {
     if (Array.isArray(timeslotsArray)) {
       availableTimeslots = timeslotsArray;
     }
-
-    // --- CONTAINER (300px inline-block) ---
-    element.innerHTML = "";
-    const widgetContainer = document.createElement("div");
-    widgetContainer.style.cssText = `
-      display:inline-block!important;
-      width:300px!important;
-      font-family:Inter,Arial,sans-serif;
-      background:#fff;border-radius:16px;
-      box-shadow:0 2px 16px #0001;
-      padding:24px;box-sizing:border-box;
-    `;
-    element.appendChild(widgetContainer);
 
     // --- FILTER PANEL ---
     const inputPanel = document.createElement("div");
