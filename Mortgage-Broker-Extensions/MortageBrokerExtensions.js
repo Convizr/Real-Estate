@@ -113,8 +113,12 @@ export const RenteVergelijkerExtension = {
       .card-header {
         display: flex;
         align-items: flex-start;
-        gap: 6px;
         margin-bottom: 8px;
+      }
+      .header-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
       }
       .bank-info {
         flex: 1;
@@ -133,7 +137,8 @@ export const RenteVergelijkerExtension = {
       .recommended-badge {
         font-size: 12px !important;
         padding: 2px 8px;
-        margin-left: 0;
+        margin-left: auto;
+        align-self: flex-start;
         width: auto;
       }
       .bank-country {
@@ -597,14 +602,14 @@ export const RenteVergelijkerExtension = {
         `;
         card.innerHTML = `
           <div class="card-header">
-            <div style="width:24px;height:24px;background:#f3f6ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1em;color:#2d5fff">🏦</div>
-            <div class="bank-info">
-              <div class="bank-row">
-                <span class="bank-name">${rateObj.bank||'–'}</span>
-                ${rec? `<span class="recommended-badge">Recommended</span>` : ""}
+            <div class="header-left">
+              <div style="width:24px;height:24px;background:#f3f6ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1em;color:#2d5fff">🏦</div>
+              <div class="bank-info">
+                <div class="bank-name">${rateObj.bank||'–'}</div>
+                <div class="bank-country">${rateObj.country||''}</div>
               </div>
-              <div class="bank-country">${rateObj.country||''}</div>
             </div>
+            ${rec? `<span class="recommended-badge">Recommended</span>` : ""}
           </div>
           <div style="margin-bottom:6px">
             <span style="font-weight:700;font-size:1em;color:#2d5fff">
