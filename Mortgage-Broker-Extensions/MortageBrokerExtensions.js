@@ -470,11 +470,28 @@ export const RenteVergelijkerExtension = {
       const timeslotSection = form.querySelector('#timeslot-section');
       const slotsDiv = form.querySelector('#time-slots');
       let selectedTime = '';
+      let availableTimeslots = [];
+      let timeslotsArray = payloadObj.timeslotsApiResponse || [];
+      // Extra logging for debugging timeslots payload
+      console.log('[AppointmentBookingExtension] Raw timeslotsApiResponse:', payloadObj.timeslotsApiResponse);
+      if (typeof timeslotsArray === "string") {
+        try {
+          timeslotsArray = JSON.parse(timeslotsArray);
+          console.log('[AppointmentBookingExtension] Parsed timeslotsApiResponse:', timeslotsArray);
+        } catch (e) {
+          console.error('[AppointmentBookingExtension] Failed to parse timeslotsApiResponse:', e, timeslotsArray);
+          timeslotsArray = [];
+        }
+      } else {
+        console.log('[AppointmentBookingExtension] timeslotsApiResponse is array/object:', timeslotsArray);
+      }
+      if (Array.isArray(timeslotsArray)) {
+        availableTimeslots = timeslotsArray;
+      }
       function showTimeslots() {
         timeslotSection.style.display = 'flex';
         slotsDiv.innerHTML = '';
         selectedTime = '';
-        // Get weekday name for selectedDate
         const weekday = selectedDate ? ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][selectedDate.getDay()] : null;
         let slots = [];
         if (weekday) {
@@ -531,11 +548,28 @@ export const RenteVergelijkerExtension = {
           alert('Please select a time slot.');
           return;
         }
+
+        // Construct payload based on available mortgage details
         const payload = {
-          mortgage: selectedMortgage,
-          personal: { name, address, phone, country, date: selectedDate.toISOString().slice(0,10), time: selectedTime, purchasePrice, downPayment, propertyAddress },
+          personal: { 
+            name, 
+            address, 
+            phone, 
+            country, 
+            date: selectedDate.toISOString().slice(0,10), 
+            time: selectedTime, 
+            purchasePrice, 
+            downPayment, 
+            propertyAddress 
+          },
           __vfGoto: 'appointment'
         };
+
+        // Add mortgage details to payload if they exist
+        if (Object.values(mortgageDetails).some(v => v)) {
+          payload.mortgage = mortgageDetails;
+        }
+
         window.voiceflow.chat.interact({
           type: 'complete',
           payload: payload,
@@ -981,6 +1015,24 @@ export const AppointmentBookingExtension = {
     const timeslotSection = form.querySelector('#timeslot-section');
     const slotsDiv = form.querySelector('#time-slots');
     let selectedTime = '';
+    let availableTimeslots = [];
+    let timeslotsArray = payloadObj.timeslotsApiResponse || [];
+    // Extra logging for debugging timeslots payload
+    console.log('[AppointmentBookingExtension] Raw timeslotsApiResponse:', payloadObj.timeslotsApiResponse);
+    if (typeof timeslotsArray === "string") {
+      try {
+        timeslotsArray = JSON.parse(timeslotsArray);
+        console.log('[AppointmentBookingExtension] Parsed timeslotsApiResponse:', timeslotsArray);
+      } catch (e) {
+        console.error('[AppointmentBookingExtension] Failed to parse timeslotsApiResponse:', e, timeslotsArray);
+        timeslotsArray = [];
+      }
+    } else {
+      console.log('[AppointmentBookingExtension] timeslotsApiResponse is array/object:', timeslotsArray);
+    }
+    if (Array.isArray(timeslotsArray)) {
+      availableTimeslots = timeslotsArray;
+    }
     function showTimeslots() {
       timeslotSection.style.display = 'flex';
       slotsDiv.innerHTML = '';
