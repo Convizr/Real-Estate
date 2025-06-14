@@ -658,8 +658,6 @@ export const RenteVergelijkerExtension = {
 
     // --- SORT ICON CLICK CYCLE ---
     const sortIcon = widgetContainer.querySelector("#sort-icon");
-    // Remove all inline styles from #sort-icon and rely on CSS only
-    sortIcon.removeAttribute('style');
     sortIcon.onclick = () => {
       const modes = ["apr","payment","fees"];
       const idx   = modes.indexOf(activeSort);
