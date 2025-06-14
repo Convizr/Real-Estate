@@ -100,7 +100,7 @@ export const RenteVergelijkerExtension = {
       .recommended-badge {
         background: #2d5fff;
         color: #fff;
-        font-size: 0.68em;
+        font-size: 13px !important;
         border-radius: 4px;
         padding: 2px 10px;
         margin-left: auto;
