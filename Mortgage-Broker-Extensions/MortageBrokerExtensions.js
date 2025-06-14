@@ -110,6 +110,36 @@ export const RenteVergelijkerExtension = {
         font-weight: 700;
         letter-spacing: 0.02em;
       }
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .bank-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .bank-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .bank-name {
+        font-weight: 600;
+        font-size: 0.9em;
+      }
+      .recommended-badge {
+        font-size: 12px !important;
+        padding: 2px 8px;
+        margin-left: 0;
+        width: auto;
+      }
+      .bank-country {
+        color: #888;
+        font-size: 0.75em;
+      }
     `;
     shadow.appendChild(style);
     shadow.appendChild(widgetContainer);
@@ -566,18 +596,15 @@ export const RenteVergelijkerExtension = {
           display:flex;flex-direction:column;
         `;
         card.innerHTML = `
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
-            <div style="
-              width:24px;height:24px;
-              background:#f3f6ff;border-radius:6px;
-              display:flex;align-items:center;
-              justify-content:center;font-size:1em;
-              color:#2d5fff">🏦</div>
-            <div>
-              <div style="font-weight:600;font-size:0.9em">${rateObj.bank||'–'}</div>
-              <div style="color:#888;font-size:0.75em">${rateObj.country||''}</div>
+          <div class="card-header">
+            <div style="width:24px;height:24px;background:#f3f6ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1em;color:#2d5fff">🏦</div>
+            <div class="bank-info">
+              <div class="bank-row">
+                <span class="bank-name">${rateObj.bank||'–'}</span>
+                ${rec? `<span class="recommended-badge">Recommended</span>` : ""}
+              </div>
+              <div class="bank-country">${rateObj.country||''}</div>
             </div>
-            ${rec? `<span class="recommended-badge">Recommended</span>` : ""}
           </div>
           <div style="margin-bottom:6px">
             <span style="font-weight:700;font-size:1em;color:#2d5fff">
