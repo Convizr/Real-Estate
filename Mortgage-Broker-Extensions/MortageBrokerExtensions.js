@@ -100,18 +100,15 @@ export const RenteVergelijkerExtension = {
       .recommended-badge {
         background: #2d5fff;
         color: #fff;
-        font-size: 0.7em;
+        font-size: 0.68em;
         border-radius: 4px;
-        padding: 3px 6px;
+        padding: 2px 10px;
         margin-left: auto;
-        width: 90px;
         display: inline-block;
         text-align: center;
         white-space: nowrap;
         font-weight: 700;
         letter-spacing: 0.02em;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     `;
     shadow.appendChild(style);
