@@ -82,15 +82,15 @@ export const RenteVergelijkerExtension = {
       /* Sort icon */
       #sort-icon {
         color: #a5d2ca;
-        font-size: 1.6em !important;
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
+        font-size: 1.2em !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
+        border-radius: 6px;
         padding: 0;
       }
       #sort-icon:hover {
@@ -98,14 +98,13 @@ export const RenteVergelijkerExtension = {
       }
       /* Recommended badge */
       .recommended-badge {
-        background: #a5d2ca !important;
-        color: #fff !important;
-        font-size: 0.82em;
-        border-radius: 6px;
-        padding: 4px 8px;
+        background: #2d5fff;
+        color: #fff;
+        font-size: 0.7em;
+        border-radius: 4px;
+        padding: 3px 6px;
         margin-left: auto;
-        min-width: 90px;
-        max-width: 110px;
+        width: 90px;
         display: inline-block;
         text-align: center;
         white-space: nowrap;
