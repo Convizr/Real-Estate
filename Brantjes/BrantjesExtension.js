@@ -29,7 +29,10 @@ export const BrantjesExtension = {
         properties = [];
       }
     }
-
+    // If properties is an object with a 'resultaten' array, use that
+    if (properties && Array.isArray(properties.resultaten)) {
+      properties = properties.resultaten;
+    }
     if (!Array.isArray(properties) || properties.length === 0) {
       element.innerHTML = `<p>No properties available.</p>`;
       return;
