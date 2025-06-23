@@ -449,6 +449,7 @@ export const BrantjesExtension = {
             payload: {
               type: 'extension',
               name: 'brantjes_booking_request',
+              path: 'success',
               payload: bookingDetails,
             },
           });
