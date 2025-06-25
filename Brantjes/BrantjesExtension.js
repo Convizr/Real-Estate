@@ -519,7 +519,13 @@ export const BrantjesExtension = {
       let imgUrl = '';
       if (Array.isArray(property.media)) {
         const imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-        if (imgObj) imgUrl = imgObj.link;
+        if (imgObj) {
+          imgUrl = imgObj.link;
+          if (imgUrl) {
+            // Add ?resize=4 or &resize=4 if there are already query params
+            imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
+          }
+        }
       }
       const img = document.createElement('img');
       img.src = imgUrl;
