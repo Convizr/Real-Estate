@@ -612,105 +612,51 @@ export const BrantjesExtension = {
     element.appendChild(carouselContainer);
 
     let currentIndex = 0;
-    let autoPlayInterval = null;
-
-    function resetAutoPlay() {
-      stopAutoPlay();
-      startAutoPlay();
-    }
 
     function showNext() {
       currentIndex = (currentIndex < properties.length - 1) ? currentIndex + 1 : 0;
       updateCarousel();
-      resetAutoPlay();
     }
 
     function showPrev() {
       currentIndex = (currentIndex > 0) ? currentIndex - 1 : properties.length - 1;
       updateCarousel();
-      resetAutoPlay();
     }
-    
-    function startAutoPlay(delay = 30000) { // slower auto-rotation
-      stopAutoPlay();
-      autoPlayInterval = setInterval(showNext, delay);
-    }
-
-    function stopAutoPlay() {
-      clearInterval(autoPlayInterval);
-    }
-
-    prevButton.addEventListener('click', showPrev);
-    nextButton.addEventListener('click', showNext);
-    
-    carouselContainer.addEventListener('mouseenter', stopAutoPlay);
-    carouselContainer.addEventListener('mouseleave', startAutoPlay);
-
-    function handleKeyDown(e) {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        showPrev();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        showNext();
-      }
-    }
-    carouselContainer.addEventListener('keydown', handleKeyDown);
 
     function updateCarousel() {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
       if (cards.length === 0) return;
-      
-      // Card widths and margins
-      const sideCardWidth = 201;
-      const sideCardMargin = 8;
-      const centerCardWidth = 219;
-      // Total width for 3 cards (2 side + 1 center) + 4 margins (2 per side card)
-      const totalCardsWidth = sideCardWidth * 2 + centerCardWidth + sideCardMargin * 4;
-      // Center the active card, with one side card visible on each side
-      // The offset should move the track so the center card is in the middle of the container
-      // Calculate the offset so that the center card is centered, and side cards are visible
-      const containerWidth = 710;
-      // The left offset is: (containerWidth / 2) - (centerCardWidth / 2) - (currentIndex * (sideCardWidth + sideCardMargin * 2))
-      // But we need to account for the margin between cards
-      let offset = 0;
-      if (currentIndex === 0) {
-        // At the start, show first 3 cards
-        offset = 0;
-      } else if (currentIndex === cards.length - 1) {
-        // At the end, show last 3 cards
-        offset = -((cards.length - 3) * (sideCardWidth + sideCardMargin * 2));
-      } else {
-        // Center the active card
-        offset = -((currentIndex - 1) * (sideCardWidth + sideCardMargin * 2));
-      }
-      carouselTrack.style.transform = `translateX(${offset}px)`;
-
-      cards.forEach((card, index) => {
-        if (index === currentIndex) {
-          card.classList.add('active');
-        } else {
-          card.classList.remove('active');
-        }
+      // Always show 3 cards: left, center, right
+      // Center is currentIndex, left is (currentIndex-1+N)%N, right is (currentIndex+1)%N
+      const N = properties.length;
+      cards.forEach((card, idx) => {
+        card.style.display = 'none';
+        card.classList.remove('active');
       });
+      // Calculate indices
+      const leftIdx = (currentIndex - 1 + N) % N;
+      const centerIdx = currentIndex;
+      const rightIdx = (currentIndex + 1) % N;
+      // Show and style the three cards
+      [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
+        const card = cards[idx];
+        if (!card) return;
+        card.style.display = '';
+        card.style.opacity = (pos === 1) ? '1' : '0.7';
+        card.style.transform = (pos === 1) ? 'scale(1)' : 'scale(0.92)';
+        card.style.zIndex = (pos === 1) ? '10' : '1';
+        if (pos === 1) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+      // Center the track so the center card is always in the middle
+      // (No need to translate if only 3 cards are visible)
+      carouselTrack.style.transform = '';
     }
 
-    // A short delay before the initial setup to ensure layout is calculated
+    // On initial load, currentIndex = 0 (first card is hero)
     setTimeout(() => {
-        updateCarousel();
-        startAutoPlay();
-        window.addEventListener('resize', updateCarousel);
+      updateCarousel();
+      window.addEventListener('resize', updateCarousel);
     }, 100);
-
-    // Cleanup when the element is removed from the DOM
-    const observer = new MutationObserver((mutations, obs) => {
-      if (!document.body.contains(element)) {
-        stopAutoPlay();
-        window.removeEventListener('resize', updateCarousel);
-        carouselContainer.removeEventListener('keydown', handleKeyDown);
-        obs.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
   },
 };
