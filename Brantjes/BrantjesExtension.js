@@ -488,8 +488,30 @@ export const BrantjesExtension = {
       const cardInner = document.createElement('div');
       cardInner.className = 'brantjes-property-card-inner';
 
+      // Get first available image
+      let imgUrl = '';
+      if (Array.isArray(property.media)) {
+        const imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        if (imgObj) imgUrl = imgObj.link;
+      }
       const img = document.createElement('img');
-      img.src = property.fields?.Image?.[0]?.url || '';
+      img.src = imgUrl;
+      img.alt = 'Woning foto';
+
+      // Build address string
+      const straat = property.adres?.straat || '';
+      const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+      const plaats = property.adres?.plaats || '';
+      const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
+
+      // Price
+      const price = property.financieel?.overdracht?.koopprijs || 0;
+      // Energy label
+      const energy = property.algemeen?.energieklasse || '';
+      // Living area
+      const area = property.algemeen?.woonoppervlakte || '';
+      // Rooms
+      const rooms = property.algemeen?.aantalKamers || '';
 
       const overlay = document.createElement('div');
       overlay.className = 'brantjes-card-overlay';
@@ -498,21 +520,30 @@ export const BrantjesExtension = {
       info.className = 'brantjes-card-info';
       
       const title = document.createElement('p');
-      title.textContent = property.fields?.['Property Name'] || 'Unknown Property';
+      title.textContent = address || 'Onbekend adres';
 
-      const price = document.createElement('p');
-      price.textContent = `€ ${property.fields?.Price?.toLocaleString('nl-NL') || '0'} k.k.`;
+      const priceP = document.createElement('p');
+      priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
+
+      // Extra info row
+      const extra = document.createElement('p');
+      extra.style.fontSize = '14px';
+      extra.innerHTML =
+        (energy ? `<span title="Energielabel">${energy}</span> &nbsp;` : '') +
+        (area ? `<span title="Woonoppervlakte">${area} m²</span> &nbsp;` : '') +
+        (rooms ? `<span title="Kamers">${rooms} kamers</span>` : '');
 
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
       viewingButton.textContent = 'Bezichtigen';
       viewingButton.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent card click from firing
+        e.stopPropagation();
         showBookingModal(property);
       });
 
       info.appendChild(title);
-      info.appendChild(price);
+      info.appendChild(priceP);
+      info.appendChild(extra);
       overlay.appendChild(info);
       
       cardInner.appendChild(img);
