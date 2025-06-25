@@ -43,30 +43,40 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 100%;
-        max-width: 1100px;
+        width: 750px;
+        height: 420px;
         margin: auto;
         overflow: hidden;
-        padding: 40px 0;
+        padding: 0;
+        background: transparent;
       }
       .brantjes-carousel-track {
         display: flex;
+        align-items: center;
+        height: 100%;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
-        flex: 0 0 60%;
-        max-width: 60%;
-        min-width: 340px;
-        aspect-ratio: 3/4;
-        padding: 0 10px;
+        flex: 0 0 201px;
+        width: 201px;
+        height: 335px;
+        margin: 0 0px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-        transform: scale(0.85);
+        transform: scale(0.92);
         opacity: 0.7;
         position: relative;
         z-index: 1;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: visible;
+        display: flex;
+        align-items: flex-end;
       }
       .brantjes-property-card.active {
+        width: 219px;
+        height: 365px;
         transform: scale(1);
         opacity: 1;
         z-index: 10;
@@ -75,10 +85,9 @@ export const BrantjesExtension = {
         position: relative;
         overflow: hidden;
         border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         width: 100%;
-        color: white;
         height: 100%;
+        color: white;
         background: #fff;
         display: flex;
         flex-direction: column;
@@ -89,7 +98,6 @@ export const BrantjesExtension = {
         height: 100%;
         object-fit: cover;
         display: block;
-        aspect-ratio: 3/4;
       }
       .brantjes-card-overlay {
         position: absolute;
@@ -101,11 +109,11 @@ export const BrantjesExtension = {
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
-        font-size: 18px;
+        font-size: 16px;
       }
       .brantjes-card-info p:first-child {
         font-weight: bold;
-        font-size: 20px;
+        font-size: 18px;
       }
       .brantjes-viewing-button {
         background: #1E7FCB;
@@ -312,20 +320,29 @@ export const BrantjesExtension = {
 
       /* Responsive Styles */
       @media (max-width: 900px) {
-        .brantjes-property-card {
-          flex: 0 0 80%;
-          max-width: 80%;
-          min-width: 220px;
+        .brantjes-carousel-container {
+          width: 98vw;
+          height: 60vw;
+          min-width: 0;
+          min-height: 0;
+        }
+        .brantjes-property-card, .brantjes-property-card.active {
+          width: 40vw;
+          min-width: 120px;
+          height: 60vw;
+          min-height: 180px;
         }
       }
       @media (max-width: 600px) {
-        .brantjes-property-card {
-          flex: 0 0 98%;
-          max-width: 98%;
-          min-width: 160px;
-        }
         .brantjes-carousel-container {
-          max-width: 100vw;
+          width: 100vw;
+          height: 70vw;
+        }
+        .brantjes-property-card, .brantjes-property-card.active {
+          width: 80vw;
+          min-width: 100px;
+          height: 60vw;
+          min-height: 120px;
         }
       }
     `;
