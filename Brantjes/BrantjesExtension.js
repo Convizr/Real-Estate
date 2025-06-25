@@ -117,26 +117,53 @@ export const BrantjesExtension = {
         font-size: 18px;
       }
       .brantjes-viewing-button {
-        background: #1E7FCB;
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: transparent;
         color: white;
         border: none;
         width: 112px;
-        height: 15px;
-        display: block;
-        margin: 10px auto 0 auto;
+        height: 35px;
         border-radius: 4px;
         cursor: pointer;
-        transition: background-color 0.2s, transform 0.3s ease-out;
-        transform: translateY(150%);
-        position: absolute;
-        left: 50%;
-        bottom: 15px;
-        box-sizing: border-box;
-        padding: 0;
-        transform: translate(-50%, 150%);
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 5;
       }
-      .brantjes-property-card.active:hover .brantjes-viewing-button {
-        transform: translate(-50%, 0);
+      .brantjes-viewing-button .cta-box {
+        position: absolute;
+        top: 0;
+        left: -10px;
+        width: calc(100% + 20px);
+        height: 100%;
+        background-color: #1E7FCB;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .brantjes-viewing-button .cta-text {
+        position: relative;
+        z-index: 2;
+        display: inline-block;
+        transform: translateX(-5px);
+        opacity: 0.7;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .brantjes-property-card.act:hover .brantjes-viewing-button {
+        opacity: 1;
+      }
+      .brantjes-property-card.act:hover .brantjes-viewing-button .cta-box {
+        transform: scaleX(1);
+      }
+      .brantjes-property-card.act:hover .brantjes-viewing-button .cta-text {
+        transform: translateX(0);
+        opacity: 1;
+        transition-delay: 0.2s;
       }
       .brantjes-property-card img {
         width: 100%;
@@ -619,7 +646,10 @@ export const BrantjesExtension = {
       // Viewing button
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
-      viewingButton.textContent = 'Bezichtigen';
+      viewingButton.innerHTML = `
+        <div class="cta-box"></div>
+        <span class="cta-text">Bezichtigen</span>
+      `;
       viewingButton.addEventListener('click', (e) => {
         e.stopPropagation();
         showBookingModal(property);
