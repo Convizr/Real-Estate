@@ -43,7 +43,7 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 710px;
+        width: 650px;
         height: 420px;
         margin: auto;
         overflow: hidden;
@@ -600,7 +600,7 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    const dotsContainer = document.createElement('div');
+    /*const dotsContainer = document.createElement('div');
     dotsContainer.className = 'brantjes-dots-container';
     properties.forEach((_, index) => {
         const dot = document.createElement('span');
@@ -614,7 +614,7 @@ export const BrantjesExtension = {
         });
         dotsContainer.appendChild(dot);
     });
-    element.appendChild(dotsContainer);
+    element.appendChild(dotsContainer);*/
 
     let currentIndex = 0;
     let autoPlayInterval = null;
@@ -636,7 +636,7 @@ export const BrantjesExtension = {
       resetAutoPlay();
     }
     
-    function startAutoPlay(delay = 15000) { // 15 seconds for slower auto-rotation
+    function startAutoPlay(delay = 30000) { // slower auto-rotation
       stopAutoPlay();
       autoPlayInterval = setInterval(showNext, delay);
     }
