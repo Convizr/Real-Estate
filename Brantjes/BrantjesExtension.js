@@ -652,9 +652,9 @@ export const BrantjesExtension = {
         const isLeft   = i === prevIdx;
         const isRight  = i === nextIdx;
         if (isCenter || isLeft || isRight) {
-          card.style.visibility = 'visible';
+          card.style.display = '';
         } else {
-          card.style.visibility = 'hidden';
+          card.style.display = 'none';
         }
       });
     }
