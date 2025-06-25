@@ -54,19 +54,16 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
+        width: 300%;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
         flex: 0 0 33.33%;
-        width: 201px;
+        width: 33.33%;
         height: 335px;
         margin: 0 0px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-        transform: scale(0.92);
-        opacity: 0.7;
-        position: relative;
-        z-index: 1;
         border-radius: 8px;
         background: #fff;
         border: 5px solid #fff;
@@ -76,11 +73,14 @@ export const BrantjesExtension = {
         align-items: flex-end;
       }
       .brantjes-property-card.active {
-        width: 219px;
-        height: 365px;
         transform: scale(1);
         opacity: 1;
         z-index: 10;
+      }
+      .brantjes-property-card:not(.active) {
+        transform: scale(0.92);
+        opacity: 0.7;
+        z-index: 1;
       }
       .brantjes-property-card-inner {
         position: relative;
@@ -511,12 +511,10 @@ export const BrantjesExtension = {
     let currentIndex = 0;
     let isTransitioning = false;
 
-    // Helper to get the correct index with wrap-around
     function mod(n, m) {
       return ((n % m) + m) % m;
     }
 
-    // Render only 3 cards: left, center, right
     function renderCarouselCards() {
       while (carouselTrack.firstChild) {
         carouselTrack.removeChild(carouselTrack.firstChild);
