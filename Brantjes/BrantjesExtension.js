@@ -43,7 +43,7 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 650px;
+        width: 710px;
         height: 420px;
         margin: auto;
         overflow: hidden;
@@ -54,15 +54,18 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+        will-change: transform;
+        position: absolute;
+        left: 0;
+        top: 0;
       }
       .brantjes-property-card {
-        flex: 0 0 201px;
         width: 201px;
         height: 335px;
-        margin: 0 8px;
+        margin: 0 9px;
         box-sizing: border-box;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s cubic-bezier(0.16,1,0.3,1);
         transform: scale(0.92);
         opacity: 0.7;
         position: relative;
@@ -75,12 +78,20 @@ export const BrantjesExtension = {
         display: flex;
         align-items: flex-end;
       }
-      .brantjes-property-card.active {
+      .brantjes-property-card.act {
         width: 219px;
         height: 365px;
         transform: scale(1);
         opacity: 1;
         z-index: 10;
+      }
+      .brantjes-property-card.prev,
+      .brantjes-property-card.next {
+        width: 201px;
+        height: 335px;
+        transform: scale(0.92);
+        opacity: 0.7;
+        z-index: 1;
       }
       .brantjes-property-card-inner {
         position: relative;
@@ -749,22 +760,29 @@ export const BrantjesExtension = {
     }
     updateTrack();
 
-    // Navigation handlers
-    let isTransitioning = false;
+    // Add class management for hero/side cards
+    function updateCardClasses() {
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].classList.remove('act', 'prev', 'next');
+      }
+      // Only apply to real slides (not clones)
+      const realIdx = currentIndex;
+      if (slides[realIdx]) slides[realIdx].classList.add('act');
+      if (slides[realIdx - 1]) slides[realIdx - 1].classList.add('prev');
+      if (slides[realIdx + 1]) slides[realIdx + 1].classList.add('next');
+    }
+    // Call after every move
     function goTo(idx) {
       if (isTransitioning) return;
       isTransitioning = true;
       currentIndex = idx;
       track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
       updateTrack();
+      updateCardClasses();
     }
-    function next() {
-      goTo(currentIndex + 1);
-    }
-    function prev() {
-      goTo(currentIndex - 1);
-    }
-
+    // Initial class setup
+    updateCardClasses();
+    // Also update after jump on transitionend
     track.addEventListener('transitionend', () => {
       // If at clone, jump to real slide without animation
       if (currentIndex === 0) {
@@ -785,6 +803,7 @@ export const BrantjesExtension = {
           track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
         });
       }
+      updateCardClasses();
       isTransitioning = false;
     });
 
@@ -806,8 +825,8 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
-    nextButton.addEventListener('click', next);
-    prevButton.addEventListener('click', prev);
+    nextButton.addEventListener('click', () => goTo(currentIndex + 1));
+    prevButton.addEventListener('click', () => goTo(currentIndex - 1));
     // Responsive: update slideWidth on resize if needed
     // (Optional: add logic for mobile responsiveness)
 
