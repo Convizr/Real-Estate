@@ -106,7 +106,7 @@ export const BrantjesExtension = {
         left: 0;
         right: 0;
         padding: 15px;
-        padding-bottom: 60px;
+        padding-bottom: 27px;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
       }
       .brantjes-card-info p {
@@ -119,15 +119,15 @@ export const BrantjesExtension = {
       }
       .brantjes-viewing-button {
         position: absolute;
-        bottom: 15px;
+        bottom: 7px;
         left: 15px;
         transform: none;
         background: transparent;
         color: white;
         border: none;
         width: 112px;
-        height: 35px;
-        border-radius: 4px;
+        height: 20px;
+        border-radius: 5px;
         cursor: pointer;
         overflow: hidden;
         opacity: 0;
@@ -153,11 +153,10 @@ export const BrantjesExtension = {
         transform: translateX(-5px);
         opacity: 0.7;
         transition: transform 0.3s ease, opacity 0.3s ease;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 500;
         text-align: center;
         width: 100%;
-        line-height: 35px;
       }
       .brantjes-property-card.act:hover .brantjes-viewing-button {
         opacity: 1;
