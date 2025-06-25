@@ -44,7 +44,7 @@ export const BrantjesExtension = {
       .brantjes-carousel-container {
         position: relative;
         width: 100%;
-        max-width: 800px;
+        max-width: 1100px;
         margin: auto;
         overflow: hidden;
         padding: 40px 0;
@@ -54,14 +54,17 @@ export const BrantjesExtension = {
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
-        flex: 0 0 33.33%;
-        max-width: 33.33%;
-        padding: 10px;
+        flex: 0 0 60%;
+        max-width: 60%;
+        min-width: 340px;
+        aspect-ratio: 3/4;
+        padding: 0 10px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
         transform: scale(0.85);
         opacity: 0.7;
         position: relative;
+        z-index: 1;
       }
       .brantjes-property-card.active {
         transform: scale(1);
@@ -75,10 +78,18 @@ export const BrantjesExtension = {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         width: 100%;
         color: white;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
       }
       .brantjes-property-card-inner img {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
         display: block;
+        aspect-ratio: 3/4;
       }
       .brantjes-card-overlay {
         position: absolute;
@@ -90,10 +101,11 @@ export const BrantjesExtension = {
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
-        font-size: 16px;
+        font-size: 18px;
       }
       .brantjes-card-info p:first-child {
         font-weight: bold;
+        font-size: 20px;
       }
       .brantjes-viewing-button {
         background: #1E7FCB;
@@ -299,24 +311,21 @@ export const BrantjesExtension = {
       }
 
       /* Responsive Styles */
-      @media (max-width: 768px) {
+      @media (max-width: 900px) {
         .brantjes-property-card {
-          flex: 0 0 70%;
-          max-width: 70%;
+          flex: 0 0 80%;
+          max-width: 80%;
+          min-width: 220px;
         }
-        .brantjes-nav-prev { left: 5px; }
-        .brantjes-nav-next { right: 5px; }
-        .brantjes-modal-container {
-          width: 95%;
-          padding: 1.5rem;
-          max-height: 90vh;
-          overflow-y: auto;
+      }
+      @media (max-width: 600px) {
+        .brantjes-property-card {
+          flex: 0 0 98%;
+          max-width: 98%;
+          min-width: 160px;
         }
-        .detail-popup-content {
-          grid-template-columns: 1fr; /* Stack vertically */
-        }
-        .booking-form {
-          grid-template-columns: 1fr; /* Stack vertically */
+        .brantjes-carousel-container {
+          max-width: 100vw;
         }
       }
     `;
@@ -609,7 +618,7 @@ export const BrantjesExtension = {
       resetAutoPlay();
     }
     
-    function startAutoPlay(delay = 5000) {
+    function startAutoPlay(delay = 15000) { // 15 seconds for slower auto-rotation
       stopAutoPlay();
       autoPlayInterval = setInterval(showNext, delay);
     }
