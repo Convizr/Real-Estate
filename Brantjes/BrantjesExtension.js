@@ -40,11 +40,6 @@ export const BrantjesExtension = {
 
     // Create stylesheet
     const style = document.createElement('style');
-    // Card sizes
-    const CARD_WIDTH = 201;
-    const CARD_GAP = 8;
-    const CONTAINER_WIDTH = 650;
-
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
@@ -59,17 +54,19 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
-        width: ${(CARD_WIDTH + CARD_GAP) * 3 - CARD_GAP}px;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        gap: ${CARD_GAP}px;
-        will-change: transform;
       }
       .brantjes-property-card {
-        width: ${CARD_WIDTH}px;
+        flex: 0 0 201px;
+        width: 201px;
         height: 335px;
-        margin: 0;
+        margin: 0 8px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+        transform: scale(0.92);
+        opacity: 0.7;
+        position: relative;
+        z-index: 1;
         border-radius: 8px;
         background: #fff;
         border: 5px solid #fff;
@@ -77,18 +74,13 @@ export const BrantjesExtension = {
         overflow: visible;
         display: flex;
         align-items: flex-end;
-        opacity: 0.7;
-        z-index: 1;
       }
       .brantjes-property-card.active {
-        transform: scale(1.05);
+        width: 219px;
+        height: 365px;
+        transform: scale(1);
         opacity: 1;
         z-index: 10;
-      }
-      .brantjes-property-card:not(.active) {
-        transform: scale(0.92);
-        opacity: 0.7;
-        z-index: 1;
       }
       .brantjes-property-card-inner {
         position: relative;
@@ -516,34 +508,49 @@ export const BrantjesExtension = {
     const carouselTrack = document.createElement('div');
     carouselTrack.className = 'brantjes-carousel-track';
 
-    // --- MODERN FLEX SLIDER LOGIC ---
     let currentIndex = 0;
-    let isTransitioning = false;
 
-    function mod(n, m) {
-      return ((n % m) + m) % m;
+    function preloadImages(urls, callback) {
+      let loaded = 0;
+      const total = urls.length;
+      let done = false;
+      const timer = setTimeout(() => {
+        if (!done) {
+          done = true;
+          callback();
+        }
+      }, 1000); // fallback: 1s max wait
+      urls.forEach(url => {
+        if (!url) {
+          loaded++;
+          if (loaded === total && !done) {
+            done = true;
+            clearTimeout(timer);
+            callback();
+          }
+          return;
+        }
+        const img = new window.Image();
+        img.onload = img.onerror = () => {
+          loaded++;
+          if (loaded === total && !done) {
+            done = true;
+            clearTimeout(timer);
+            callback();
+          }
+        };
+        img.src = url;
+      });
     }
 
     function renderCarouselCards() {
-      while (carouselTrack.firstChild) {
-        carouselTrack.removeChild(carouselTrack.firstChild);
-      }
+      // Preload images for left, center, right
       const N = properties.length;
-      // Indices for left, center, right
-      const leftIdx = mod(currentIndex - 1, N);
+      const leftIdx = (currentIndex - 1 + N) % N;
       const centerIdx = currentIndex;
-      const rightIdx = mod(currentIndex + 1, N);
-      [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
+      const rightIdx = (currentIndex + 1) % N;
+      const getImgUrl = idx => {
         const property = properties[idx];
-        const card = document.createElement('div');
-        card.className = 'brantjes-property-card';
-        if (pos === 1) card.classList.add('active');
-        card.dataset.index = idx;
-        card.setAttribute('key', idx);
-        // Card inner
-        const cardInner = document.createElement('div');
-        cardInner.className = 'brantjes-property-card-inner';
-        // Get first available image, prioritizing HOOFDFOTO
         let imgUrl = '';
         if (Array.isArray(property.media)) {
           let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
@@ -557,80 +564,89 @@ export const BrantjesExtension = {
             }
           }
         }
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.alt = 'Woning foto';
-        cardInner.appendChild(img);
-        // Overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'brantjes-card-overlay';
-        const info = document.createElement('div');
-        info.className = 'brantjes-card-info';
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const plaats = property.adres?.plaats || '';
-        const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const energy = property.algemeen?.energieklasse || '';
-        const area = property.algemeen?.woonoppervlakte || '';
-        const rooms = property.algemeen?.aantalKamers || '';
-        const title = document.createElement('p');
-        title.textContent = address || 'Onbekend adres';
-        const priceP = document.createElement('p');
-        priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
-        const extra = document.createElement('p');
-        extra.style.fontSize = '14px';
-        extra.innerHTML =
-          (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
-          (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
-          (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
-        info.appendChild(title);
-        info.appendChild(priceP);
-        info.appendChild(extra);
-        overlay.appendChild(info);
-        cardInner.appendChild(overlay);
-        // Viewing button
-        const viewingButton = document.createElement('button');
-        viewingButton.className = 'brantjes-viewing-button';
-        viewingButton.textContent = 'Bezichtigen';
-        viewingButton.style.display = (pos === 1) ? '' : 'none';
-        viewingButton.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showBookingModal(property);
+        return imgUrl;
+      };
+      const urls = [getImgUrl(leftIdx), getImgUrl(centerIdx), getImgUrl(rightIdx)];
+      // Fade out carouselTrack for smooth transition
+      carouselTrack.style.opacity = '0';
+      preloadImages(urls, () => {
+        // Remove all children from carouselTrack
+        while (carouselTrack.firstChild) {
+          carouselTrack.removeChild(carouselTrack.firstChild);
+        }
+        [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
+          const property = properties[idx];
+          const card = document.createElement('div');
+          card.className = 'brantjes-property-card';
+          if (pos === 1) card.classList.add('active');
+          card.dataset.index = idx;
+          // Card inner
+          const cardInner = document.createElement('div');
+          cardInner.className = 'brantjes-property-card-inner';
+          // Get preloaded image url
+          const imgUrl = urls[pos];
+          const img = document.createElement('img');
+          img.src = imgUrl;
+          img.alt = 'Woning foto';
+          cardInner.appendChild(img);
+          // Overlay
+          const overlay = document.createElement('div');
+          overlay.className = 'brantjes-card-overlay';
+          const info = document.createElement('div');
+          info.className = 'brantjes-card-info';
+          const straat = property.adres?.straat || '';
+          const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+          const plaats = property.adres?.plaats || '';
+          const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
+          const price = property.financieel?.overdracht?.koopprijs || 0;
+          const energy = property.algemeen?.energieklasse || '';
+          const area = property.algemeen?.woonoppervlakte || '';
+          const rooms = property.algemeen?.aantalKamers || '';
+          const title = document.createElement('p');
+          title.textContent = address || 'Onbekend adres';
+          const priceP = document.createElement('p');
+          priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
+          const extra = document.createElement('p');
+          extra.style.fontSize = '14px';
+          extra.innerHTML =
+            (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
+            (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
+            (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
+          info.appendChild(title);
+          info.appendChild(priceP);
+          info.appendChild(extra);
+          overlay.appendChild(info);
+          cardInner.appendChild(overlay);
+          // Viewing button
+          const viewingButton = document.createElement('button');
+          viewingButton.className = 'brantjes-viewing-button';
+          viewingButton.textContent = 'Bezichtigen';
+          viewingButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showBookingModal(property);
+          });
+          cardInner.appendChild(viewingButton);
+          card.appendChild(cardInner);
+          card.addEventListener('click', () => {
+            showDetailModal(property);
+          });
+          carouselTrack.appendChild(card);
         });
-        cardInner.appendChild(viewingButton);
-        card.appendChild(cardInner);
-        card.addEventListener('click', () => {
-          showDetailModal(property);
-        });
-        carouselTrack.appendChild(card);
+        // Fade in
+        setTimeout(() => {
+          carouselTrack.style.opacity = '1';
+        }, 10);
       });
-      // Always center the track (show center card in the middle)
-      carouselTrack.style.transform = 'translateX(-' + (CARD_WIDTH + CARD_GAP) + 'px)';
     }
 
-    function slideToNext() {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      carouselTrack.style.transform = 'translateX(-' + 2 * (CARD_WIDTH + CARD_GAP) + 'px)';
-      setTimeout(() => {
-        currentIndex = mod(currentIndex + 1, properties.length);
-        renderCarouselCards();
-        isTransitioning = false;
-      }, 400);
+    function showNext() {
+      currentIndex = (currentIndex + 1) % properties.length;
+      renderCarouselCards();
     }
 
-    function slideToPrev() {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      carouselTrack.style.transform = 'translateX(0px)';
-      setTimeout(() => {
-        currentIndex = mod(currentIndex - 1, properties.length);
-        renderCarouselCards();
-        isTransitioning = false;
-      }, 400);
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + properties.length) % properties.length;
+      renderCarouselCards();
     }
 
     const prevButton = document.createElement('button');
@@ -648,8 +664,8 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    prevButton.addEventListener('click', slideToPrev);
-    nextButton.addEventListener('click', slideToNext);
+    prevButton.addEventListener('click', showPrev);
+    nextButton.addEventListener('click', showNext);
 
     // Initial render
     renderCarouselCards();
