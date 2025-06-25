@@ -509,65 +509,31 @@ export const BrantjesExtension = {
     carouselTrack.className = 'brantjes-carousel-track';
 
     // --- CAROUSEL SLIDING LOGIC ---
-    let currentIndex = 0;
+    const SIDE_CARD_WIDTH = 201;
+    const CENTER_CARD_WIDTH = 219;
+    const CARD_MARGIN = 16; // 8px left + 8px right
+    const SLIDE_FULL_WIDTH = SIDE_CARD_WIDTH + CARD_MARGIN;
+    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
+    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
+    carouselContainer.style.overflow = 'hidden';
+
+    // Clone technique for infinite loop
+    const realSlides = properties;
+    const slides = [
+      realSlides[realSlides.length - 1],
+      ...realSlides,
+      realSlides[0]
+    ];
+    const N = slides.length;
+    let currentIndex = 1; // start at first real slide
     let isTransitioning = false;
-    const N = properties.length;
 
-    // Helper: get the visible indices for left, center, right
-    function getVisibleIndices(centerIdx) {
-      return [
-        (centerIdx - 1 + N) % N, // left
-        centerIdx,               // center
-        (centerIdx + 1) % N      // right
-      ];
-    }
-
-    // Preload all images on initial render
-    function preloadAllImages(callback) {
-      let loaded = 0;
-      let done = false;
-      const total = properties.length;
-      if (total === 0) return callback();
-      properties.forEach(property => {
-        let imgUrl = '';
-        if (Array.isArray(property.media)) {
-          let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
-          if (!imgObj) {
-            imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-          }
-          if (imgObj) {
-            imgUrl = imgObj.link;
-            if (imgUrl) {
-              imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
-            }
-          }
-        }
-        if (!imgUrl) {
-          loaded++;
-          if (loaded === total && !done) {
-            done = true;
-            callback();
-          }
-          return;
-        }
-        const img = new window.Image();
-        img.onload = img.onerror = () => {
-          loaded++;
-          if (loaded === total && !done) {
-            done = true;
-            callback();
-          }
-        };
-        img.src = imgUrl;
-      });
-    }
-
-    // Render all cards in the DOM
+    // Render all slides in the DOM
     function renderAllCards() {
       while (carouselTrack.firstChild) {
         carouselTrack.removeChild(carouselTrack.firstChild);
       }
-      properties.forEach((property, index) => {
+      slides.forEach((property, index) => {
         const card = document.createElement('div');
         card.className = 'brantjes-property-card';
         card.dataset.index = index;
@@ -636,62 +602,38 @@ export const BrantjesExtension = {
       });
     }
 
-    // Card sizing constants
-    const SIDE_CARD_WIDTH = 201;
-    const CENTER_CARD_WIDTH = 219;
-    const CARD_MARGIN = 16; // 8px left + 8px right
-    // Container width: left + center + right + margins
-    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
-    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
-    carouselContainer.style.overflow = 'hidden';
-
-    // Update the track position and card classes
-    function updateTrackPosition(animate = true) {
+    // Update active class for fade/scale
+    function updateActiveClasses() {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
-      // Remove all active classes
-      cards.forEach(card => card.classList.remove('active'));
-      // Get visible indices
-      const [leftIdx, centerIdx, rightIdx] = getVisibleIndices(currentIndex);
-      // Set classes for visible cards
       cards.forEach((card, idx) => {
-        if (idx === centerIdx) card.classList.add('active');
+        if (idx === currentIndex) card.classList.add('active');
         else card.classList.remove('active');
-        // Only left, center, right are visible and interactive
-        if (idx === leftIdx || idx === centerIdx || idx === rightIdx) {
-          card.style.opacity = (idx === centerIdx) ? '1' : '0.7';
-          card.style.pointerEvents = '';
-          card.style.visibility = 'visible';
-        } else {
-          card.style.opacity = '0';
-          card.style.pointerEvents = 'none';
-          card.style.visibility = 'hidden';
-        }
       });
-      // Calculate offset: always center the hero card
-      const offset = -(currentIndex * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2);
+    }
+
+    // Set initial track position
+    function setTrackPosition(animate = false) {
       if (animate) {
-        carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+        carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
       } else {
         carouselTrack.style.transition = 'none';
       }
-      carouselTrack.style.transform = `translateX(${offset}px)`;
+      carouselTrack.style.transform = `translateX(${-SLIDE_FULL_WIDTH * currentIndex}px)`;
     }
 
+    // Navigation
     function showNext() {
       if (isTransitioning) return;
       isTransitioning = true;
-      currentIndex = (currentIndex + 1) % N;
-      updateTrackPosition(true);
-      setTimeout(() => { isTransitioning = false; }, 400);
+      currentIndex++;
+      setTrackPosition(true);
     }
     function showPrev() {
       if (isTransitioning) return;
       isTransitioning = true;
-      currentIndex = (currentIndex - 1 + N) % N;
-      updateTrackPosition(true);
-      setTimeout(() => { isTransitioning = false; }, 400);
+      currentIndex--;
+      setTrackPosition(true);
     }
-
     const prevButton = document.createElement('button');
     prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
     prevButton.innerHTML = '&lsaquo;';
@@ -710,11 +652,25 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', showPrev);
     nextButton.addEventListener('click', showNext);
 
-    // Initial render: preload all images, then render all cards and set initial position
-    preloadAllImages(() => {
-      renderAllCards();
-      updateTrackPosition(false);
+    // Handle transitionend for infinite loop
+    carouselTrack.addEventListener('transitionend', () => {
+      isTransitioning = false;
+      if (currentIndex === N - 1) {
+        // After last clone, jump to real first
+        currentIndex = 1;
+        setTrackPosition(false);
+      } else if (currentIndex === 0) {
+        // After first clone, jump to real last
+        currentIndex = N - 2;
+        setTrackPosition(false);
+      }
+      updateActiveClasses();
     });
-    window.addEventListener('resize', () => updateTrackPosition(false));
+
+    // Initial render
+    renderAllCards();
+    setTrackPosition(false);
+    updateActiveClasses();
+    window.addEventListener('resize', () => setTrackPosition(false));
   },
 };
