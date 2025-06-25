@@ -666,9 +666,10 @@ export const BrantjesExtension = {
         }
       });
       // Calculate offset: always center the hero card, and show correct wrap-around
-      // The left card should be flush with the left edge, center in the middle, right at the right edge
-      // The offset is: -(centerIdx * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2)
-      const offset = -((centerIdx) * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2);
+      // The offset is: -((currentIndex - 1 + N) % N) * (SIDE_CARD_WIDTH + CARD_MARGIN) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2)
+      // This ensures the left, center, and right cards are always in the visible window
+      const leftCardIndex = (currentIndex - 1 + N) % N;
+      const offset = -(leftCardIndex * (SIDE_CARD_WIDTH + CARD_MARGIN));
       if (animate) {
         carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       } else {
