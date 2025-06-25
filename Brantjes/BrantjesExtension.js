@@ -43,7 +43,7 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 710px;
+        width: 650px;
         height: 420px;
         margin: auto;
         overflow: hidden;
@@ -54,18 +54,15 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
-        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
-        will-change: transform;
-        position: absolute;
-        left: 0;
-        top: 0;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
+        flex: 0 0 201px;
         width: 201px;
         height: 335px;
-        margin: 0 9px;
+        margin: 0 8px;
         box-sizing: border-box;
-        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s cubic-bezier(0.16,1,0.3,1);
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
         transform: scale(0.92);
         opacity: 0.7;
         position: relative;
@@ -78,20 +75,12 @@ export const BrantjesExtension = {
         display: flex;
         align-items: flex-end;
       }
-      .brantjes-property-card.act {
+      .brantjes-property-card.active {
         width: 219px;
         height: 365px;
         transform: scale(1);
         opacity: 1;
         z-index: 10;
-      }
-      .brantjes-property-card.prev,
-      .brantjes-property-card.next {
-        width: 201px;
-        height: 335px;
-        transform: scale(0.92);
-        opacity: 0.7;
-        z-index: 1;
       }
       .brantjes-property-card-inner {
         position: relative;
@@ -649,27 +638,30 @@ export const BrantjesExtension = {
     
     // --- GPU-ACCELERATED INFINITE CAROUSEL WITH TRACK ---
     const realSlides = properties;
-    let currentIndex = 1; // Start at first real slide (after clone)
     const total = realSlides.length;
-    const slideWidth = 219 + 18; // hero card width + margin (adjust as needed)
+    let currentIndex = 1; // Start at first real slide (after clone)
+    let isTransitioning = false;
+    let slideWidth = 219 + 18; // hero card width + margin (adjust if needed)
 
-    // Create carousel track and container
+    // Create the track and container
     const track = document.createElement('div');
     track.className = 'brantjes-carousel-track';
     track.style.display = 'flex';
     track.style.height = '100%';
     track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
     track.style.willChange = 'transform';
+    track.style.alignItems = 'center';
     track.style.position = 'absolute';
     track.style.left = '0';
     track.style.top = '0';
-    track.style.width = `${slideWidth * (total + 2)}px`;
+    track.style.width = `${(total + 2) * slideWidth}px`;
 
-    // Helper to create a card <div> for a given property and index
+    // Helper to create a card
     function createCard(property, idx) {
       const li = document.createElement('div');
       li.className = 'brantjes-property-card';
-      li.dataset.index = idx;
+      li.style.flex = '0 0 219px';
+      li.style.margin = '0 9px';
       // Card content (reuse your card rendering logic)
       const cardInner = document.createElement('div');
       cardInner.className = 'brantjes-property-card-inner';
@@ -723,8 +715,8 @@ export const BrantjesExtension = {
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
       viewingButton.innerHTML = `
-        <div class=\"cta-box\"></div>
-        <span class=\"cta-text\">Bezichtigen</span>
+        <div class="cta-box"></div>
+        <span class="cta-text">Bezichtigen</span>
       `;
       viewingButton.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -735,6 +727,7 @@ export const BrantjesExtension = {
       li.addEventListener('click', () => {
         showDetailModal(property);
       });
+
       // Energy label (top-left flag)
       if (energy) {
         const labelDiv = document.createElement('div');
@@ -742,17 +735,16 @@ export const BrantjesExtension = {
         labelDiv.textContent = energy;
         li.appendChild(labelDiv);
       }
+
       return li;
     }
 
     // Build slides: [cloneLast, ...realSlides, cloneFirst]
     const slides = [];
-    slides.push(createCard(realSlides[realSlides.length - 1], -1)); // clone last
-    for (let i = 0; i < realSlides.length; i++) {
-      slides.push(createCard(realSlides[i], i));
-    }
-    slides.push(createCard(realSlides[0], realSlides.length)); // clone first
-    slides.forEach(slide => track.appendChild(slide));
+    slides.push(createCard(realSlides[total-1], -1)); // Clone last
+    for (let i = 0; i < total; i++) slides.push(createCard(realSlides[i], i));
+    slides.push(createCard(realSlides[0], total)); // Clone first
+    slides.forEach(card => track.appendChild(card));
 
     // Set initial transform
     function updateTrack() {
@@ -760,37 +752,24 @@ export const BrantjesExtension = {
     }
     updateTrack();
 
-    // Add class management for hero/side cards
-    function updateCardClasses() {
-      for (let i = 0; i < slides.length; i++) {
-        slides[i].classList.remove('act', 'prev', 'next');
-      }
-      // Only apply to real slides (not clones)
-      const realIdx = currentIndex;
-      if (slides[realIdx]) slides[realIdx].classList.add('act');
-      if (slides[realIdx - 1]) slides[realIdx - 1].classList.add('prev');
-      if (slides[realIdx + 1]) slides[realIdx + 1].classList.add('next');
-    }
-    // Call after every move
+    // Navigation handlers
     function goTo(idx) {
       if (isTransitioning) return;
       isTransitioning = true;
       currentIndex = idx;
       track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
       updateTrack();
-      updateCardClasses();
     }
-    // Initial class setup
-    updateCardClasses();
-    // Also update after jump on transitionend
+    function next() { goTo(currentIndex + 1); }
+    function prev() { goTo(currentIndex - 1); }
+
+    // Handle infinite loop reset
     track.addEventListener('transitionend', () => {
-      // If at clone, jump to real slide without animation
       if (currentIndex === 0) {
         track.style.transition = 'none';
         currentIndex = total;
         updateTrack();
-        // Force reflow
-        track.offsetHeight;
+        track.offsetHeight; // force reflow
         requestAnimationFrame(() => {
           track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
         });
@@ -803,11 +782,19 @@ export const BrantjesExtension = {
           track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
         });
       }
-      updateCardClasses();
       isTransitioning = false;
     });
 
-    // Initial render
+    // Build container
+    const carouselContainer = document.createElement('div');
+    carouselContainer.className = 'brantjes-carousel-container';
+    carouselContainer.style.position = 'relative';
+    carouselContainer.style.overflow = 'hidden';
+    carouselContainer.style.width = '710px';
+    carouselContainer.style.height = '420px';
+    carouselContainer.appendChild(track);
+
+    // Navigation buttons
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
     nextButton.innerHTML = '&rsaquo;';
@@ -816,26 +803,16 @@ export const BrantjesExtension = {
     prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
     prevButton.innerHTML = '&lsaquo;';
     prevButton.setAttribute('aria-label', 'Previous Property');
-    const carouselContainer = document.createElement('div');
-    carouselContainer.setAttribute('tabindex', '0');
-    carouselContainer.setAttribute('aria-label', 'Property Recommendations Carousel');
-    carouselContainer.className = 'brantjes-carousel-container';
-    carouselContainer.style.position = 'relative';
-    carouselContainer.appendChild(track);
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
-    nextButton.addEventListener('click', () => goTo(currentIndex + 1));
-    prevButton.addEventListener('click', () => goTo(currentIndex - 1));
-    // Responsive: update slideWidth on resize if needed
-    // (Optional: add logic for mobile responsiveness)
+    nextButton.addEventListener('click', next);
+    prevButton.addEventListener('click', prev);
 
-    // Kick-off
+    // Responsive: update slideWidth on resize
     window.addEventListener('resize', () => {
-      // Update slideWidth based on new container size
-      const newSlideWidth = 219 + 18; // Assuming hero card width + margin
-      track.style.width = `${newSlideWidth * (total + 2)}px`;
-      updateTrack();
+      // recalculate slideWidth if needed
+      // updateTrack();
     });
   },
 };
