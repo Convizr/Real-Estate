@@ -43,7 +43,7 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 750px;
+        width: 710px;
         height: 420px;
         margin: auto;
         overflow: hidden;
@@ -60,7 +60,7 @@ export const BrantjesExtension = {
         flex: 0 0 201px;
         width: 201px;
         height: 335px;
-        margin: 0 0px;
+        margin: 0 8px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
         transform: scale(0.92);
@@ -69,7 +69,8 @@ export const BrantjesExtension = {
         z-index: 1;
         border-radius: 8px;
         background: #fff;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 5px solid #fff;
+        box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.15);
         overflow: visible;
         display: flex;
         align-items: flex-end;
@@ -665,10 +666,29 @@ export const BrantjesExtension = {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
       if (cards.length === 0) return;
       
-      const cardWidth = cards[0].offsetWidth;
-      // Center the track by offsetting it by half the container width minus half a card width
-      const offset = -currentIndex * cardWidth + (carouselContainer.offsetWidth / 2) - (cardWidth / 2);
-
+      // Card widths and margins
+      const sideCardWidth = 201;
+      const sideCardMargin = 8;
+      const centerCardWidth = 219;
+      // Total width for 3 cards (2 side + 1 center) + 4 margins (2 per side card)
+      const totalCardsWidth = sideCardWidth * 2 + centerCardWidth + sideCardMargin * 4;
+      // Center the active card, with one side card visible on each side
+      // The offset should move the track so the center card is in the middle of the container
+      // Calculate the offset so that the center card is centered, and side cards are visible
+      const containerWidth = 710;
+      // The left offset is: (containerWidth / 2) - (centerCardWidth / 2) - (currentIndex * (sideCardWidth + sideCardMargin * 2))
+      // But we need to account for the margin between cards
+      let offset = 0;
+      if (currentIndex === 0) {
+        // At the start, show first 3 cards
+        offset = 0;
+      } else if (currentIndex === cards.length - 1) {
+        // At the end, show last 3 cards
+        offset = -((cards.length - 3) * (sideCardWidth + sideCardMargin * 2));
+      } else {
+        // Center the active card
+        offset = -((currentIndex - 1) * (sideCardWidth + sideCardMargin * 2));
+      }
       carouselTrack.style.transform = `translateX(${offset}px)`;
 
       cards.forEach((card, index) => {
