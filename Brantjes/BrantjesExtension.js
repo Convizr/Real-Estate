@@ -397,7 +397,8 @@ export const BrantjesExtension = {
         border-radius: 8px;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        transition: transform 1s ease, opacity 1s ease;
+        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1),
+                    opacity   0.6s cubic-bezier(0.16,1,0.3,1);
         z-index: 1;
       }
       .brantjes-carousel-list .act {
@@ -410,7 +411,8 @@ export const BrantjesExtension = {
       }
       .brantjes-carousel-list .hide,
       .brantjes-carousel-list .new-next {
-        transition: opacity 0.5s ease, transform 0.5s ease;
+        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1),
+                    opacity   0.6s cubic-bezier(0.16,1,0.3,1);
       }
       .brantjes-carousel-list .hide {
         transform: translateX(-420px) scale(0.85);
