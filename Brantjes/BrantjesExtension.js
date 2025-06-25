@@ -368,6 +368,14 @@ export const BrantjesExtension = {
         transition: transform 0.5s ease, opacity 0.5s ease;
         z-index: 1;
       }
+      .brantjes-carousel-list .act {
+        width: 219px; height: 365px;
+        margin-left: -109.5px;
+        margin-top: -182.5px;
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        z-index: 3;
+      }
       .brantjes-carousel-list .hide {
         transform: translateX(-420px) scale(0.85);
         opacity: 0;
@@ -378,11 +386,6 @@ export const BrantjesExtension = {
         opacity: 0.25;
         cursor: pointer;
         z-index: 2;
-      }
-      .brantjes-carousel-list .act {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-        z-index: 3;
       }
       .brantjes-carousel-list .next {
         transform: translateX(220px) scale(0.85);
