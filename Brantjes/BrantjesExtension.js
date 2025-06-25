@@ -106,8 +106,12 @@ export const BrantjesExtension = {
         left: 0;
         right: 0;
         padding: 15px;
-        padding-bottom: 60px;
+        padding-bottom: 40px;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        transition: padding-bottom 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .brantjes-property-card.act .brantjes-card-overlay {
+        padding-bottom: 70px;
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
