@@ -501,21 +501,19 @@ export const BrantjesExtension = {
     
     // Create carousel structure
     const carouselContainer = document.createElement('div');
-    carouselContainer.className = 'brantjes-carousel-container';
     carouselContainer.setAttribute('tabindex', '0'); // For keyboard navigation
     carouselContainer.setAttribute('aria-label', 'Property Recommendations Carousel');
 
     const carouselTrack = document.createElement('div');
     carouselTrack.className = 'brantjes-carousel-track';
 
-    // --- CAROUSEL CLONE TECHNIQUE ---
-    const CARD_W = 201;
-    const MARGIN = 16;
-    const SLIDE_W = CARD_W + MARGIN;
-    carouselContainer.style.width = (SLIDE_W * 3) + 'px';
-    carouselContainer.style.overflow = 'hidden';
+    // --- ESSENTIAL INFINITE CAROUSEL WITH CLONING ---
+    const CARD_W   = 201;
+    const MARGIN   = 16;
+    const SLIDE_W  = CARD_W + MARGIN;
+    const VISIBLE  = 3;
 
-    // 1) Maak een nieuwe slides‐array met clones
+    // 1) Build slides array with clones
     const realSlides = properties;
     const slides = [
       realSlides[realSlides.length - 1],
@@ -523,10 +521,18 @@ export const BrantjesExtension = {
       realSlides[0]
     ];
     const total = slides.length;
-    let currentIndex = 1; // we starten op de eerste "echte" slide
+    let currentIndex = 1;
     let isTransitioning = false;
 
-    // 2) CSS-transitie op track en cards (add to style)
+    // 2) Set up container & track
+    carouselContainer.className = 'brantjes-carousel-container';
+    carouselContainer.style.width = `${SLIDE_W * VISIBLE}px`;
+    carouselContainer.style.overflow = 'hidden';
+    carouselTrack.className = 'brantjes-carousel-track';
+    carouselTrack.style.display = 'flex';
+    carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+
+    // 2b) Add required CSS for smooth transitions
     style.innerHTML += `
       .brantjes-carousel-track {
         display: flex;
@@ -543,15 +549,13 @@ export const BrantjesExtension = {
       }
     `;
 
-    // 3) Render slides
+    // 3) Render function to build DOM
     function renderSlides() {
-      while (carouselTrack.firstChild) {
-        carouselTrack.removeChild(carouselTrack.firstChild);
-      }
-      slides.forEach((property, index) => {
+      carouselTrack.innerHTML = '';
+      slides.forEach((property, idx) => {
         const card = document.createElement('div');
         card.className = 'brantjes-property-card';
-        card.dataset.index = index;
+        card.dataset.index = idx;
         const cardInner = document.createElement('div');
         cardInner.className = 'brantjes-property-card-inner';
         // Get image
@@ -617,22 +621,17 @@ export const BrantjesExtension = {
       });
     }
 
-    // 3) Position bijwerken
+    // 4) Set the track immediately to the correct position
     function setPosition(animate = true) {
       if (!animate) carouselTrack.style.transition = 'none';
-      else carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
-      const x = -currentIndex * SLIDE_W;
-      carouselTrack.style.transform = `translateX(${x}px)`;
-      updateActive();
-    }
-
-    function updateActive() {
-      carouselTrack.querySelectorAll('.brantjes-property-card').forEach((c, i) => {
+      carouselTrack.style.transform = `translateX(${-currentIndex * SLIDE_W}px)`;
+      // active class for scale/opacity
+      carouselTrack.querySelectorAll('.brantjes-property-card').forEach((c,i) => {
         c.classList.toggle('active', i === currentIndex);
       });
     }
 
-    // 4) Next/Prev handlers
+    // 5) Navigation handlers
     function move(delta) {
       if (isTransitioning) return;
       isTransitioning = true;
@@ -658,20 +657,15 @@ export const BrantjesExtension = {
     nextButton.addEventListener('click', () => move(1));
     prevButton.addEventListener('click', () => move(-1));
 
-    // 5) Na animatie: reset naar echte slide zonder animatie
+    // 6) After each transition: reset if on a clone
     carouselTrack.addEventListener('transitionend', () => {
       isTransitioning = false;
-      if (currentIndex === total - 1) {
-        currentIndex = 1;
-        setPosition(false);
-      } else if (currentIndex === 0) {
-        currentIndex = total - 2;
-        setPosition(false);
-      }
-      updateActive();
+      if (currentIndex === total - 1) currentIndex = 1;
+      else if (currentIndex === 0) currentIndex = total - 2;
+      setPosition(false);
     });
 
-    // 6) Bij init
+    // 7) Kick-off
     renderSlides();
     setPosition(false);
     window.addEventListener('resize', () => setPosition(false));
