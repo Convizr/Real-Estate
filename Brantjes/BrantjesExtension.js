@@ -660,11 +660,9 @@ export const BrantjesExtension = {
         if (idx === leftIdx || idx === centerIdx || idx === rightIdx) {
           card.style.opacity = (idx === centerIdx) ? '1' : '0.7';
           card.style.pointerEvents = '';
-          card.style.display = '';
         } else {
           card.style.opacity = '0';
           card.style.pointerEvents = 'none';
-          card.style.display = 'none';
         }
       });
       // Calculate offset: always center the hero card, and show correct wrap-around
