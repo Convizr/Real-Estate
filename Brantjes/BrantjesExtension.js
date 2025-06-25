@@ -660,16 +660,15 @@ export const BrantjesExtension = {
         if (idx === leftIdx || idx === centerIdx || idx === rightIdx) {
           card.style.opacity = (idx === centerIdx) ? '1' : '0.7';
           card.style.pointerEvents = '';
+          card.style.visibility = 'visible';
         } else {
           card.style.opacity = '0';
           card.style.pointerEvents = 'none';
+          card.style.visibility = 'hidden';
         }
       });
-      // Calculate offset: always center the hero card, and show correct wrap-around
-      // The offset is: -((currentIndex - 1 + N) % N) * (SIDE_CARD_WIDTH + CARD_MARGIN) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2)
-      // This ensures the left, center, and right cards are always in the visible window
-      const leftCardIndex = (currentIndex - 1 + N) % N;
-      const offset = -(leftCardIndex * (SIDE_CARD_WIDTH + CARD_MARGIN));
+      // Calculate offset: always center the hero card
+      const offset = -(currentIndex * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2);
       if (animate) {
         carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       } else {
