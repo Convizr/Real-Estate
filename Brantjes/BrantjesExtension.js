@@ -106,12 +106,8 @@ export const BrantjesExtension = {
         left: 0;
         right: 0;
         padding: 15px;
-        padding-bottom: 40px;
+        padding-bottom: 60px;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
-        transition: padding-bottom 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      .brantjes-property-card.act .brantjes-card-overlay {
-        padding-bottom: 70px;
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
@@ -435,6 +431,54 @@ export const BrantjesExtension = {
         opacity: 0;
         z-index: 0;
       }
+
+      /* Energy label styles */
+      .energy-label {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        min-width: 36px;
+        height: 32px;
+        background: #1EC773;
+        color: #fff;
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 32px;
+        text-align: center;
+        border-radius: 6px 0 0 6px;
+        z-index: 10;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        padding: 0 14px 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: visible;
+      }
+      .energy-label::after {
+        content: '';
+        position: absolute;
+        right: -12px;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-top: 16px solid transparent;
+        border-bottom: 16px solid transparent;
+        border-left: 12px solid #1EC773;
+      }
+      .energy-label-A { background: #1EC773; }
+      .energy-label-B { background: #8DD800; }
+      .energy-label-C { background: #F7D900; color: #333; }
+      .energy-label-D { background: #F7A600; }
+      .energy-label-E { background: #F76B1C; }
+      .energy-label-F { background: #E2001A; }
+      .energy-label-G { background: #A50021; }
+      .energy-label-A::after { border-left-color: #1EC773; }
+      .energy-label-B::after { border-left-color: #8DD800; }
+      .energy-label-C::after { border-left-color: #F7D900; }
+      .energy-label-D::after { border-left-color: #F7A600; }
+      .energy-label-E::after { border-left-color: #F76B1C; }
+      .energy-label-F::after { border-left-color: #E2001A; }
+      .energy-label-G::after { border-left-color: #A50021; }
     `;
     element.appendChild(style);
     
@@ -669,6 +713,15 @@ export const BrantjesExtension = {
       li.addEventListener('click', () => {
         showDetailModal(property);
       });
+
+      // Energy label (top-left flag)
+      if (energy) {
+        const labelDiv = document.createElement('div');
+        labelDiv.className = `energy-label energy-label-${energy}`;
+        labelDiv.textContent = energy;
+        li.appendChild(labelDiv);
+      }
+
       return li;
     }
 
