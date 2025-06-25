@@ -606,22 +606,6 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    /*const dotsContainer = document.createElement('div');
-    dotsContainer.className = 'brantjes-dots-container';
-    properties.forEach((_, index) => {
-        const dot = document.createElement('span');
-        dot.className = 'brantjes-dot';
-        dot.dataset.index = index;
-        dot.setAttribute('aria-label', `Go to property ${index + 1}`);
-        dot.addEventListener('click', () => {
-            currentIndex = index;
-            updateCarousel();
-            resetAutoPlay();
-        });
-        dotsContainer.appendChild(dot);
-    });
-    element.appendChild(dotsContainer);*/
-
     let currentIndex = 0;
     let autoPlayInterval = null;
 
@@ -703,11 +687,6 @@ export const BrantjesExtension = {
         } else {
           card.classList.remove('active');
         }
-      });
-
-      const dots = dotsContainer.querySelectorAll('.brantjes-dot');
-      dots.forEach((dot, index) => {
-          dot.classList.toggle('active', index === currentIndex);
       });
     }
 
