@@ -647,10 +647,9 @@ export const BrantjesExtension = {
       cards.forEach((card, idx) => {
         if (idx === centerIdx) card.classList.add('active');
         else card.classList.remove('active');
-        // Optionally, you can add left/right classes for more styling
-        card.style.opacity = (idx === centerIdx) ? '1' : (idx === leftIdx || idx === rightIdx ? '0.7' : '0');
-        card.style.pointerEvents = (idx === centerIdx || idx === leftIdx || idx === rightIdx) ? '' : 'none';
-        card.style.display = (idx === centerIdx || idx === leftIdx || idx === rightIdx) ? '' : 'none';
+        // Only adjust opacity for visual effect
+        card.style.opacity = (idx === centerIdx) ? '1' : (idx === leftIdx || idx === rightIdx ? '0.7' : '0.2');
+        // Remove pointerEvents and display logic
       });
       // Calculate offset: center card should be in the middle
       // Each card has width (including margin) of 201px (side) or 219px (center), but for simplicity, use fixed width
@@ -704,5 +703,8 @@ export const BrantjesExtension = {
       updateTrackPosition(false);
     });
     window.addEventListener('resize', () => updateTrackPosition(false));
+
+    // Make sure the container has overflow hidden
+    carouselContainer.style.overflow = 'hidden';
   },
 };
