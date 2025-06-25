@@ -539,6 +539,7 @@ export const BrantjesExtension = {
         card.className = 'brantjes-property-card';
         if (pos === 1) card.classList.add('active');
         card.dataset.index = idx;
+        card.setAttribute('key', idx);
         // Card inner
         const cardInner = document.createElement('div');
         cardInner.className = 'brantjes-property-card-inner';
@@ -652,6 +653,6 @@ export const BrantjesExtension = {
 
     // Initial render
     renderCarouselCards();
-    window.addEventListener('resize', updateCarouselTrackPosition);
+    window.addEventListener('resize', renderCarouselCards);
   },
 };
