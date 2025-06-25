@@ -132,6 +132,7 @@ export const BrantjesExtension = {
         opacity: 0;
         transition: opacity 0.3s ease;
         z-index: 5;
+        pointer-events: none;
       }
       .brantjes-viewing-button .cta-box {
         position: absolute;
@@ -153,9 +154,13 @@ export const BrantjesExtension = {
         transition: transform 0.3s ease, opacity 0.3s ease;
         font-size: 14px;
         font-weight: 500;
+        text-align: center;
+        width: 100%;
+        line-height: 35px;
       }
       .brantjes-property-card.act:hover .brantjes-viewing-button {
         opacity: 1;
+        pointer-events: auto;
       }
       .brantjes-property-card.act:hover .brantjes-viewing-button .cta-box {
         transform: scaleX(1);
@@ -654,7 +659,7 @@ export const BrantjesExtension = {
         e.stopPropagation();
         showBookingModal(property);
       });
-      cardInner.appendChild(viewingButton);
+      li.appendChild(viewingButton);
       li.appendChild(cardInner);
       li.addEventListener('click', () => {
         showDetailModal(property);
