@@ -547,10 +547,10 @@ export const BrantjesExtension = {
       openModal(content);
     }
     
-    // --- MODERN CLASS-BASED ABSOLUTE CAROUSEL ---
+    // --- DOM-MANIPULATION INFINITE CAROUSEL (NO GHOSTS) ---
     const realSlides = properties;
-    const total = realSlides.length;
     let currentIndex = 0;
+    const total = realSlides.length;
 
     // Create the absolute-positioned card list
     const cardList = document.createElement('ul');
@@ -559,139 +559,120 @@ export const BrantjesExtension = {
     cardList.style.padding = '0';
     cardList.style.margin = '0';
 
-    // Render all cards as <li> in the list
-    function renderCards() {
-      cardList.innerHTML = '';
-      realSlides.forEach((property, idx) => {
-        const li = document.createElement('li');
-        li.className = 'brantjes-property-card';
-        li.dataset.index = idx;
-        // Card content (reuse your card rendering logic)
-        const cardInner = document.createElement('div');
-        cardInner.className = 'brantjes-property-card-inner';
-        // Get image
-        let imgUrl = '';
-        if (Array.isArray(property.media)) {
-          let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
-          if (!imgObj) {
-            imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-          }
-          if (imgObj) {
-            imgUrl = imgObj.link;
-            if (imgUrl) {
-              imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
-            }
+    // Helper to create a card <li> for a given property and index
+    function createCard(property, idx, className) {
+      const li = document.createElement('li');
+      li.className = 'brantjes-property-card' + (className ? ' ' + className : '');
+      li.dataset.index = idx;
+      // Card content (reuse your card rendering logic)
+      const cardInner = document.createElement('div');
+      cardInner.className = 'brantjes-property-card-inner';
+      // Get image
+      let imgUrl = '';
+      if (Array.isArray(property.media)) {
+        let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
+        if (!imgObj) {
+          imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        }
+        if (imgObj) {
+          imgUrl = imgObj.link;
+          if (imgUrl) {
+            imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
           }
         }
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.alt = 'Woning foto';
-        cardInner.appendChild(img);
-        // Overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'brantjes-card-overlay';
-        const info = document.createElement('div');
-        info.className = 'brantjes-card-info';
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const plaats = property.adres?.plaats || '';
-        const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const energy = property.algemeen?.energieklasse || '';
-        const area = property.algemeen?.woonoppervlakte || '';
-        const rooms = property.algemeen?.aantalKamers || '';
-        const title = document.createElement('p');
-        title.textContent = address || 'Onbekend adres';
-        const priceP = document.createElement('p');
-        priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
-        const extra = document.createElement('p');
-        extra.style.fontSize = '14px';
-        extra.innerHTML =
-          (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
-          (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
-          (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
-        info.appendChild(title);
-        info.appendChild(priceP);
-        info.appendChild(extra);
-        overlay.appendChild(info);
-        cardInner.appendChild(overlay);
-        // Viewing button
-        const viewingButton = document.createElement('button');
-        viewingButton.className = 'brantjes-viewing-button';
-        viewingButton.textContent = 'Bezichtigen';
-        viewingButton.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showBookingModal(property);
-        });
-        cardInner.appendChild(viewingButton);
-        li.appendChild(cardInner);
-        li.addEventListener('click', () => {
-          showDetailModal(property);
-        });
-        cardList.appendChild(li);
+      }
+      const img = document.createElement('img');
+      img.src = imgUrl;
+      img.alt = 'Woning foto';
+      cardInner.appendChild(img);
+      // Overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'brantjes-card-overlay';
+      const info = document.createElement('div');
+      info.className = 'brantjes-card-info';
+      const straat = property.adres?.straat || '';
+      const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+      const plaats = property.adres?.plaats || '';
+      const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
+      const price = property.financieel?.overdracht?.koopprijs || 0;
+      const energy = property.algemeen?.energieklasse || '';
+      const area = property.algemeen?.woonoppervlakte || '';
+      const rooms = property.algemeen?.aantalKamers || '';
+      const title = document.createElement('p');
+      title.textContent = address || 'Onbekend adres';
+      const priceP = document.createElement('p');
+      priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
+      const extra = document.createElement('p');
+      extra.style.fontSize = '14px';
+      extra.innerHTML =
+        (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
+        (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
+        (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
+      info.appendChild(title);
+      info.appendChild(priceP);
+      info.appendChild(extra);
+      overlay.appendChild(info);
+      cardInner.appendChild(overlay);
+      // Viewing button
+      const viewingButton = document.createElement('button');
+      viewingButton.className = 'brantjes-viewing-button';
+      viewingButton.textContent = 'Bezichtigen';
+      viewingButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showBookingModal(property);
       });
+      cardInner.appendChild(viewingButton);
+      li.appendChild(cardInner);
+      li.addEventListener('click', () => {
+        showDetailModal(property);
+      });
+      return li;
     }
 
-    // Update card classes for carousel state
-    function updateClasses() {
-      const cards = Array.from(cardList.querySelectorAll('.brantjes-property-card'));
-      cards.forEach(c => c.classList.remove('hide','prev','act','next','new-next'));
-      const total = cards.length;
+    // Render only the 5 relevant cards in the DOM
+    function renderCards() {
+      cardList.innerHTML = '';
+      const total = realSlides.length;
       const prevIdx   = (currentIndex - 1 + total) % total;
       const nextIdx   = (currentIndex + 1) % total;
       const newNext   = (currentIndex + 2) % total;
       const hideIdx   = (currentIndex - 2 + total) % total;
-      cards[hideIdx].classList.add('hide');
-      cards[prevIdx].classList.add('prev');
-      cards[currentIndex].classList.add('act');
-      cards[nextIdx].classList.add('next');
-      cards[newNext].classList.add('new-next');
-      // Only show the three visible cards
-      cards.forEach((card, i) => {
-        const isCenter = i === currentIndex;
-        const isLeft   = i === prevIdx;
-        const isRight  = i === nextIdx;
-        if (isCenter || isLeft || isRight) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+      // Order: hide, prev, act, next, new-next
+      cardList.appendChild(createCard(realSlides[hideIdx], hideIdx, 'hide'));
+      cardList.appendChild(createCard(realSlides[prevIdx], prevIdx, 'prev'));
+      cardList.appendChild(createCard(realSlides[currentIndex], currentIndex, 'act'));
+      cardList.appendChild(createCard(realSlides[nextIdx], nextIdx, 'next'));
+      cardList.appendChild(createCard(realSlides[newNext], newNext, 'new-next'));
     }
 
     // Navigation handlers
     function next() {
-      currentIndex = (currentIndex + 1) % total;
-      updateClasses();
+      currentIndex = (currentIndex + 1) % realSlides.length;
+      renderCards();
     }
     function prev() {
-      currentIndex = (currentIndex - 1 + total) % total;
-      updateClasses();
+      currentIndex = (currentIndex - 1 + realSlides.length) % realSlides.length;
+      renderCards();
     }
 
     // Initial render
     renderCards();
-    updateClasses();
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
     nextButton.innerHTML = '&rsaquo;';
     nextButton.setAttribute('aria-label', 'Next Property');
-
     const prevButton = document.createElement('button');
     prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
     prevButton.innerHTML = '&lsaquo;';
     prevButton.setAttribute('aria-label', 'Previous Property');
-
     const carouselContainer = document.createElement('div');
-    carouselContainer.setAttribute('tabindex', '0'); // For keyboard navigation
+    carouselContainer.setAttribute('tabindex', '0');
     carouselContainer.setAttribute('aria-label', 'Property Recommendations Carousel');
     carouselContainer.className = 'brantjes-carousel-container';
-
     carouselContainer.appendChild(cardList);
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
-
     nextButton.addEventListener('click', next);
     prevButton.addEventListener('click', prev);
 
@@ -700,6 +681,6 @@ export const BrantjesExtension = {
     cardList.style.overflow = 'hidden';
 
     // Kick-off
-    window.addEventListener('resize', () => updateClasses());
+    window.addEventListener('resize', () => renderCards());
   },
 };
