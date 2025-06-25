@@ -40,9 +40,8 @@ export const BrantjesExtension = {
 
     // Create stylesheet
     const style = document.createElement('style');
-    // Card sizes (move these above style.innerHTML)
-    const SIDE_CARD_WIDTH = 201;
-    const CENTER_CARD_WIDTH = 219;
+    // Card sizes
+    const CARD_WIDTH = 201;
     const CARD_GAP = 8;
     const CONTAINER_WIDTH = 650;
 
@@ -65,7 +64,7 @@ export const BrantjesExtension = {
         will-change: transform;
       }
       .brantjes-property-card {
-        width: ${SIDE_CARD_WIDTH}px;
+        width: ${CARD_WIDTH}px;
         height: 335px;
         margin: 0;
         box-sizing: border-box;
@@ -81,7 +80,6 @@ export const BrantjesExtension = {
         z-index: 1;
       }
       .brantjes-property-card.active {
-        width: ${CENTER_CARD_WIDTH}px;
         transform: scale(1.05);
         opacity: 1;
         z-index: 10;
@@ -605,18 +603,10 @@ export const BrantjesExtension = {
     }
 
     function updateCarouselTrackPosition() {
-      // Calculate the offset so the center card is always centered
+      // Center the current card in the container
       const N = properties.length;
-      // Total width of all cards + gaps
-      const totalWidth = (N - 1) * (SIDE_CARD_WIDTH + CARD_GAP) + CENTER_CARD_WIDTH;
-      // Calculate the left offset for the center card
-      let offset = 0;
-      for (let i = 0; i < currentIndex; i++) {
-        offset += (i === currentIndex - 1) ? CENTER_CARD_WIDTH + CARD_GAP : SIDE_CARD_WIDTH + CARD_GAP;
-      }
-      // Center the center card
-      const centerCardLeft = (CONTAINER_WIDTH - CENTER_CARD_WIDTH) / 2;
-      const translateX = centerCardLeft - offset;
+      const centerOffset = (CONTAINER_WIDTH - CARD_WIDTH) / 2;
+      const translateX = centerOffset - (currentIndex * (CARD_WIDTH + CARD_GAP));
       carouselTrack.style.transform = `translateX(${translateX}px)`;
     }
 
