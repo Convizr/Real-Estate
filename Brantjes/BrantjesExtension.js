@@ -54,14 +54,14 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
-        width: 300%;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        gap: ${CARD_GAP}px;
+        will-change: transform;
       }
       .brantjes-property-card {
-        flex: 0 0 33.33%;
-        width: 33.33%;
+        width: ${SIDE_CARD_WIDTH}px;
         height: 335px;
-        margin: 0 0px;
+        margin: 0;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
         border-radius: 8px;
@@ -71,9 +71,12 @@ export const BrantjesExtension = {
         overflow: visible;
         display: flex;
         align-items: flex-end;
+        opacity: 0.7;
+        z-index: 1;
       }
       .brantjes-property-card.active {
-        transform: scale(1);
+        width: ${CENTER_CARD_WIDTH}px;
+        transform: scale(1.05);
         opacity: 1;
         z-index: 10;
       }
@@ -508,6 +511,13 @@ export const BrantjesExtension = {
     const carouselTrack = document.createElement('div');
     carouselTrack.className = 'brantjes-carousel-track';
 
+    // --- MODERN FLEX SLIDER LOGIC ---
+    // Card sizes
+    const SIDE_CARD_WIDTH = 201;
+    const CENTER_CARD_WIDTH = 219;
+    const CARD_GAP = 8;
+    const CONTAINER_WIDTH = 650;
+
     let currentIndex = 0;
     let isTransitioning = false;
 
@@ -520,15 +530,11 @@ export const BrantjesExtension = {
         carouselTrack.removeChild(carouselTrack.firstChild);
       }
       const N = properties.length;
-      // Indices for left, center, right
-      const leftIdx = mod(currentIndex - 1, N);
-      const centerIdx = currentIndex;
-      const rightIdx = mod(currentIndex + 1, N);
-      [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
+      for (let idx = 0; idx < N; idx++) {
         const property = properties[idx];
         const card = document.createElement('div');
         card.className = 'brantjes-property-card';
-        if (pos === 1) card.classList.add('active');
+        if (idx === currentIndex) card.classList.add('active');
         card.dataset.index = idx;
         // Card inner
         const cardInner = document.createElement('div');
@@ -583,7 +589,7 @@ export const BrantjesExtension = {
         const viewingButton = document.createElement('button');
         viewingButton.className = 'brantjes-viewing-button';
         viewingButton.textContent = 'Bezichtigen';
-        viewingButton.style.display = (pos === 1) ? '' : 'none';
+        viewingButton.style.display = (idx === currentIndex) ? '' : 'none';
         viewingButton.addEventListener('click', (e) => {
           e.stopPropagation();
           showBookingModal(property);
@@ -594,37 +600,40 @@ export const BrantjesExtension = {
           showDetailModal(property);
         });
         carouselTrack.appendChild(card);
-      });
-      // Set initial position of the track
-      carouselTrack.style.transition = 'none';
-      carouselTrack.style.transform = 'translateX(-33.33%)';
-      setTimeout(() => {
-        carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      }, 10);
+      }
+      updateCarouselTrackPosition();
+    }
+
+    function updateCarouselTrackPosition() {
+      // Calculate the offset so the center card is always centered
+      const N = properties.length;
+      // Total width of all cards + gaps
+      const totalWidth = (N - 1) * (SIDE_CARD_WIDTH + CARD_GAP) + CENTER_CARD_WIDTH;
+      // Calculate the left offset for the center card
+      let offset = 0;
+      for (let i = 0; i < currentIndex; i++) {
+        offset += (i === currentIndex - 1) ? CENTER_CARD_WIDTH + CARD_GAP : SIDE_CARD_WIDTH + CARD_GAP;
+      }
+      // Center the center card
+      const centerCardLeft = (CONTAINER_WIDTH - CENTER_CARD_WIDTH) / 2;
+      const translateX = centerCardLeft - offset;
+      carouselTrack.style.transform = `translateX(${translateX}px)`;
     }
 
     function slideToNext() {
       if (isTransitioning) return;
       isTransitioning = true;
-      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      carouselTrack.style.transform = 'translateX(-66.66%)';
-      setTimeout(() => {
-        currentIndex = mod(currentIndex + 1, properties.length);
-        renderCarouselCards();
-        isTransitioning = false;
-      }, 400);
+      currentIndex = mod(currentIndex + 1, properties.length);
+      renderCarouselCards();
+      setTimeout(() => { isTransitioning = false; }, 400);
     }
 
     function slideToPrev() {
       if (isTransitioning) return;
       isTransitioning = true;
-      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      carouselTrack.style.transform = 'translateX(0%)';
-      setTimeout(() => {
-        currentIndex = mod(currentIndex - 1, properties.length);
-        renderCarouselCards();
-        isTransitioning = false;
-      }, 400);
+      currentIndex = mod(currentIndex - 1, properties.length);
+      renderCarouselCards();
+      setTimeout(() => { isTransitioning = false; }, 400);
     }
 
     const prevButton = document.createElement('button');
@@ -647,6 +656,6 @@ export const BrantjesExtension = {
 
     // Initial render
     renderCarouselCards();
-    window.addEventListener('resize', renderCarouselCards);
+    window.addEventListener('resize', updateCarouselTrackPosition);
   },
 };
