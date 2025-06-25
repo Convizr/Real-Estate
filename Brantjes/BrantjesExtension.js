@@ -106,6 +106,7 @@ export const BrantjesExtension = {
         left: 0;
         right: 0;
         padding: 15px;
+        padding-bottom: 60px;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
       }
       .brantjes-card-info p {
@@ -119,8 +120,8 @@ export const BrantjesExtension = {
       .brantjes-viewing-button {
         position: absolute;
         bottom: 15px;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 15px;
+        transform: none;
         background: transparent;
         color: white;
         border: none;
