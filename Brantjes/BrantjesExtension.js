@@ -611,6 +611,9 @@ export const BrantjesExtension = {
         card.style.transform = 'scale(0.8) translateX(0px)';
         card.style.zIndex = '0';
         card.style.pointerEvents = 'none';
+        // Hide viewing button by default
+        const viewingButton = card.querySelector('.brantjes-viewing-button');
+        if (viewingButton) viewingButton.style.display = 'none';
       }
       // Indices
       const leftIdx = (currentIndex - 1 + N) % N;
@@ -623,18 +626,21 @@ export const BrantjesExtension = {
         cards[centerIdx].style.transform = 'scale(1) translateX(0px)';
         cards[centerIdx].style.zIndex = '10';
         cards[centerIdx].style.pointerEvents = '';
+        // Show viewing button only on center card
+        const viewingButton = cards[centerIdx].querySelector('.brantjes-viewing-button');
+        if (viewingButton) viewingButton.style.display = '';
       }
       // Left card
       if (cards[leftIdx]) {
         cards[leftIdx].style.opacity = '0.7';
-        cards[leftIdx].style.transform = 'scale(0.92) translateX(-120px)';
+        cards[leftIdx].style.transform = 'scale(0.92) translateX(-110px)';
         cards[leftIdx].style.zIndex = '5';
         cards[leftIdx].style.pointerEvents = '';
       }
       // Right card
       if (cards[rightIdx]) {
         cards[rightIdx].style.opacity = '0.7';
-        cards[rightIdx].style.transform = 'scale(0.92) translateX(120px)';
+        cards[rightIdx].style.transform = 'scale(0.92) translateX(110px)';
         cards[rightIdx].style.zIndex = '5';
         cards[rightIdx].style.pointerEvents = '';
       }
