@@ -513,6 +513,15 @@ export const BrantjesExtension = {
     let isTransitioning = false;
     const N = properties.length;
 
+    // Helper: get the visible indices for left, center, right
+    function getVisibleIndices(centerIdx) {
+      return [
+        (centerIdx - 1 + N) % N, // left
+        centerIdx,               // center
+        (centerIdx + 1) % N      // right
+      ];
+    }
+
     // Preload all images on initial render
     function preloadAllImages(callback) {
       let loaded = 0;
@@ -632,13 +641,22 @@ export const BrantjesExtension = {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
       // Remove all active classes
       cards.forEach(card => card.classList.remove('active'));
-      // Center card is always currentIndex
-      const centerCard = cards[currentIndex];
-      if (centerCard) centerCard.classList.add('active');
+      // Get visible indices
+      const [leftIdx, centerIdx, rightIdx] = getVisibleIndices(currentIndex);
+      // Set classes for visible cards
+      cards.forEach((card, idx) => {
+        if (idx === centerIdx) card.classList.add('active');
+        else card.classList.remove('active');
+        // Optionally, you can add left/right classes for more styling
+        card.style.opacity = (idx === centerIdx) ? '1' : (idx === leftIdx || idx === rightIdx ? '0.7' : '0');
+        card.style.pointerEvents = (idx === centerIdx || idx === leftIdx || idx === rightIdx) ? '' : 'none';
+        card.style.display = (idx === centerIdx || idx === leftIdx || idx === rightIdx) ? '' : 'none';
+      });
       // Calculate offset: center card should be in the middle
       // Each card has width (including margin) of 201px (side) or 219px (center), but for simplicity, use fixed width
       const cardWidth = 219 + 16; // center card width + margin (if any)
-      const offset = (currentIndex - 1) * -(cardWidth);
+      // The center card should always be in the middle, so offset by (centerIdx - 1)
+      const offset = (centerIdx - 1) * -(cardWidth);
       if (animate) {
         carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       } else {
