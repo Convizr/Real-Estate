@@ -646,6 +646,17 @@ export const BrantjesExtension = {
       cards[currentIndex].classList.add('act');
       cards[nextIdx].classList.add('next');
       cards[newNext].classList.add('new-next');
+      // Only show the three visible cards
+      cards.forEach((card, i) => {
+        const isCenter = i === currentIndex;
+        const isLeft   = i === prevIdx;
+        const isRight  = i === nextIdx;
+        if (isCenter || isLeft || isRight) {
+          card.style.visibility = 'visible';
+        } else {
+          card.style.visibility = 'hidden';
+        }
+      });
     }
 
     // Navigation handlers
@@ -683,6 +694,10 @@ export const BrantjesExtension = {
 
     nextButton.addEventListener('click', next);
     prevButton.addEventListener('click', prev);
+
+    // Ensure container is exactly 3 cards wide and overflow hidden
+    cardList.style.width = '650px';
+    cardList.style.overflow = 'hidden';
 
     // Kick-off
     window.addEventListener('resize', () => updateClasses());
