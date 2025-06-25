@@ -57,10 +57,10 @@ export const BrantjesExtension = {
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
-        flex: 0 0 201px;
+        flex: 0 0 33.33%;
         width: 201px;
         height: 335px;
-        margin: 0 8px;
+        margin: 0 0px;
         box-sizing: border-box;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
         transform: scale(0.92);
@@ -509,25 +509,28 @@ export const BrantjesExtension = {
     carouselTrack.className = 'brantjes-carousel-track';
 
     let currentIndex = 0;
+    let isTransitioning = false;
 
-    // Preload image utility
-    function preloadImage(url) {
-      if (!url) return;
-      const img = new window.Image();
-      img.src = url;
+    // Helper to get the correct index with wrap-around
+    function mod(n, m) {
+      return ((n % m) + m) % m;
     }
 
-    // Render all cards, but only visually show three (left, center, right)
+    // Render only 3 cards: left, center, right
     function renderCarouselCards() {
-      // Remove all children from carouselTrack
       while (carouselTrack.firstChild) {
         carouselTrack.removeChild(carouselTrack.firstChild);
       }
       const N = properties.length;
-      for (let idx = 0; idx < N; idx++) {
+      // Indices for left, center, right
+      const leftIdx = mod(currentIndex - 1, N);
+      const centerIdx = currentIndex;
+      const rightIdx = mod(currentIndex + 1, N);
+      [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
         const property = properties[idx];
         const card = document.createElement('div');
         card.className = 'brantjes-property-card';
+        if (pos === 1) card.classList.add('active');
         card.dataset.index = idx;
         // Card inner
         const cardInner = document.createElement('div');
@@ -545,10 +548,6 @@ export const BrantjesExtension = {
               imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
             }
           }
-        }
-        // Preload next/prev images
-        if (idx === (currentIndex + 1) % N || idx === (currentIndex - 1 + N) % N) {
-          preloadImage(imgUrl);
         }
         const img = document.createElement('img');
         img.src = imgUrl;
@@ -574,9 +573,9 @@ export const BrantjesExtension = {
         const extra = document.createElement('p');
         extra.style.fontSize = '14px';
         extra.innerHTML =
-          (energy ? `<span title="Energielabel">${energy}</span> &nbsp;` : '') +
-          (area ? `<span title="Woonoppervlakte">${area} m²</span> &nbsp;` : '') +
-          (rooms ? `<span title="Kamers">${rooms} kamers</span>` : '');
+          (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
+          (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
+          (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
         info.appendChild(title);
         info.appendChild(priceP);
         info.appendChild(extra);
@@ -586,6 +585,7 @@ export const BrantjesExtension = {
         const viewingButton = document.createElement('button');
         viewingButton.className = 'brantjes-viewing-button';
         viewingButton.textContent = 'Bezichtigen';
+        viewingButton.style.display = (pos === 1) ? '' : 'none';
         viewingButton.addEventListener('click', (e) => {
           e.stopPropagation();
           showBookingModal(property);
@@ -596,64 +596,37 @@ export const BrantjesExtension = {
           showDetailModal(property);
         });
         carouselTrack.appendChild(card);
-      }
-      updateCarouselVisuals();
+      });
+      // Set initial position of the track
+      carouselTrack.style.transition = 'none';
+      carouselTrack.style.transform = 'translateX(-33.33%)';
+      setTimeout(() => {
+        carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      }, 10);
     }
 
-    function updateCarouselVisuals() {
-      // Animate all cards, but only visually show three (left, center, right)
-      const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
-      const N = properties.length;
-      for (let idx = 0; idx < N; idx++) {
-        const card = cards[idx];
-        card.classList.remove('active');
-        card.style.opacity = '0';
-        card.style.transform = 'scale(0.8) translateX(0px)';
-        card.style.zIndex = '0';
-        card.style.pointerEvents = 'none';
-        // Hide viewing button by default
-        const viewingButton = card.querySelector('.brantjes-viewing-button');
-        if (viewingButton) viewingButton.style.display = 'none';
-      }
-      // Indices
-      const leftIdx = (currentIndex - 1 + N) % N;
-      const centerIdx = currentIndex;
-      const rightIdx = (currentIndex + 1) % N;
-      // Center card
-      if (cards[centerIdx]) {
-        cards[centerIdx].classList.add('active');
-        cards[centerIdx].style.opacity = '1';
-        cards[centerIdx].style.transform = 'scale(1) translateX(0px)';
-        cards[centerIdx].style.zIndex = '10';
-        cards[centerIdx].style.pointerEvents = '';
-        // Show viewing button only on center card
-        const viewingButton = cards[centerIdx].querySelector('.brantjes-viewing-button');
-        if (viewingButton) viewingButton.style.display = '';
-      }
-      // Left card
-      if (cards[leftIdx]) {
-        cards[leftIdx].style.opacity = '0.7';
-        cards[leftIdx].style.transform = 'scale(0.92) translateX(-110px)';
-        cards[leftIdx].style.zIndex = '5';
-        cards[leftIdx].style.pointerEvents = '';
-      }
-      // Right card
-      if (cards[rightIdx]) {
-        cards[rightIdx].style.opacity = '0.7';
-        cards[rightIdx].style.transform = 'scale(0.92) translateX(110px)';
-        cards[rightIdx].style.zIndex = '5';
-        cards[rightIdx].style.pointerEvents = '';
-      }
+    function slideToNext() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      carouselTrack.style.transform = 'translateX(-66.66%)';
+      setTimeout(() => {
+        currentIndex = mod(currentIndex + 1, properties.length);
+        renderCarouselCards();
+        isTransitioning = false;
+      }, 400);
     }
 
-    function showNext() {
-      currentIndex = (currentIndex + 1) % properties.length;
-      updateCarouselVisuals();
-    }
-
-    function showPrev() {
-      currentIndex = (currentIndex - 1 + properties.length) % properties.length;
-      updateCarouselVisuals();
+    function slideToPrev() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      carouselTrack.style.transform = 'translateX(0%)';
+      setTimeout(() => {
+        currentIndex = mod(currentIndex - 1, properties.length);
+        renderCarouselCards();
+        isTransitioning = false;
+      }, 400);
     }
 
     const prevButton = document.createElement('button');
@@ -671,11 +644,11 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    prevButton.addEventListener('click', showPrev);
-    nextButton.addEventListener('click', showNext);
+    prevButton.addEventListener('click', slideToPrev);
+    nextButton.addEventListener('click', slideToNext);
 
     // Initial render
     renderCarouselCards();
-    window.addEventListener('resize', updateCarouselVisuals);
+    window.addEventListener('resize', renderCarouselCards);
   },
 };
