@@ -40,6 +40,12 @@ export const BrantjesExtension = {
 
     // Create stylesheet
     const style = document.createElement('style');
+    // Card sizes (move these above style.innerHTML)
+    const SIDE_CARD_WIDTH = 201;
+    const CENTER_CARD_WIDTH = 219;
+    const CARD_GAP = 8;
+    const CONTAINER_WIDTH = 650;
+
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
@@ -512,12 +518,6 @@ export const BrantjesExtension = {
     carouselTrack.className = 'brantjes-carousel-track';
 
     // --- MODERN FLEX SLIDER LOGIC ---
-    // Card sizes
-    const SIDE_CARD_WIDTH = 201;
-    const CENTER_CARD_WIDTH = 219;
-    const CARD_GAP = 8;
-    const CONTAINER_WIDTH = 650;
-
     let currentIndex = 0;
     let isTransitioning = false;
 
