@@ -515,10 +515,15 @@ export const BrantjesExtension = {
       const cardInner = document.createElement('div');
       cardInner.className = 'brantjes-property-card-inner';
 
-      // Get first available image
+      // Get first available image, prioritizing HOOFDFOTO
       let imgUrl = '';
       if (Array.isArray(property.media)) {
-        const imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        // Try to find HOOFDFOTO first
+        let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
+        // If not found, fall back to first available image
+        if (!imgObj) {
+          imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        }
         if (imgObj) {
           imgUrl = imgObj.link;
           if (imgUrl) {
