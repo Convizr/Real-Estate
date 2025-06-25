@@ -509,17 +509,7 @@ export const BrantjesExtension = {
     carouselTrack.className = 'brantjes-carousel-track';
 
     // --- CAROUSEL SLIDING LOGIC ---
-    // Card sizing constants
-    const SIDE_CARD_WIDTH = 201;
-    const CENTER_CARD_WIDTH = 219;
-    const CARD_MARGIN = 16; // 8px left + 8px right
-    // Container width: left + center + right + margins
-    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
-    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
-    carouselContainer.style.overflow = 'hidden';
-
-    // Set initial hero card to the second card (index 1)
-    let currentIndex = 1;
+    let currentIndex = 0;
     let isTransitioning = false;
     const N = properties.length;
 
@@ -646,6 +636,15 @@ export const BrantjesExtension = {
       });
     }
 
+    // Card sizing constants
+    const SIDE_CARD_WIDTH = 201;
+    const CENTER_CARD_WIDTH = 219;
+    const CARD_MARGIN = 16; // 8px left + 8px right
+    // Container width: left + center + right + margins
+    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
+    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
+    carouselContainer.style.overflow = 'hidden';
+
     // Update the track position and card classes
     function updateTrackPosition(animate = true) {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
@@ -666,11 +665,10 @@ export const BrantjesExtension = {
           card.style.pointerEvents = 'none';
         }
       });
-      // Calculate offset: center card should be in the middle
-      // The offset is: (leftIdx) * -(SIDE_CARD_WIDTH + CARD_MARGIN)
-      let offset = -((leftIdx) * (SIDE_CARD_WIDTH + CARD_MARGIN));
-      // Center the center card
-      offset -= (CENTER_CARD_WIDTH - SIDE_CARD_WIDTH) / 2;
+      // Calculate offset: always center the hero card, and show correct wrap-around
+      // The left card should be flush with the left edge, center in the middle, right at the right edge
+      // The offset is: -(centerIdx * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2)
+      const offset = -((centerIdx) * (SIDE_CARD_WIDTH + CARD_MARGIN)) + (CONTAINER_WIDTH / 2 - CENTER_CARD_WIDTH / 2);
       if (animate) {
         carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       } else {
