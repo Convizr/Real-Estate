@@ -636,6 +636,15 @@ export const BrantjesExtension = {
       });
     }
 
+    // Card sizing constants
+    const SIDE_CARD_WIDTH = 201;
+    const CENTER_CARD_WIDTH = 219;
+    const CARD_MARGIN = 16; // 8px left + 8px right
+    // Container width: left + center + right + margins
+    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
+    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
+    carouselContainer.style.overflow = 'hidden';
+
     // Update the track position and card classes
     function updateTrackPosition(animate = true) {
       const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
@@ -647,15 +656,27 @@ export const BrantjesExtension = {
       cards.forEach((card, idx) => {
         if (idx === centerIdx) card.classList.add('active');
         else card.classList.remove('active');
-        // Only adjust opacity for visual effect
-        card.style.opacity = (idx === centerIdx) ? '1' : (idx === leftIdx || idx === rightIdx ? '0.7' : '0.2');
-        // Remove pointerEvents and display logic
+        // Only left, center, right are visible and interactive
+        if (idx === leftIdx || idx === centerIdx || idx === rightIdx) {
+          card.style.opacity = (idx === centerIdx) ? '1' : '0.7';
+          card.style.pointerEvents = '';
+        } else {
+          card.style.opacity = '0';
+          card.style.pointerEvents = 'none';
+        }
       });
       // Calculate offset: center card should be in the middle
-      // Each card has width (including margin) of 201px (side) or 219px (center), but for simplicity, use fixed width
-      const cardWidth = 219 + 16; // center card width + margin (if any)
-      // The center card should always be in the middle, so offset by (centerIdx - 1)
-      const offset = (centerIdx - 1) * -(cardWidth);
+      // The offset is: (sum of widths of all cards to the left of center card) * -1
+      // For infinite loop, cards are always in the same order, so we calculate the left offset
+      let offset = 0;
+      for (let i = 0; i < centerIdx; i++) {
+        offset -= (i === leftIdx ? SIDE_CARD_WIDTH : CENTER_CARD_WIDTH) + CARD_MARGIN;
+      }
+      // But for a fixed 3-card window, we want the left card flush with the container's left edge
+      // So offset = (leftIdx) * -(SIDE_CARD_WIDTH + CARD_MARGIN)
+      offset = -((leftIdx) * (SIDE_CARD_WIDTH + CARD_MARGIN));
+      // But to center the center card, we need to shift by half the difference between center and side card widths
+      offset -= (CENTER_CARD_WIDTH - SIDE_CARD_WIDTH) / 2;
       if (animate) {
         carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
       } else {
@@ -703,8 +724,5 @@ export const BrantjesExtension = {
       updateTrackPosition(false);
     });
     window.addEventListener('resize', () => updateTrackPosition(false));
-
-    // Make sure the container has overflow hidden
-    carouselContainer.style.overflow = 'hidden';
   },
 };
