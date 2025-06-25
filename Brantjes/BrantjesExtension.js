@@ -347,6 +347,54 @@ export const BrantjesExtension = {
           min-height: 120px;
         }
       }
+
+      /* Modern Class-Based Absolute Carousel */
+      .brantjes-carousel-list {
+        position: relative;
+        width: 650px;
+        height: 420px;
+        margin: auto;
+        overflow: hidden;
+      }
+      .brantjes-carousel-list .brantjes-property-card {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 201px; height: 335px;
+        margin-left: -100.5px;
+        margin-top : -167.5px;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        z-index: 1;
+      }
+      .brantjes-carousel-list .hide {
+        transform: translateX(-420px) scale(0.85);
+        opacity: 0;
+        z-index: 0;
+      }
+      .brantjes-carousel-list .prev {
+        transform: translateX(-220px) scale(0.85);
+        opacity: 0.25;
+        cursor: pointer;
+        z-index: 2;
+      }
+      .brantjes-carousel-list .act {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        z-index: 3;
+      }
+      .brantjes-carousel-list .next {
+        transform: translateX(220px) scale(0.85);
+        opacity: 0.25;
+        cursor: pointer;
+        z-index: 2;
+      }
+      .brantjes-carousel-list .new-next {
+        transform: translateX(420px) scale(0.85);
+        opacity: 0;
+        z-index: 0;
+      }
     `;
     element.appendChild(style);
     
@@ -499,63 +547,26 @@ export const BrantjesExtension = {
       openModal(content);
     }
     
-    // Create carousel structure
-    const carouselContainer = document.createElement('div');
-    carouselContainer.setAttribute('tabindex', '0'); // For keyboard navigation
-    carouselContainer.setAttribute('aria-label', 'Property Recommendations Carousel');
-
-    const carouselTrack = document.createElement('div');
-    carouselTrack.className = 'brantjes-carousel-track';
-
-    // --- ESSENTIAL INFINITE CAROUSEL WITH CLONING ---
-    const CARD_W   = 201;
-    const MARGIN   = 16;
-    const SLIDE_W  = CARD_W + MARGIN;
-    const VISIBLE  = 3;
-
-    // 1) Build slides array with clones
+    // --- MODERN CLASS-BASED ABSOLUTE CAROUSEL ---
     const realSlides = properties;
-    const slides = [
-      realSlides[realSlides.length - 1],
-      ...realSlides,
-      realSlides[0]
-    ];
-    const total = slides.length;
-    let currentIndex = 1;
-    let isTransitioning = false;
+    const total = realSlides.length;
+    let currentIndex = 0;
 
-    // 2) Set up container & track
-    carouselContainer.className = 'brantjes-carousel-container';
-    carouselContainer.style.width = `${SLIDE_W * VISIBLE}px`;
-    carouselContainer.style.overflow = 'hidden';
-    carouselTrack.className = 'brantjes-carousel-track';
-    carouselTrack.style.display = 'flex';
-    carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+    // Create the absolute-positioned card list
+    const cardList = document.createElement('ul');
+    cardList.className = 'brantjes-carousel-list';
+    cardList.style.listStyle = 'none';
+    cardList.style.padding = '0';
+    cardList.style.margin = '0';
 
-    // 2b) Add required CSS for smooth transitions
-    style.innerHTML += `
-      .brantjes-carousel-track {
-        display: flex;
-        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
-      }
-      .brantjes-property-card {
-        transition: transform 0.4s ease, opacity 0.4s ease;
-        transform: scale(0.92);
-        opacity: 0.6;
-      }
-      .brantjes-property-card.active {
-        transform: scale(1);
-        opacity: 1;
-      }
-    `;
-
-    // 3) Render function to build DOM
-    function renderSlides() {
-      carouselTrack.innerHTML = '';
-      slides.forEach((property, idx) => {
-        const card = document.createElement('div');
-        card.className = 'brantjes-property-card';
-        card.dataset.index = idx;
+    // Render all cards as <li> in the list
+    function renderCards() {
+      cardList.innerHTML = '';
+      realSlides.forEach((property, idx) => {
+        const li = document.createElement('li');
+        li.className = 'brantjes-property-card';
+        li.dataset.index = idx;
+        // Card content (reuse your card rendering logic)
         const cardInner = document.createElement('div');
         cardInner.className = 'brantjes-property-card-inner';
         // Get image
@@ -613,32 +624,43 @@ export const BrantjesExtension = {
           showBookingModal(property);
         });
         cardInner.appendChild(viewingButton);
-        card.appendChild(cardInner);
-        card.addEventListener('click', () => {
+        li.appendChild(cardInner);
+        li.addEventListener('click', () => {
           showDetailModal(property);
         });
-        carouselTrack.appendChild(card);
+        cardList.appendChild(li);
       });
     }
 
-    // 4) Set the track immediately to the correct position
-    function setPosition(animate = true) {
-      if (!animate) carouselTrack.style.transition = 'none';
-      carouselTrack.style.transform = `translateX(${-currentIndex * SLIDE_W}px)`;
-      // active class for scale/opacity
-      carouselTrack.querySelectorAll('.brantjes-property-card').forEach((c,i) => {
-        c.classList.toggle('active', i === currentIndex);
-      });
+    // Update card classes for carousel state
+    function updateClasses() {
+      const cards = Array.from(cardList.querySelectorAll('.brantjes-property-card'));
+      cards.forEach(c => c.classList.remove('hide','prev','act','next','new-next'));
+      const total = cards.length;
+      const prevIdx   = (currentIndex - 1 + total) % total;
+      const nextIdx   = (currentIndex + 1) % total;
+      const newNext   = (currentIndex + 2) % total;
+      const hideIdx   = (currentIndex - 2 + total) % total;
+      cards[hideIdx].classList.add('hide');
+      cards[prevIdx].classList.add('prev');
+      cards[currentIndex].classList.add('act');
+      cards[nextIdx].classList.add('next');
+      cards[newNext].classList.add('new-next');
     }
 
-    // 5) Navigation handlers
-    function move(delta) {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      currentIndex += delta;
-      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
-      setPosition(true);
+    // Navigation handlers
+    function next() {
+      currentIndex = (currentIndex + 1) % total;
+      updateClasses();
     }
+    function prev() {
+      currentIndex = (currentIndex - 1 + total) % total;
+      updateClasses();
+    }
+
+    // Initial render
+    renderCards();
+    updateClasses();
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
     nextButton.innerHTML = '&rsaquo;';
@@ -649,25 +671,20 @@ export const BrantjesExtension = {
     prevButton.innerHTML = '&lsaquo;';
     prevButton.setAttribute('aria-label', 'Previous Property');
 
-    carouselContainer.appendChild(carouselTrack);
+    const carouselContainer = document.createElement('div');
+    carouselContainer.setAttribute('tabindex', '0'); // For keyboard navigation
+    carouselContainer.setAttribute('aria-label', 'Property Recommendations Carousel');
+    carouselContainer.className = 'brantjes-carousel-container';
+
+    carouselContainer.appendChild(cardList);
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    nextButton.addEventListener('click', () => move(1));
-    prevButton.addEventListener('click', () => move(-1));
+    nextButton.addEventListener('click', next);
+    prevButton.addEventListener('click', prev);
 
-    // 6) After each transition: reset if on a clone
-    carouselTrack.addEventListener('transitionend', () => {
-      isTransitioning = false;
-      if (currentIndex === total - 1) currentIndex = 1;
-      else if (currentIndex === 0) currentIndex = total - 2;
-      setPosition(false);
-    });
-
-    // 7) Kick-off
-    renderSlides();
-    setPosition(false);
-    window.addEventListener('resize', () => setPosition(false));
+    // Kick-off
+    window.addEventListener('resize', () => updateClasses());
   },
 };
