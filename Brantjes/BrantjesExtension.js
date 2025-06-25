@@ -508,28 +508,43 @@ export const BrantjesExtension = {
     const carouselTrack = document.createElement('div');
     carouselTrack.className = 'brantjes-carousel-track';
 
-    // --- CAROUSEL SLIDING LOGIC ---
-    const SIDE_CARD_WIDTH = 201;
-    const CENTER_CARD_WIDTH = 219;
-    const CARD_MARGIN = 16; // 8px left + 8px right
-    const SLIDE_FULL_WIDTH = SIDE_CARD_WIDTH + CARD_MARGIN;
-    const CONTAINER_WIDTH = SIDE_CARD_WIDTH + CENTER_CARD_WIDTH + SIDE_CARD_WIDTH + CARD_MARGIN * 3;
-    carouselContainer.style.width = CONTAINER_WIDTH + 'px';
+    // --- CAROUSEL CLONE TECHNIQUE ---
+    const CARD_W = 201;
+    const MARGIN = 16;
+    const SLIDE_W = CARD_W + MARGIN;
+    carouselContainer.style.width = (SLIDE_W * 3) + 'px';
     carouselContainer.style.overflow = 'hidden';
 
-    // Clone technique for infinite loop
+    // 1) Maak een nieuwe slides‐array met clones
     const realSlides = properties;
     const slides = [
       realSlides[realSlides.length - 1],
       ...realSlides,
       realSlides[0]
     ];
-    const N = slides.length;
-    let currentIndex = 1; // start at first real slide
+    const total = slides.length;
+    let currentIndex = 1; // we starten op de eerste "echte" slide
     let isTransitioning = false;
 
-    // Render all slides in the DOM
-    function renderAllCards() {
+    // 2) CSS-transitie op track en cards (add to style)
+    style.innerHTML += `
+      .brantjes-carousel-track {
+        display: flex;
+        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+      }
+      .brantjes-property-card {
+        transition: transform 0.4s ease, opacity 0.4s ease;
+        transform: scale(0.92);
+        opacity: 0.6;
+      }
+      .brantjes-property-card.active {
+        transform: scale(1);
+        opacity: 1;
+      }
+    `;
+
+    // 3) Render slides
+    function renderSlides() {
       while (carouselTrack.firstChild) {
         carouselTrack.removeChild(carouselTrack.firstChild);
       }
@@ -602,75 +617,63 @@ export const BrantjesExtension = {
       });
     }
 
-    // Update active class for fade/scale
-    function updateActiveClasses() {
-      const cards = carouselTrack.querySelectorAll('.brantjes-property-card');
-      cards.forEach((card, idx) => {
-        if (idx === currentIndex) card.classList.add('active');
-        else card.classList.remove('active');
+    // 3) Position bijwerken
+    function setPosition(animate = true) {
+      if (!animate) carouselTrack.style.transition = 'none';
+      else carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+      const x = -currentIndex * SLIDE_W;
+      carouselTrack.style.transform = `translateX(${x}px)`;
+      updateActive();
+    }
+
+    function updateActive() {
+      carouselTrack.querySelectorAll('.brantjes-property-card').forEach((c, i) => {
+        c.classList.toggle('active', i === currentIndex);
       });
     }
 
-    // Set initial track position
-    function setTrackPosition(animate = false) {
-      if (animate) {
-        carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
-      } else {
-        carouselTrack.style.transition = 'none';
-      }
-      carouselTrack.style.transform = `translateX(${-SLIDE_FULL_WIDTH * currentIndex}px)`;
-    }
-
-    // Navigation
-    function showNext() {
+    // 4) Next/Prev handlers
+    function move(delta) {
       if (isTransitioning) return;
       isTransitioning = true;
-      currentIndex++;
-      setTrackPosition(true);
+      currentIndex += delta;
+      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
+      setPosition(true);
     }
-    function showPrev() {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      currentIndex--;
-      setTrackPosition(true);
-    }
-    const prevButton = document.createElement('button');
-    prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
-    prevButton.innerHTML = '&lsaquo;';
-    prevButton.setAttribute('aria-label', 'Previous Property');
-
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
     nextButton.innerHTML = '&rsaquo;';
     nextButton.setAttribute('aria-label', 'Next Property');
+
+    const prevButton = document.createElement('button');
+    prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
+    prevButton.innerHTML = '&lsaquo;';
+    prevButton.setAttribute('aria-label', 'Previous Property');
 
     carouselContainer.appendChild(carouselTrack);
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
     element.appendChild(carouselContainer);
 
-    prevButton.addEventListener('click', showPrev);
-    nextButton.addEventListener('click', showNext);
+    nextButton.addEventListener('click', () => move(1));
+    prevButton.addEventListener('click', () => move(-1));
 
-    // Handle transitionend for infinite loop
+    // 5) Na animatie: reset naar echte slide zonder animatie
     carouselTrack.addEventListener('transitionend', () => {
       isTransitioning = false;
-      if (currentIndex === N - 1) {
-        // After last clone, jump to real first
+      if (currentIndex === total - 1) {
         currentIndex = 1;
-        setTrackPosition(false);
+        setPosition(false);
       } else if (currentIndex === 0) {
-        // After first clone, jump to real last
-        currentIndex = N - 2;
-        setTrackPosition(false);
+        currentIndex = total - 2;
+        setPosition(false);
       }
-      updateActiveClasses();
+      updateActive();
     });
 
-    // Initial render
-    renderAllCards();
-    setTrackPosition(false);
-    updateActiveClasses();
-    window.addEventListener('resize', () => setTrackPosition(false));
+    // 6) Bij init
+    renderSlides();
+    setPosition(false);
+    window.addEventListener('resize', () => setPosition(false));
   },
 };
