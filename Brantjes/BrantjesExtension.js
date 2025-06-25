@@ -347,6 +347,15 @@ export const BrantjesExtension = {
           min-height: 120px;
         }
       }
+
+      .brantjes-card-fade-in {
+        opacity: 0;
+        animation: brantjesFadeIn 0.5s ease forwards;
+      }
+      @keyframes brantjesFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
     `;
     element.appendChild(style);
     
@@ -577,9 +586,13 @@ export const BrantjesExtension = {
         [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
           const property = properties[idx];
           const card = document.createElement('div');
-          card.className = 'brantjes-property-card';
+          card.className = 'brantjes-property-card brantjes-card-fade-in';
           if (pos === 1) card.classList.add('active');
           card.dataset.index = idx;
+          // Remove fade-in class after animation
+          card.addEventListener('animationend', () => {
+            card.classList.remove('brantjes-card-fade-in');
+          });
           // Card inner
           const cardInner = document.createElement('div');
           cardInner.className = 'brantjes-property-card-inner';
