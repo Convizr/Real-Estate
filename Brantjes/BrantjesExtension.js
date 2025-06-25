@@ -59,6 +59,7 @@ export const BrantjesExtension = {
         display: flex;
         align-items: center;
         height: 100%;
+        width: ${(CARD_WIDTH + CARD_GAP) * 3 - CARD_GAP}px;
         transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         gap: ${CARD_GAP}px;
         will-change: transform;
@@ -528,11 +529,15 @@ export const BrantjesExtension = {
         carouselTrack.removeChild(carouselTrack.firstChild);
       }
       const N = properties.length;
-      for (let idx = 0; idx < N; idx++) {
+      // Indices for left, center, right
+      const leftIdx = mod(currentIndex - 1, N);
+      const centerIdx = currentIndex;
+      const rightIdx = mod(currentIndex + 1, N);
+      [leftIdx, centerIdx, rightIdx].forEach((idx, pos) => {
         const property = properties[idx];
         const card = document.createElement('div');
         card.className = 'brantjes-property-card';
-        if (idx === currentIndex) card.classList.add('active');
+        if (pos === 1) card.classList.add('active');
         card.dataset.index = idx;
         // Card inner
         const cardInner = document.createElement('div');
@@ -587,7 +592,7 @@ export const BrantjesExtension = {
         const viewingButton = document.createElement('button');
         viewingButton.className = 'brantjes-viewing-button';
         viewingButton.textContent = 'Bezichtigen';
-        viewingButton.style.display = (idx === currentIndex) ? '' : 'none';
+        viewingButton.style.display = (pos === 1) ? '' : 'none';
         viewingButton.addEventListener('click', (e) => {
           e.stopPropagation();
           showBookingModal(property);
@@ -598,32 +603,33 @@ export const BrantjesExtension = {
           showDetailModal(property);
         });
         carouselTrack.appendChild(card);
-      }
-      updateCarouselTrackPosition();
-    }
-
-    function updateCarouselTrackPosition() {
-      // Center the current card in the container
-      const N = properties.length;
-      const centerOffset = (CONTAINER_WIDTH - CARD_WIDTH) / 2;
-      const translateX = centerOffset - (currentIndex * (CARD_WIDTH + CARD_GAP));
-      carouselTrack.style.transform = `translateX(${translateX}px)`;
+      });
+      // Always center the track (show center card in the middle)
+      carouselTrack.style.transform = 'translateX(-' + (CARD_WIDTH + CARD_GAP) + 'px)';
     }
 
     function slideToNext() {
       if (isTransitioning) return;
       isTransitioning = true;
-      currentIndex = mod(currentIndex + 1, properties.length);
-      renderCarouselCards();
-      setTimeout(() => { isTransitioning = false; }, 400);
+      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      carouselTrack.style.transform = 'translateX(-' + 2 * (CARD_WIDTH + CARD_GAP) + 'px)';
+      setTimeout(() => {
+        currentIndex = mod(currentIndex + 1, properties.length);
+        renderCarouselCards();
+        isTransitioning = false;
+      }, 400);
     }
 
     function slideToPrev() {
       if (isTransitioning) return;
       isTransitioning = true;
-      currentIndex = mod(currentIndex - 1, properties.length);
-      renderCarouselCards();
-      setTimeout(() => { isTransitioning = false; }, 400);
+      carouselTrack.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      carouselTrack.style.transform = 'translateX(0px)';
+      setTimeout(() => {
+        currentIndex = mod(currentIndex - 1, properties.length);
+        renderCarouselCards();
+        isTransitioning = false;
+      }, 400);
     }
 
     const prevButton = document.createElement('button');
