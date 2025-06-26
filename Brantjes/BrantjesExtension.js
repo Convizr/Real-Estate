@@ -553,6 +553,83 @@ export const BrantjesExtension = {
       .brantjes-property-card.act:hover::before {
         opacity: 1;
       }
+
+      /* Card Title (Street + Number) */
+      .brantjes-card-title {
+        font-weight: bold;
+        font-size: 18px;
+        color: #51b2df;
+        margin-bottom: 2px;
+      }
+      /* City + Postal */
+      .brantjes-card-city {
+        font-size: 13px;
+        color: #888;
+        font-weight: 400;
+        margin-bottom: 6px;
+        margin-top: 0;
+      }
+      /* Price */
+      .brantjes-card-price {
+        font-weight: bold;
+        font-size: 18px;
+        color: #222;
+      }
+      /* Details pill */
+      .brantjes-card-details-pill {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 4px 14px;
+        font-size: 13px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 4;
+        border: 1px solid #eee;
+      }
+      .brantjes-card-details-pill span {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      /* Image hover overlay */
+      .brantjes-img-hover-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.18);
+        opacity: 0;
+        pointer-events: none;
+        border-radius: 8px;
+        z-index: 3;
+        transition: opacity 0.3s;
+      }
+      .brantjes-property-card.act:hover .brantjes-img-hover-overlay {
+        opacity: 1;
+      }
+      /* Adjust overlay stacking */
+      .brantjes-property-card-inner {
+        position: relative;
+        z-index: 1;
+      }
+      /* Responsive adjustments for pill */
+      @media (max-width: 900px) {
+        .brantjes-card-details-pill {
+          bottom: 6px;
+          right: 6px;
+          padding: 2px 8px;
+          font-size: 11px;
+        }
+      }
+      @media (max-width: 600px) {
+        .brantjes-card-details-pill {
+          font-size: 10px;
+        }
+      }
     `;
     element.appendChild(style);
 
@@ -621,16 +698,44 @@ export const BrantjesExtension = {
 
         const infoSection = document.createElement('div');
         infoSection.className = 'detail-popup-info';
-        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer, property.adres?.plaats].filter(Boolean).join(' ');
-        infoSection.innerHTML = `
-            <h2>${address || 'Onbekend adres'}</h2>
-            <p><strong>Kooprijs:</strong> € ${property.financieel?.overdracht?.koopprijs?.toLocaleString('nl-NL') || 'N/A'}</p>
-            <p><strong>Woonoppervlakte:</strong> ${property.algemeen?.woonoppervlakte || 'N/A'} m²</p>
-            <p><strong>Aantal kamers:</strong> ${property.algemeen?.aantalKamers || 'N/A'}</p>
-            <p><strong>Energielabel:</strong> ${property.algemeen?.energieklasse || 'N/A'}</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <button class="submit-btn" style="width: auto; padding: 10px 20px;">Plan bezichtiging</button>
-        `;
+        const straat = property.adres?.straat || '';
+        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        const plaats = property.adres?.plaats || '';
+        const postcode = property.adres?.postcode || '';
+        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const area = property.algemeen?.woonoppervlakte || '';
+        const rooms = property.algemeen?.aantalKamers || '';
+
+        // Card Title (Street + Number)
+        const title = document.createElement('p');
+        title.textContent = streetAddress || 'Onbekend adres';
+        title.className = 'brantjes-card-title';
+        // City + Postal code
+        const city = document.createElement('p');
+        city.textContent = cityPostal;
+        city.className = 'brantjes-card-city';
+        // Price
+        const priceP = document.createElement('p');
+        priceP.innerHTML = `<span class="brantjes-card-price">€ ${price.toLocaleString('nl-NL')}</span> k.k.`;
+        // Details pill (area, rooms)
+        const detailsPill = document.createElement('div');
+        detailsPill.className = 'brantjes-card-details-pill';
+        detailsPill.innerHTML =
+          (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M3 21v-2h18v2H3zm2-4V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10H5zm2-2h10V7H7v8zm2-2h6V9H9v4z'/></svg> ${area} m²</span>` : '') +
+          (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M7 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm10 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6c-4.42 0-8-1.79-8-4V7c0-2.21 3.58-4 8-4s8 1.79 8 4v9c0 2.21-3.58 4-8 4z'/></svg> ${rooms}</span>` : '');
+
+        infoSection.appendChild(title);
+        infoSection.appendChild(city);
+        infoSection.appendChild(priceP);
+        infoSection.appendChild(detailsPill);
+
+        // Add image overlay for hover effect
+        const imgOverlay = document.createElement('div');
+        imgOverlay.className = 'brantjes-img-hover-overlay';
+        infoSection.appendChild(imgOverlay);
+
         detailContent.appendChild(infoSection);
 
         // Add event listener to the "Plan bezichtiging" button within the detail modal
@@ -732,32 +837,42 @@ export const BrantjesExtension = {
       const straat = propertyData.adres?.straat || '';
       const huisnummer = propertyData.adres?.huisnummer?.hoofdnummer || '';
       const plaats = propertyData.adres?.plaats || '';
+      const postcode = propertyData.adres?.postcode || '';
       const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+      const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
       const price = propertyData.financieel?.overdracht?.koopprijs || 0;
-      const energy = propertyData.algemeen?.energieklasse || '';
       const area = propertyData.algemeen?.woonoppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
 
+      // Card Title (Street + Number)
       const title = document.createElement('p');
       title.textContent = streetAddress || 'Onbekend adres';
+      title.className = 'brantjes-card-title';
+      // City + Postal code
       const city = document.createElement('p');
-      city.textContent = plaats || '';
-      city.style.fontSize = '10px';
-      city.style.fontWeight = 'normal';
-      city.style.opacity = '0.8';
+      city.textContent = cityPostal;
+      city.className = 'brantjes-card-city';
+      // Price
       const priceP = document.createElement('p');
-      priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
-      const extra = document.createElement('p');
-      extra.style.fontSize = '12px';
-      extra.innerHTML =
-        (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
-        (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
+      priceP.innerHTML = `<span class="brantjes-card-price">€ ${price.toLocaleString('nl-NL')}</span> k.k.`;
+      // Details pill (area, rooms)
+      const detailsPill = document.createElement('div');
+      detailsPill.className = 'brantjes-card-details-pill';
+      detailsPill.innerHTML =
+        (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M3 21v-2h18v2H3zm2-4V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10H5zm2-2h10V7H7v8zm2-2h6V9H9v4z'/></svg> ${area} m²</span>` : '') +
+        (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M7 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm10 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6c-4.42 0-8-1.79-8-4V7c0-2.21 3.58-4 8-4s8 1.79 8 4v9c0 2.21-3.58 4-8 4z'/></svg> ${rooms}</span>` : '');
+
       info.appendChild(title);
       info.appendChild(city);
       info.appendChild(priceP);
-      info.appendChild(extra);
       overlay.appendChild(info);
       cardInner.appendChild(overlay);
+      cardInner.appendChild(detailsPill);
+
+      // Add image overlay for hover effect
+      const imgOverlay = document.createElement('div');
+      imgOverlay.className = 'brantjes-img-hover-overlay';
+      cardInner.appendChild(imgOverlay);
 
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
