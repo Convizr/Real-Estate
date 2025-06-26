@@ -707,6 +707,7 @@ export const BrantjesExtension = {
         const price = property.financieel?.overdracht?.koopprijs || 0;
         const area = property.algemeen?.woonoppervlakte || '';
         const rooms = property.algemeen?.aantalKamers || '';
+        const energy = property.algemeen?.energieklasse || '';
 
         // Card Title (Street + Number)
         const title = document.createElement('p');
@@ -843,6 +844,7 @@ export const BrantjesExtension = {
       const price = propertyData.financieel?.overdracht?.koopprijs || 0;
       const area = propertyData.algemeen?.woonoppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
+      const energy = propertyData.algemeen?.energieklasse || '';
 
       // Card Title (Street + Number)
       const title = document.createElement('p');
