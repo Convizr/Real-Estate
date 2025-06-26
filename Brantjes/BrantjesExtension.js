@@ -154,9 +154,10 @@ export const BrantjesExtension = {
         text-align: center;
         width: 100%;
       }
+      /* Modified CSS for button visibility on hover with !important */
       .brantjes-property-card.act:hover .brantjes-viewing-button {
-        opacity: 1;
-        pointer-events: auto;
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       .brantjes-property-card.act:hover .brantjes-viewing-button .cta-box {
         transform: scaleX(1);
