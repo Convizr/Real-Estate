@@ -83,7 +83,7 @@ export const BrantjesExtension = {
         width: 201px;
         height: 335px;
         box-sizing: border-box;
-        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s, width 0.6s, height 0.6s; /* Smoother transitions */
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s, width 0.6s, height 0.6s, box-shadow 0.3s ease, filter 0.3s ease; /* Added box-shadow and filter transitions */
         transform: scale(0.92);
         opacity: 0.7;
         position: relative;
@@ -95,6 +95,7 @@ export const BrantjesExtension = {
         overflow: visible;
         display: flex;
         align-items: flex-end;
+        cursor: pointer; /* Indicate clickability */
       }
       .brantjes-property-card.active { /* This class is deprecated in the new carousel logic */
         width: 219px;
@@ -510,6 +511,40 @@ export const BrantjesExtension = {
         align-items: center;
         height: 420px; /* Match carousel container height */
         width: 100%;
+      }
+
+      /* Hover effect for clickable cards */
+      .brantjes-property-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0px 8px 25px 0px rgba(0,0,0,0.25);
+        filter: brightness(1.05);
+      }
+      
+      /* Special hover effect for active (center) card */
+      .brantjes-property-card.act:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.3);
+        filter: brightness(1.08);
+      }
+      
+      /* Add subtle blue overlay on hover */
+      .brantjes-property-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(30, 127, 203, 0.08);
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 2;
+      }
+      
+      .brantjes-property-card:hover::before {
+        opacity: 1;
       }
     `;
     element.appendChild(style);
