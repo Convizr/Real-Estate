@@ -483,9 +483,141 @@ export const BrantjesExtension = {
     element.appendChild(style);
 
     // --- MODAL FUNCTIONS (UNCHANGED) ---
-    function openModal(contentElement) { /* ... */ }
-    function showDetailModal(property) { /* ... */ }
-    function showBookingModal(property) { /* ... */ }
+    function openModal(contentElement) {
+        let modalBackdrop = document.querySelector('.brantjes-modal-backdrop');
+        if (!modalBackdrop) {
+            modalBackdrop = document.createElement('div');
+            modalBackdrop.className = 'brantjes-modal-backdrop';
+            document.body.appendChild(modalBackdrop);
+        }
+
+        const modalContainer = document.createElement('div');
+        modalContainer.className = 'brantjes-modal-container';
+        modalContainer.style.position = 'relative'; // For absolute positioning of close button
+
+        const closeButton = document.createElement('button');
+        closeButton.className = 'brantjes-modal-close';
+        closeButton.innerHTML = '&times;';
+        closeButton.onclick = () => {
+            modalBackdrop.classList.remove('visible');
+            modalContainer.classList.remove('visible');
+            setTimeout(() => {
+                modalBackdrop.remove();
+            }, 300); // Allow transition to finish
+        };
+        modalContainer.appendChild(closeButton);
+        modalContainer.appendChild(contentElement);
+        modalBackdrop.innerHTML = ''; // Clear previous content
+        modalBackdrop.appendChild(modalContainer);
+
+        // Force reflow to ensure transition
+        void modalBackdrop.offsetWidth;
+        modalBackdrop.classList.add('visible');
+    }
+
+    function showDetailModal(property) {
+        const detailContent = document.createElement('div');
+        detailContent.className = 'detail-popup-content';
+
+        const mainImageContainer = document.createElement('div');
+        mainImageContainer.className = 'detail-popup-main-image';
+        let mainImgSrc = '';
+        if (Array.isArray(property.media)) {
+            let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
+            if (!imgObj) {
+                imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+            }
+            if (imgObj) {
+                mainImgSrc = imgObj.link;
+                if (mainImgSrc) {
+                    mainImgSrc += mainImgSrc.includes('?') ? '&resize=8' : '?resize=8'; // Higher resolution for detail
+                }
+            }
+        }
+        mainImageContainer.innerHTML = `<img src="${mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image'}" alt="Property Main Image">`;
+        detailContent.appendChild(mainImageContainer);
+
+        // Add dummy thumbnails for now
+        const thumbnailsContainer = document.createElement('div');
+        thumbnailsContainer.className = 'detail-popup-thumbnails';
+        for (let i = 0; i < 4; i++) {
+            thumbnailsContainer.innerHTML += `<div class="detail-popup-thumbnail" style="background-image: url('https://via.placeholder.com/150x112?text=Thumb'); background-size: cover;"></div>`;
+        }
+        detailContent.appendChild(thumbnailsContainer);
+
+        const infoSection = document.createElement('div');
+        infoSection.className = 'detail-popup-info';
+        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer, property.adres?.plaats].filter(Boolean).join(' ');
+        infoSection.innerHTML = `
+            <h2>${address || 'Onbekend adres'}</h2>
+            <p><strong>Kooprijs:</strong> € ${property.financieel?.overdracht?.koopprijs?.toLocaleString('nl-NL') || 'N/A'}</p>
+            <p><strong>Woonoppervlakte:</strong> ${property.algemeen?.woonoppervlakte || 'N/A'} m²</p>
+            <p><strong>Aantal kamers:</strong> ${property.algemeen?.aantalKamers || 'N/A'}</p>
+            <p><strong>Energielabel:</strong> ${property.algemeen?.energieklasse || 'N/A'}</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <button class="submit-btn" style="width: auto; padding: 10px 20px;">Plan bezichtiging</button>
+        `;
+        detailContent.appendChild(infoSection);
+
+        // Add event listener to the "Plan bezichtiging" button within the detail modal
+        const planViewingButton = infoSection.querySelector('.submit-btn');
+        if (planViewingButton) {
+            planViewingButton.addEventListener('click', () => {
+                // Close detail modal first, then open booking modal
+                document.querySelector('.brantjes-modal-backdrop')?.remove();
+                showBookingModal(property);
+            });
+        }
+
+        openModal(detailContent);
+    }
+
+    function showBookingModal(property) {
+        const bookingContent = document.createElement('div');
+        bookingContent.className = 'booking-form-content';
+        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer, property.adres?.plaats].filter(Boolean).join(' ');
+
+        bookingContent.innerHTML = `
+            <h2>Bezichtiging plannen voor ${address || 'deze woning'}</h2>
+            <form class="booking-form">
+                <div class="form-group">
+                    <label for="name">Naam:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="phone">Telefoonnummer:</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group full-width">
+                    <label for="date">Voorkeursdatum:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="time">Voorkeurstijd:</label>
+                    <input type="time" id="time" name="time">
+                </div>
+                <div class="form-group full-width">
+                    <label for="message">Opmerkingen:</label>
+                    <textarea id="message" name="message" rows="4"></textarea>
+                </div>
+                <button type="submit" class="submit-btn full-width">Verzoek indienen</button>
+            </form>
+        `;
+
+        const bookingForm = bookingContent.querySelector('.booking-form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Bezichtigingsverzoek ingediend!');
+                document.querySelector('.brantjes-modal-backdrop')?.remove(); // Close modal on submit
+            });
+        }
+        openModal(bookingContent);
+    }
 
     // --- INFINITE CAROUSEL SETUP (ADAPTED) ---
     const realSlidesData = properties;
@@ -615,6 +747,9 @@ export const BrantjesExtension = {
 
     function updateCardClassesAndTransforms() {
         const cards = Array.from(list.children); // Get all card elements in the DOM
+        const nextIndex = (currentPropertyIndex + 1) % totalSlides;
+        const prevIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
+
 
         cards.forEach((card, index) => {
             // Reset all potential carousel classes and default styles
@@ -625,28 +760,25 @@ export const BrantjesExtension = {
             card.style.width = '201px'; // Default width
             card.style.height = '335px'; // Default height
 
-            // Determine relative position to the active card
-            const diff = (index - currentPropertyIndex + totalSlides) % totalSlides;
-
-            if (diff === 0) { // Active card
+            if (index === currentPropertyIndex) { // Active card
                 card.classList.add('act');
                 card.style.opacity = '1';
                 card.style.zIndex = '3';
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
                 card.style.width = '219px'; // Active width
                 card.style.height = '365px'; // Active height
-            } else if (diff === 1 || (diff === -(totalSlides - 1) % totalSlides && totalSlides > 1)) { // Next card (or wraps around from last to first)
+            } else if (index === nextIndex) { // Next card
                 card.classList.add('next');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% + 220px), -50%) scale(0.85)`;
-            } else if (diff === totalSlides - 1 || (diff === -1 && totalSlides > 1)) { // Previous card (or wraps around from first to last)
+            } else if (index === prevIndex) { // Previous card
                 card.classList.add('prev');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% - 220px), -50%) scale(0.85)`;
             }
-            // Other cards remain hidden/scaled by their default styles
+            // All other cards will retain the default hidden/scaled state
         });
     }
 
