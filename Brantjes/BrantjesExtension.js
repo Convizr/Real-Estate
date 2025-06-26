@@ -138,7 +138,7 @@ export const BrantjesExtension = {
       .brantjes-card-info p:first-child {
         font-weight: bold;
         font-size: 18px;
-        color: #51b2df;
+        color: white;
       }
       .brantjes-viewing-button {
         position: absolute;
@@ -519,22 +519,23 @@ export const BrantjesExtension = {
         width: 100%;
       }
 
-      /* Hover effect for clickable cards */
-      .brantjes-property-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0px 8px 25px 0px rgba(0,0,0,0.25);
-        filter: brightness(1.05);
+      /* Larger font sizes for hero (active) card */
+      .brantjes-property-card.act .brantjes-card-info p:first-child {
+        font-size: 20px;
+      }
+      .brantjes-property-card.act .brantjes-card-info p {
+        font-size: 17px;
       }
       
-      /* Special hover effect for active (center) card */
+      /* Special hover effect for active (center) card ONLY */
       .brantjes-property-card.act:hover {
         transform: scale(1.05);
         box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.3);
         filter: brightness(1.08);
       }
       
-      /* Add subtle blue overlay on hover */
-      .brantjes-property-card::before {
+      /* Add subtle blue overlay on hover - ONLY for active card */
+      .brantjes-property-card.act::before {
         content: '';
         position: absolute;
         top: 0;
@@ -549,7 +550,7 @@ export const BrantjesExtension = {
         z-index: 2;
       }
       
-      .brantjes-property-card:hover::before {
+      .brantjes-property-card.act:hover::before {
         opacity: 1;
       }
     `;
