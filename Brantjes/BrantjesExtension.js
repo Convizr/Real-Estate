@@ -810,34 +810,6 @@ export const BrantjesExtension = {
         }
     });
 
-    // Swipe Container for Hammer.js
-    const swipeContainer = document.createElement('div');
-    swipeContainer.className = 'swipe';
-    carouselContainer.appendChild(swipeContainer);
-
-    const swipeStyle = document.createElement('style');
-    swipeStyle.innerHTML = `
-        .swipe {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 15;
-            opacity: 0;
-            cursor: grab;
-        }
-    `;
-    element.appendChild(swipeStyle);
-
-    if (typeof Hammer === 'undefined') {
-        console.warn("Hammer.js is not loaded. Swipe gestures will not work.");
-    } else {
-        const swipe = new Hammer(swipeContainer);
-        swipe.on("swipeleft", next);
-        swipe.on("swiperight", prev);
-    }
-
     // Navigation buttons
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
