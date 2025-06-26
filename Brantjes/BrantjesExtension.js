@@ -6,7 +6,7 @@ export const BrantjesExtension = {
     (trace.payload && trace.payload.name === 'ext_brantjes_recommendation'),
   render: ({ trace, element }) => {
     console.log('Rendering BrantjesExtension');
-    
+
     let payloadObj;
     if (typeof trace.payload === 'string') {
       try {
@@ -49,12 +49,6 @@ export const BrantjesExtension = {
         overflow: hidden;
         padding: 0;
         background: transparent;
-      }
-      .brantjes-carousel-track {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .brantjes-property-card {
         flex: 0 0 201px;
@@ -380,62 +374,67 @@ export const BrantjesExtension = {
         }
       }
 
-      /* Modern Class-Based Absolute Carousel */
+      /* Modern Class-Based Absolute Carousel (from ExampleInfinityCarousel.md) */
       .brantjes-carousel-list {
-        position: relative;
-        width: 650px;
-        height: 420px;
-        margin: auto;
-        overflow: hidden;
+        position: absolute; /* Changed from relative to absolute within carousel-container */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the list itself */
+        width: 100%; /* Take full width of container */
+        height: 100%; /* Take full height of container */
+        margin: 0; /* Reset margin */
+        padding: 0; /* Reset padding */
       }
       .brantjes-carousel-list .brantjes-property-card {
+        list-style-type: none;
         position: absolute;
-        top: 50%; left: 50%;
-        width: 201px; height: 335px;
-        margin-left: -100.5px;
-        margin-top : -167.5px;
+        left: 50%;
+        margin-left: -100.5px; /* Half of original card width */
+        margin-top : -167.5px; /* Half of original card height */
         border-radius: 8px;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1),
-                    opacity   0.6s cubic-bezier(0.16,1,0.3,1);
+        transition: transform 1s, opacity 1s; /* Adjusted from 0.6s to 1s as in example */
         z-index: 1;
+        width: 201px; /* Original size */
+        height: 335px; /* Original size */
+        opacity: .25; /* Default opacity */
       }
       .brantjes-carousel-list .act {
-        width: 219px; height: 365px;
-        margin-left: -109.5px;
-        margin-top: -182.5px;
-        transform: translateX(0) scale(1);
         opacity: 1;
+        transform: translateX(0) scale(1); /* Active element is centered and full size */
         z-index: 3;
+        width: 219px; /* Active size */
+        height: 365px; /* Active size */
+        margin-left: -109.5px; /* Half of active card width */
+        margin-top: -182.5px; /* Half of active card height */
       }
-      .brantjes-carousel-list .hide,
-      .brantjes-carousel-list .new-next {
-        transition: transform 0.6s cubic-bezier(0.16,1,0.3,1),
-                    opacity   0.6s cubic-bezier(0.16,1,0.3,1);
-      }
-      .brantjes-carousel-list .hide {
-        transform: translateX(-420px) scale(0.85);
-        opacity: 0;
-        z-index: 0;
+      .brantjes-carousel-list .prev,
+      .brantjes-carousel-list .next {
+        cursor: pointer;
+        z-index: 2; /* Prev/Next are above hide/new-next */
       }
       .brantjes-carousel-list .prev {
-        transform: translateX(-220px) scale(0.85);
-        opacity: 0.25;
-        cursor: pointer;
-        z-index: 2;
+        transform: translateX(-220px) scale(.85);
+        opacity: .25;
       }
       .brantjes-carousel-list .next {
-        transform: translateX(220px) scale(0.85);
-        opacity: 0.25;
-        cursor: pointer;
-        z-index: 2;
+        transform: translateX(220px) scale(.85);
+        opacity: .25;
       }
-      .brantjes-carousel-list .new-next {
-        transform: translateX(420px) scale(0.85);
+      .brantjes-carousel-list .hide {
+        transform: translateX(-420px) scale(.85);
         opacity: 0;
+        transition: opacity .5s, transform .5s; /* Faster transition for hiding */
         z-index: 0;
       }
+      .brantjes-carousel-list .new-next {
+        transform: translateX(420px) scale(.85);
+        opacity: 0;
+        transition: opacity .5s, transform .5s; /* Faster transition for new elements */
+        z-index: 0;
+      }
+
 
       /* Energy label styles */
       .energy-label {
@@ -486,7 +485,7 @@ export const BrantjesExtension = {
       .energy-label-G::after { border-left-color: #A50021; }
     `;
     element.appendChild(style);
-    
+
     // --- MODAL FUNCTIONS ---
     function openModal(contentElement) {
       const backdrop = document.createElement('div');
@@ -515,12 +514,12 @@ export const BrantjesExtension = {
           closeModal();
         }
       });
-      
+
       modalContainer.appendChild(closeButton);
       modalContainer.appendChild(contentElement);
       backdrop.appendChild(modalContainer);
       element.appendChild(backdrop);
-      
+
       // Trigger the transition
       setTimeout(() => backdrop.classList.add('visible'), 10);
     }
@@ -557,7 +556,7 @@ export const BrantjesExtension = {
           <h2 id="booking-form-title" class="vf-assistant-hidden">Viewing Request Form</h2>
           <div class="form-group full-width">
             <label for="property">Woning</label>
-            <input type="text" id="property" name="property" value="${property.fields['Property Name']}" readonly>
+            <input type="text" id="property" name="property" value="${property.fields['Property Name'] || property.adres?.straat + ' ' + property.adres?.huisnummer?.hoofdnummer + ', ' + property.adres?.plaats}" readonly>
           </div>
           <div class="form-group">
             <label for="preferred_day">Voorkeursdag</label>
@@ -606,7 +605,7 @@ export const BrantjesExtension = {
       const form = content.querySelector('form');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const formData = new FormData(form);
         const bookingDetails = Object.fromEntries(formData.entries());
 
@@ -622,9 +621,9 @@ export const BrantjesExtension = {
             },
           });
         }
-        
+
         console.log('Form submitted with details:', bookingDetails);
-        
+
         // Visually confirm and close modal
         const submitButton = form.querySelector('.submit-btn');
         submitButton.textContent = 'Verzonden!';
@@ -635,42 +634,25 @@ export const BrantjesExtension = {
       });
       openModal(content);
     }
-    
-    // --- INFINITE CAROUSEL SETUP ---
-    const realSlides = properties;
-    const total = realSlides.length;
-    let currentIndex = 1;
-    let isTransitioning = false;
-    const slideWidth = 219 + 18;
 
-    // Create track
-    const track = document.createElement('div');
-    track.className = 'brantjes-carousel-track';
-    track.style.display = 'flex';
-    track.style.height = '100%';
-    track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-    track.style.willChange = 'transform';
-    track.style.alignItems = 'center';
-    track.style.position = 'absolute';
-    track.style.left = '0';
-    track.style.top = '0';
-    track.style.width = `${(total + 2) * slideWidth}px`;
+    // --- INFINITE CAROUSEL SETUP (Adapted to ExampleInfinityCarousel.md logic) ---
+    const realSlidesData = properties;
+    const totalSlides = realSlidesData.length;
 
-// Helper to create a card
-    function createCard(property, idx) {
-      const li = document.createElement('div');
-      li.className = 'brantjes-property-card';
-      li.style.flex = '0 0 219px';
-      li.style.margin = '0 9px';
-      // Card content (reuse your card rendering logic)
+    // Helper to create a card element
+    function createCardElement(propertyData) {
+      const li = document.createElement('li'); // Changed to li as in example
+      li.className = 'brantjes-property-card'; // This class is already styled in your CSS
+      li.style.listStyleType = 'none'; // Ensure no bullet points
+
       const cardInner = document.createElement('div');
       cardInner.className = 'brantjes-property-card-inner';
-      // Get image
+
       let imgUrl = '';
-      if (Array.isArray(property.media)) {
-        let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
+      if (Array.isArray(propertyData.media)) {
+        let imgObj = propertyData.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
         if (!imgObj) {
-          imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+          imgObj = propertyData.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
         }
         if (imgObj) {
           imgUrl = imgObj.link;
@@ -680,22 +662,24 @@ export const BrantjesExtension = {
         }
       }
       const img = document.createElement('img');
-      img.src = imgUrl;
+      img.src = imgUrl || 'https://via.placeholder.com/200x200?text=No+Image'; // Fallback image
       img.alt = 'Woning foto';
       cardInner.appendChild(img);
-      // Overlay
+
       const overlay = document.createElement('div');
       overlay.className = 'brantjes-card-overlay';
       const info = document.createElement('div');
       info.className = 'brantjes-card-info';
-      const straat = property.adres?.straat || '';
-      const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-      const plaats = property.adres?.plaats || '';
+
+      const straat = propertyData.adres?.straat || '';
+      const huisnummer = propertyData.adres?.huisnummer?.hoofdnummer || '';
+      const plaats = propertyData.adres?.plaats || '';
       const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
-      const price = property.financieel?.overdracht?.koopprijs || 0;
-      const energy = property.algemeen?.energieklasse || '';
-      const area = property.algemeen?.woonoppervlakte || '';
-      const rooms = property.algemeen?.aantalKamers || '';
+      const price = propertyData.financieel?.overdracht?.koopprijs || 0;
+      const energy = propertyData.algemeen?.energieklasse || '';
+      const area = propertyData.algemeen?.woonoppervlakte || '';
+      const rooms = propertyData.algemeen?.aantalKamers || '';
+
       const title = document.createElement('p');
       title.textContent = address || 'Onbekend adres';
       const priceP = document.createElement('p');
@@ -711,7 +695,7 @@ export const BrantjesExtension = {
       info.appendChild(extra);
       overlay.appendChild(info);
       cardInner.appendChild(overlay);
-      // Viewing button
+
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
       viewingButton.innerHTML = `
@@ -720,15 +704,18 @@ export const BrantjesExtension = {
       `;
       viewingButton.addEventListener('click', (e) => {
         e.stopPropagation();
-        showBookingModal(property);
+        showBookingModal(propertyData);
       });
       li.appendChild(viewingButton);
       li.appendChild(cardInner);
+
       li.addEventListener('click', () => {
-        showDetailModal(property);
+        // Only open detail modal if it's the active slide
+        if (li.classList.contains('act')) {
+          showDetailModal(propertyData);
+        }
       });
 
-      // Energy label (top-left flag)
       if (energy) {
         const labelDiv = document.createElement('div');
         labelDiv.className = `energy-label energy-label-${energy}`;
@@ -736,66 +723,236 @@ export const BrantjesExtension = {
         li.appendChild(labelDiv);
       }
 
+      // Store the property data on the element for easy access
+      li.propertyData = propertyData;
+
       return li;
     }
 
-    // Build slides array
-    const slides = [];
-    slides.push(createCard(realSlides[total - 1], -1));
-    realSlides.forEach((prop, i) => slides.push(createCard(prop, i)));
-    slides.push(createCard(realSlides[0], total));
-    slides.forEach(card => track.appendChild(card));
-
-    function applyClasses() {
-      slides.forEach((slideEl, i) => {
-        slideEl.classList.remove('hide', 'prev', 'act', 'next', 'new-next');
-        if (i === currentIndex) slideEl.classList.add('active');
-        else if (i === currentIndex - 1) slideEl.classList.add('prev');
-        else if (i === currentIndex + 1) slideEl.classList.add('next');
-        else if (i < currentIndex - 1) slideEl.classList.add('hide');
-        else if (i > currentIndex + 1) slideEl.classList.add('new-next');
-      });
-      track.style.transform = `translate3d(${-currentIndex * slideWidth}px, 0, 0)`;
-    }
-    applyClasses();
-
-    function updateTrack() { applyClasses(); }
-    function goTo(idx) {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      currentIndex = idx;
-      track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-      updateTrack();
-    }
-    function next() { goTo(currentIndex + 1); }
-    function prev() { goTo(currentIndex - 1); }
-
-    track.addEventListener('transitionend', () => {
-      if (currentIndex === 0) {
-        track.style.transition = 'none';
-        currentIndex = total;
-        applyClasses();
-        void track.offsetWidth;
-        track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-      } else if (currentIndex === total + 1) {
-        track.style.transition = 'none';
-        currentIndex = 1;
-        applyClasses();
-        void track.offsetWidth;
-        track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-      }
-      isTransitioning = false;
-    });
-
-    // Build container and navigation
+    // Main carousel container
     const carouselContainer = document.createElement('div');
     carouselContainer.className = 'brantjes-carousel-container';
-    carouselContainer.style.position = 'relative';
-    carouselContainer.style.overflow = 'hidden';
-    carouselContainer.style.width = '710px';
-    carouselContainer.style.height = '420px';
-    carouselContainer.appendChild(track);
 
+    // The list (ul or div) that holds the carousel items
+    const list = document.createElement('ul'); // Changed to ul as in example
+    list.className = 'brantjes-carousel-list';
+    carouselContainer.appendChild(list);
+
+    // Initial population of carousel items
+    // To mimic the example's class structure and smooth infinite loop,
+    // we need to set up the initial visible elements.
+    // The example implies at least 5 elements are needed for the prev, act, next, hide, new-next classes.
+    // If you have fewer than 5 properties, you'll need to duplicate them.
+
+    let initialProperties = [];
+    if (totalSlides === 0) {
+        // No properties, handled earlier.
+    } else if (totalSlides === 1) {
+        initialProperties = [realSlidesData[0], realSlidesData[0], realSlidesData[0], realSlidesData[0], realSlidesData[0]];
+    } else if (totalSlides === 2) {
+        initialProperties = [realSlidesData[1], realSlidesData[0], realSlidesData[1], realSlidesData[0], realSlidesData[1]];
+    } else if (totalSlides === 3) {
+        initialProperties = [realSlidesData[2], realSlidesData[0], realSlidesData[1], realSlidesData[2], realSlidesData[0]];
+    } else if (totalSlides === 4) {
+        initialProperties = [realSlidesData[3], realSlidesData[0], realSlidesData[1], realSlidesData[2], realSlidesData[3], realSlidesData[0]]; // Need more for 5 distinct
+    } else {
+        // Enough properties, take first 5 for initial setup
+        initialProperties = [
+            realSlidesData[totalSlides - 2], // For hide
+            realSlidesData[totalSlides - 1], // For prev
+            realSlidesData[0], // For act
+            realSlidesData[1], // For next
+            realSlidesData[2]  // For new-next
+        ];
+    }
+    
+    // Append initial cards
+    initialProperties.forEach((prop, index) => {
+        const card = createCardElement(prop);
+        if (totalSlides === 0) return; // Should already be handled
+        
+        // Assign initial classes based on the example's setup
+        if (totalSlides === 1) {
+             if (index === 0) card.classList.add('act');
+             else if (index === 1) card.classList.add('prev');
+             else if (index === 2) card.classList.add('next');
+             else if (index === 3) card.classList.add('hide');
+             else if (index === 4) card.classList.add('new-next');
+        } else if (totalSlides === 2) {
+            if (index === 0) card.classList.add('prev');
+            else if (index === 1) card.classList.add('act');
+            else if (index === 2) card.classList.add('next');
+            else if (index === 3) card.classList.add('new-next'); // Use next for second property, new-next for first
+            else if (index === 4) card.classList.add('hide'); // Use hide for second property
+        } else if (totalSlides === 3) {
+             if (index === 0) card.classList.add('hide');
+             else if (index === 1) card.classList.add('prev');
+             else if (index === 2) card.classList.add('act');
+             else if (index === 3) card.classList.add('next');
+             else if (index === 4) card.classList.add('new-next');
+        } else { // 4 or more properties
+            if (index === 0) card.classList.add('hide');
+            else if (index === 1) card.classList.add('prev');
+            else if (index === 2) card.classList.add('act');
+            else if (index === 3) card.classList.add('next');
+            else if (index === 4) card.classList.add('new-next');
+        }
+        list.appendChild(card);
+    });
+
+    let currentPropertyIndex = 0; // Tracks the index within realSlidesData for what's currently 'act'
+
+    // Get the query selector from the example
+    const $ = selector => document.querySelector(selector);
+
+    function getNextPropertyData() {
+        currentPropertyIndex = (currentPropertyIndex + 1) % totalSlides;
+        return realSlidesData[currentPropertyIndex];
+    }
+
+    function getPrevPropertyData() {
+        currentPropertyIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
+        return realSlidesData[currentPropertyIndex];
+    }
+
+    function next() {
+        if ($(".brantjes-carousel-list .hide")) {
+            $(".brantjes-carousel-list .hide").remove();
+        }
+
+        if ($(".brantjes-carousel-list .prev")) {
+            $(".brantjes-carousel-list .prev").classList.add("hide");
+            $(".brantjes-carousel-list .prev").classList.remove("prev");
+        }
+
+        $(".brantjes-carousel-list .act").classList.add("prev");
+        $(".brantjes-carousel-list .act").classList.remove("act");
+
+        $(".brantjes-carousel-list .next").classList.add("act");
+        $(".brantjes-carousel-list .next").classList.remove("next");
+
+        // Only remove new-next if it exists and apply the class removal.
+        // This handles cases where new-next might not be present (e.g., initially with < 5 items)
+        const newNextEl = $(".brantjes-carousel-list .new-next");
+        if (newNextEl) {
+             newNextEl.classList.remove("new-next");
+        }
+
+
+        // Add a new 'next' and 'new-next' card at the end
+        const addedEl = createCardElement(getNextPropertyData());
+        list.appendChild(addedEl);
+        addedEl.classList.add("next", "new-next");
+
+        // Ensure proper z-index and event listeners are re-applied if elements are re-created
+        // (though createCardElement should handle listeners)
+        updateZIndexes();
+    }
+
+    function prev() {
+        // If new-next exists, remove it first
+        const currentNewNext = $(".brantjes-carousel-list .new-next");
+        if (currentNewNext) {
+            currentNewNext.remove();
+        }
+
+        // Shift classes
+        $(".brantjes-carousel-list .next").classList.add("new-next");
+
+        $(".brantjes-carousel-list .act").classList.add("next");
+        $(".brantjes-carousel-list .act").classList.remove("act");
+
+        $(".brantjes-carousel-list .prev").classList.add("act");
+        $(".brantjes-carousel-list .prev").classList.remove("prev");
+
+        // Shift 'hide' to 'prev'
+        const hideEl = $(".brantjes-carousel-list .hide");
+        if (hideEl) { // Check if hide element exists before manipulating
+            hideEl.classList.add("prev");
+            hideEl.classList.remove("hide");
+        }
+
+
+        // Add a new 'hide' card at the beginning
+        const addedEl = createCardElement(getPrevPropertyData());
+        list.insertBefore(addedEl, list.firstChild);
+        addedEl.classList.add("hide");
+
+        updateZIndexes();
+    }
+
+    function updateZIndexes() {
+        // Ensure z-index is correct after class changes
+        list.querySelectorAll('.brantjes-property-card').forEach(card => {
+            if (card.classList.contains('act')) {
+                card.style.zIndex = '3';
+            } else if (card.classList.contains('prev') || card.classList.contains('next')) {
+                card.style.zIndex = '2';
+            } else {
+                card.style.zIndex = '1'; // Hide/new-next or other default
+            }
+        });
+    }
+
+    // Call updateZIndexes initially
+    updateZIndexes();
+
+    const slide = element => {
+        /* Next slide */
+        if (element.classList.contains('next')) {
+            next();
+        /* Previous slide */
+        } else if (element.classList.contains('prev')) {
+            prev();
+        }
+    }
+
+    const slider = $(".brantjes-carousel-list"),
+          swipeContainer = document.createElement('div'); // Create a dedicated swipe area
+    swipeContainer.className = 'swipe'; // Assign the swipe class
+    carouselContainer.appendChild(swipeContainer); // Append it to the main carousel container
+
+    // Add CSS for .swipe to be invisible but cover the carousel area
+    const swipeStyle = document.createElement('style');
+    swipeStyle.innerHTML = `
+        .swipe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 15; /* Above cards but below nav buttons */
+            opacity: 0; /* Make it invisible */
+            cursor: grab;
+        }
+    `;
+    element.appendChild(swipeStyle);
+
+
+    // Initialize Hammer.js on the swipe container
+    // Ensure Hammer is loaded. If not, you might need to add a script tag to load it.
+    // window.Hammer is assumed to be globally available by the prompt.
+    if (typeof Hammer === 'undefined') {
+        console.warn("Hammer.js is not loaded. Swipe gestures will not work.");
+        // You might need to dynamically load Hammer.js here if it's not guaranteed to be present.
+    } else {
+        const swipe = new Hammer(swipeContainer);
+
+        swipe.on("swipeleft", (ev) => {
+            next();
+        });
+
+        swipe.on("swiperight", (ev) => {
+            prev();
+        });
+    }
+
+
+    slider.onclick = event => {
+        slide(event.target.closest('.brantjes-property-card')); // Ensure we click the card element itself
+    }
+
+    // Build navigation buttons
     const nextButton = document.createElement('button');
     nextButton.className = 'brantjes-nav-button brantjes-nav-next';
     nextButton.innerHTML = '&rsaquo;';
@@ -804,14 +961,12 @@ export const BrantjesExtension = {
     prevButton.className = 'brantjes-nav-button brantjes-nav-prev';
     prevButton.innerHTML = '&lsaquo;';
     prevButton.setAttribute('aria-label', 'Previous Property');
+
     carouselContainer.appendChild(prevButton);
     carouselContainer.appendChild(nextButton);
+
     nextButton.addEventListener('click', next);
     prevButton.addEventListener('click', prev);
-
-    window.addEventListener('resize', () => {
-      // Optional: recalc slideWidth
-    });
 
     element.appendChild(carouselContainer);
   },
