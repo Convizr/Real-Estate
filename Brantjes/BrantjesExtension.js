@@ -421,7 +421,13 @@ export const BrantjesExtension = {
         z-index: 2; /* Prev/Next are above hide/new-next */
         transform: translate(calc(-50% + 220px), -50%) scale(.85); /* Adjusted for centering */
       }
-      /* Removed .hide and .new-next CSS classes as their states are now managed by JS */
+      .brantjes-carousel-list .hide,
+      .brantjes-carousel-list .new-next {
+        opacity: 0;
+        transition: opacity .5s, transform .5s; /* Faster transition for hiding */
+        z-index: 0;
+        visibility: hidden; /* Added to ensure full invisibility */
+      }
 
 
       /* Energy label styles */
