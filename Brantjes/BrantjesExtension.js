@@ -651,9 +651,6 @@ export const BrantjesExtension = {
     track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
     track.style.willChange = 'transform';
     track.style.alignItems = 'center';
-    track.style.position = 'absolute';
-    track.style.left = '0';
-    track.style.top = '0';
     track.style.width = ${(total + 2) * slideWidth}px;
 
     // Helper to create a card
