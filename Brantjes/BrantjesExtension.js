@@ -38,6 +38,9 @@ export const BrantjesExtension = {
       return;
     }
 
+    // Correctly declare currentPropertyIndex at the top of the render function
+    let currentPropertyIndex = 0; // Initialize here
+
     // Create stylesheet
     const style = document.createElement('style');
     style.innerHTML = `
@@ -741,7 +744,6 @@ export const BrantjesExtension = {
 
     // Initial population of carousel items
     let initialProperties = [];
-    let initialIndices = []; // To keep track of the original index in realSlidesData
 
     // Logic to handle fewer than 5 properties by duplicating
     if (totalSlides === 1) {
@@ -752,7 +754,6 @@ export const BrantjesExtension = {
             realSlidesData[0], // next
             realSlidesData[0]  // new-next
         ];
-        initialIndices = [0, 0, 0, 0, 0];
         currentPropertyIndex = 0; // The 'act' element is the first property
     } else if (totalSlides === 2) {
         initialProperties = [
@@ -762,7 +763,6 @@ export const BrantjesExtension = {
             realSlidesData[0], // next (first property)
             realSlidesData[1]  // new-next (second property)
         ];
-        initialIndices = [1, 0, 1, 0, 1];
         currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
     } else if (totalSlides === 3) {
         initialProperties = [
@@ -772,7 +772,6 @@ export const BrantjesExtension = {
             realSlidesData[2], // next (last property)
             realSlidesData[0]  // new-next (first property)
         ];
-        initialIndices = [2, 0, 1, 2, 0];
         currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
     } else if (totalSlides === 4) {
         initialProperties = [
@@ -782,7 +781,6 @@ export const BrantjesExtension = {
             realSlidesData[2], // next (third property)
             realSlidesData[3]  // new-next (last property)
         ];
-        initialIndices = [3, 0, 1, 2, 3];
         currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
     }
      else { // 5 or more properties
@@ -793,7 +791,6 @@ export const BrantjesExtension = {
             realSlidesData[1], // For next
             realSlidesData[2]  // For new-next
         ];
-        initialIndices = [totalSlides - 2, totalSlides - 1, 0, 1, 2];
         currentPropertyIndex = 0; // The 'act' element is the first property (index 0)
     }
     
@@ -807,9 +804,6 @@ export const BrantjesExtension = {
         else if (index === 4) card.classList.add('new-next');
         list.appendChild(card);
     });
-
-    // We'll update currentPropertyIndex based on the 'act' element after each slide
-    // It is important that `currentPropertyIndex` always reflects the actual index of the property shown in the 'act' position.
 
     // AANPASSING: De $ helper wordt aangepast om alleen binnen de 'list' te zoeken.
     // Dit is cruciaal om te voorkomen dat het document globaal wordt doorzocht
@@ -946,8 +940,7 @@ export const BrantjesExtension = {
         }
     }
 
-    const slider = list; // Fix voor "TypeError: Cannot set properties of null (setting 'onclick')"
-                         // 'list' is al het correcte element (de UL)
+    const slider = list; 
 
     slider.onclick = event => {
         slide(event.target.closest('.brantjes-property-card')); // Ensure we click the card element itself
