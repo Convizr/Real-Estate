@@ -41,6 +41,31 @@ export const BrantjesExtension = {
     // Create stylesheet
     const style = document.createElement('style');
     style.innerHTML = `
+      /* Font-face declarations for Soleto fonts */
+      @font-face {
+        font-family: 'Soleto Trial';
+        src: url('pad/naar/SoletoTrial-Regular.woff2') format('woff2'),
+             url('pad/naar/SoletoTrial-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      @font-face {
+        font-family: 'Soleto';
+        src: url('pad/naar/Soleto-Regular.woff2') format('woff2'),
+             url('pad/naar/Soleto-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* Apply font family to all elements in the carousel */
+      .brantjes-carousel-container,
+      .brantjes-carousel-container * {
+        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif;
+      }
+
       .brantjes-carousel-container {
         position: relative;
         width: 650px; /* Max width */
