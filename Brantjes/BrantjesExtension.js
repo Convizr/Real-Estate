@@ -34,13 +34,13 @@ export const BrantjesExtension = {
       properties = properties.resultaten;
     }
     if (!Array.isArray(properties) || properties.length === 0) {
-      element.innerHTML = `<p>No properties available.</p>`;
+      element.innerHTML = <p>No properties available.</p>;
       return;
     }
 
     // Create stylesheet
     const style = document.createElement('style');
-    style.innerHTML = `
+    style.innerHTML = 
       .brantjes-carousel-container {
         position: relative;
         width: 650px;
@@ -484,7 +484,7 @@ export const BrantjesExtension = {
       .energy-label-E::after { border-left-color: #F76B1C; }
       .energy-label-F::after { border-left-color: #E2001A; }
       .energy-label-G::after { border-left-color: #A50021; }
-    `;
+    ;
     element.appendChild(style);
     
     // --- MODAL FUNCTIONS ---
@@ -528,7 +528,7 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
       const content = document.createElement('div');
       content.className = 'detail-popup-content';
-      content.innerHTML = `
+      content.innerHTML = 
         <div class="detail-popup-main-image">
           <img src="${property.fields?.Image?.[0]?.url || ''}" alt="${property.fields['Property Name']}">
         </div>
@@ -544,14 +544,14 @@ export const BrantjesExtension = {
           <p><strong>Makelaar:</strong> ${property.fields['Sales Rep'] || 'N/A'} &nbsp;&bull;&nbsp; <strong>Tel:</strong> ${property.fields['Reps Number'] || 'N/A'}</p>
           <p><strong>Prijs:</strong> € ${property.fields.Price?.toLocaleString('nl-NL') || '0'} k.k.</p>
         </div>
-      `;
+      ;
       openModal(content);
     }
 
     function showBookingModal(property) {
       const content = document.createElement('div');
       content.className = 'booking-form-content';
-      content.innerHTML = `
+      content.innerHTML = 
         <h2>Bezichtigen Aanvragen</h2>
         <form class="booking-form" aria-labelledby="booking-form-title">
           <h2 id="booking-form-title" class="vf-assistant-hidden">Viewing Request Form</h2>
@@ -602,7 +602,7 @@ export const BrantjesExtension = {
             <button type="submit" class="submit-btn">Verzend</button>
           </div>
         </form>
-      `;
+      ;
       const form = content.querySelector('form');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -654,7 +654,7 @@ export const BrantjesExtension = {
     track.style.position = 'absolute';
     track.style.left = '0';
     track.style.top = '0';
-    track.style.width = `${(total + 2) * slideWidth}px`;
+    track.style.width = ${(total + 2) * slideWidth}px;
 
     // Helper to create a card
     function createCard(property, idx) {
@@ -699,13 +699,13 @@ export const BrantjesExtension = {
       const title = document.createElement('p');
       title.textContent = address || 'Onbekend adres';
       const priceP = document.createElement('p');
-      priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
+      priceP.textContent = € ${price.toLocaleString('nl-NL')} k.k.;
       const extra = document.createElement('p');
       extra.style.fontSize = '14px';
       extra.innerHTML =
-        (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
-        (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
-        (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
+        (energy ? <span title=\"Energielabel\">${energy}</span> &nbsp; : '') +
+        (area ? <span title=\"Woonoppervlakte\">${area} m²</span> &nbsp; : '') +
+        (rooms ? <span title=\"Kamers\">${rooms} kamers</span> : '');
       info.appendChild(title);
       info.appendChild(priceP);
       info.appendChild(extra);
@@ -714,10 +714,10 @@ export const BrantjesExtension = {
       // Viewing button
       const viewingButton = document.createElement('button');
       viewingButton.className = 'brantjes-viewing-button';
-      viewingButton.innerHTML = `
+      viewingButton.innerHTML = 
         <div class="cta-box"></div>
         <span class="cta-text">Bezichtigen</span>
-      `;
+      ;
       viewingButton.addEventListener('click', (e) => {
         e.stopPropagation();
         showBookingModal(property);
@@ -731,7 +731,7 @@ export const BrantjesExtension = {
       // Energy label (top-left flag)
       if (energy) {
         const labelDiv = document.createElement('div');
-        labelDiv.className = `energy-label energy-label-${energy}`;
+        labelDiv.className = energy-label energy-label-${energy};
         labelDiv.textContent = energy;
         li.appendChild(labelDiv);
       }
@@ -746,35 +746,19 @@ export const BrantjesExtension = {
     slides.push(createCard(realSlides[0], total)); // Clone first
     slides.forEach(card => track.appendChild(card));
 
-    function updateTrack(animate = true) {
-      // Bij reset geen animatie
-      if (!animate) track.style.transition = 'none';
-
-      // Hero always center: slideIndex * SLIDE_SIZE, gecorrigeerd met de offset
-      const x = -currentIndex * SLIDE_SIZE + centerOffset;
-      track.style.transform = `translate3d(${x}px, 0, 0)`;
-
-      // Na een non-animated reset weer transitie aanzetten
-      if (!animate) {
-        track.offsetHeight;
-        requestAnimationFrame(() => {
-          track.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1)';
-        });
-      }
-
-      // Active-klasse alleen op de hero-kaart
-      Array.from(track.children).forEach((c, i) => {
-        c.classList.toggle('active', i === currentIndex);
-      });
+    // Set initial transform
+    function updateTrack() {
+      track.style.transform = translate3d(${-currentIndex * slideWidth}px, 0, 0);
     }
+    updateTrack();
 
     // Navigation handlers
     function goTo(idx) {
       if (isTransitioning) return;
       isTransitioning = true;
       currentIndex = idx;
-      // in plaats van zelf transition en transform aanroepen:
-      updateTrack(true);
+      track.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1)';
+      updateTrack();
     }
     function next() { goTo(currentIndex + 1); }
     function prev() { goTo(currentIndex - 1); }
