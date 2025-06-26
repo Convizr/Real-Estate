@@ -656,8 +656,88 @@ export const BrantjesExtension = {
     track.style.top = '0';
     track.style.width = `${(total + 2) * slideWidth}px`;
 
-    // Helper to create a card
-    function createCard(property, idx) { /* ... unchanged ... */ }
+// Helper to create a card
+    function createCard(property, idx) {
+      const li = document.createElement('div');
+      li.className = 'brantjes-property-card';
+      li.style.flex = '0 0 219px';
+      li.style.margin = '0 9px';
+      // Card content (reuse your card rendering logic)
+      const cardInner = document.createElement('div');
+      cardInner.className = 'brantjes-property-card-inner';
+      // Get image
+      let imgUrl = '';
+      if (Array.isArray(property.media)) {
+        let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
+        if (!imgObj) {
+          imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        }
+        if (imgObj) {
+          imgUrl = imgObj.link;
+          if (imgUrl) {
+            imgUrl += imgUrl.includes('?') ? '&resize=4' : '?resize=4';
+          }
+        }
+      }
+      const img = document.createElement('img');
+      img.src = imgUrl;
+      img.alt = 'Woning foto';
+      cardInner.appendChild(img);
+      // Overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'brantjes-card-overlay';
+      const info = document.createElement('div');
+      info.className = 'brantjes-card-info';
+      const straat = property.adres?.straat || '';
+      const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+      const plaats = property.adres?.plaats || '';
+      const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
+      const price = property.financieel?.overdracht?.koopprijs || 0;
+      const energy = property.algemeen?.energieklasse || '';
+      const area = property.algemeen?.woonoppervlakte || '';
+      const rooms = property.algemeen?.aantalKamers || '';
+      const title = document.createElement('p');
+      title.textContent = address || 'Onbekend adres';
+      const priceP = document.createElement('p');
+      priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
+      const extra = document.createElement('p');
+      extra.style.fontSize = '14px';
+      extra.innerHTML =
+        (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
+        (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
+        (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
+      info.appendChild(title);
+      info.appendChild(priceP);
+      info.appendChild(extra);
+      overlay.appendChild(info);
+      cardInner.appendChild(overlay);
+      // Viewing button
+      const viewingButton = document.createElement('button');
+      viewingButton.className = 'brantjes-viewing-button';
+      viewingButton.innerHTML = `
+        <div class="cta-box"></div>
+        <span class="cta-text">Bezichtigen</span>
+      `;
+      viewingButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showBookingModal(property);
+      });
+      li.appendChild(viewingButton);
+      li.appendChild(cardInner);
+      li.addEventListener('click', () => {
+        showDetailModal(property);
+      });
+
+      // Energy label (top-left flag)
+      if (energy) {
+        const labelDiv = document.createElement('div');
+        labelDiv.className = `energy-label energy-label-${energy}`;
+        labelDiv.textContent = energy;
+        li.appendChild(labelDiv);
+      }
+
+      return li;
+    }
 
     // Build slides array
     const slides = [];
@@ -669,7 +749,7 @@ export const BrantjesExtension = {
     function applyClasses() {
       slides.forEach((slideEl, i) => {
         slideEl.classList.remove('hide', 'prev', 'act', 'next', 'new-next');
-        if (i === currentIndex) slideEl.classList.add('act');
+        if (i === currentIndex) slideEl.classList.add('active');
         else if (i === currentIndex - 1) slideEl.classList.add('prev');
         else if (i === currentIndex + 1) slideEl.classList.add('next');
         else if (i < currentIndex - 1) slideEl.classList.add('hide');
