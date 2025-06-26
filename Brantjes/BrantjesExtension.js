@@ -904,7 +904,7 @@ export const BrantjesExtension = {
         // 3. Add a new 'hide' element at the beginning
         const addedEl = createCardElement(getPrevPropertyData());
         list.insertBefore(addedEl, list.firstChild);
-        addedEl.classList.add("hide"); // The new element starts as hide
+        addedEl.classList.add("hide");
 
         updateZIndexes();
     }
