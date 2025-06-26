@@ -43,20 +43,22 @@ export const BrantjesExtension = {
     style.innerHTML = `
       .brantjes-carousel-container {
         position: relative;
-        width: 650px;
-        height: 420px;
+        width: 650px; /* Max width */
+        height: 420px; /* Fixed height for carousel area */
         margin: auto;
         overflow: hidden;
         padding: 0;
         background: transparent;
+        display: flex; /* Use flexbox to center content */
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
       }
       .brantjes-property-card {
-        flex: 0 0 201px;
+        flex: 0 0 auto; /* Allow content to dictate size, but prevent shrinking */
         width: 201px;
         height: 335px;
-        margin: 0 8px;
         box-sizing: border-box;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s, width 0.4s, height 0.4s, margin 0.4s;
         transform: scale(0.92);
         opacity: 0.7;
         position: relative;
@@ -69,7 +71,7 @@ export const BrantjesExtension = {
         display: flex;
         align-items: flex-end;
       }
-      .brantjes-property-card.active {
+      .brantjes-property-card.active { /* This class is deprecated in the new carousel logic */
         width: 219px;
         height: 365px;
         transform: scale(1);
@@ -354,7 +356,7 @@ export const BrantjesExtension = {
           min-width: 0;
           min-height: 0;
         }
-        .brantjes-property-card, .brantjes-property-card.active {
+        .brantjes-property-card { /* Active class removed from this block */
           width: 40vw;
           min-width: 120px;
           height: 60vw;
@@ -366,7 +368,7 @@ export const BrantjesExtension = {
           width: 100vw;
           height: 70vw;
         }
-        .brantjes-property-card, .brantjes-property-card.active {
+        .brantjes-property-card { /* Active class removed from this block */
           width: 80vw;
           min-width: 100px;
           height: 60vw;
@@ -376,38 +378,37 @@ export const BrantjesExtension = {
 
       /* Modern Class-Based Absolute Carousel (from ExampleInfinityCarousel.md) */
       .brantjes-carousel-list {
-        position: absolute; /* Changed from relative to absolute within carousel-container */
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); /* Center the list itself */
-        width: 100%; /* Take full width of container */
-        height: 100%; /* Take full height of container */
+        position: relative; /* Changed to relative inside a flex container */
+        width: 100%;
+        height: 100%;
         margin: 0; /* Reset margin */
         padding: 0; /* Reset padding */
+        display: flex; /* Use flexbox for the list items */
+        align-items: center; /* Vertically center cards within the list */
+        justify-content: center; /* Horizontally center cards within the list */
       }
       .brantjes-carousel-list .brantjes-property-card {
         list-style-type: none;
-        position: absolute;
-        left: 50%;
-        margin-left: -100.5px; /* Half of original card width */
-        margin-top : -167.5px; /* Half of original card height */
+        position: absolute; /* Keep absolute for layering and transformations */
+        /* Remove margin-left and margin-top for centring with transform */
         border-radius: 8px;
         background: #fff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        transition: transform 1s, opacity 1s; /* Adjusted from 0.6s to 1s as in example */
+        transition: transform 1s, opacity 1s, width 1s, height 1s; /* Adjusted transitions */
         z-index: 1;
         width: 201px; /* Original size */
         height: 335px; /* Original size */
         opacity: .25; /* Default opacity */
+        top: 50%; /* Center vertically with transform */
+        left: 50%; /* Center horizontally with transform */
+        transform: translate(-50%, -50%) scale(0.85); /* Default scale for prev/next/hide/new-next */
       }
       .brantjes-carousel-list .act {
         opacity: 1;
-        transform: translateX(0) scale(1); /* Active element is centered and full size */
+        transform: translate(-50%, -50%) scale(1); /* Active element is centered and full size */
         z-index: 3;
         width: 219px; /* Active size */
         height: 365px; /* Active size */
-        margin-left: -109.5px; /* Half of active card width */
-        margin-top: -182.5px; /* Half of active card height */
       }
       .brantjes-carousel-list .prev,
       .brantjes-carousel-list .next {
@@ -415,21 +416,21 @@ export const BrantjesExtension = {
         z-index: 2; /* Prev/Next are above hide/new-next */
       }
       .brantjes-carousel-list .prev {
-        transform: translateX(-220px) scale(.85);
+        transform: translate(calc(-50% - 220px), -50%) scale(.85); /* Adjusted for centering */
         opacity: .25;
       }
       .brantjes-carousel-list .next {
-        transform: translateX(220px) scale(.85);
+        transform: translate(calc(-50% + 220px), -50%) scale(.85); /* Adjusted for centering */
         opacity: .25;
       }
       .brantjes-carousel-list .hide {
-        transform: translateX(-420px) scale(.85);
+        transform: translate(calc(-50% - 420px), -50%) scale(.85); /* Adjusted for centering */
         opacity: 0;
         transition: opacity .5s, transform .5s; /* Faster transition for hiding */
         z-index: 0;
       }
       .brantjes-carousel-list .new-next {
-        transform: translateX(420px) scale(.85);
+        transform: translate(calc(-50% + 420px), -50%) scale(.85); /* Adjusted for centering */
         opacity: 0;
         transition: opacity .5s, transform .5s; /* Faster transition for new elements */
         z-index: 0;
@@ -739,137 +740,181 @@ export const BrantjesExtension = {
     carouselContainer.appendChild(list);
 
     // Initial population of carousel items
-    // To mimic the example's class structure and smooth infinite loop,
-    // we need to set up the initial visible elements.
-    // The example implies at least 5 elements are needed for the prev, act, next, hide, new-next classes.
-    // If you have fewer than 5 properties, you'll need to duplicate them.
-
     let initialProperties = [];
-    // Fill initialProperties to always have at least 5 items for the carousel logic
-    for (let i = 0; i < 5; i++) {
-        initialProperties.push(realSlidesData[i % totalSlides]);
+    let initialIndices = []; // To keep track of the original index in realSlidesData
+
+    // Logic to handle fewer than 5 properties by duplicating
+    if (totalSlides === 1) {
+        initialProperties = [
+            realSlidesData[0], // hide
+            realSlidesData[0], // prev
+            realSlidesData[0], // act
+            realSlidesData[0], // next
+            realSlidesData[0]  // new-next
+        ];
+        initialIndices = [0, 0, 0, 0, 0];
+        currentPropertyIndex = 0; // The 'act' element is the first property
+    } else if (totalSlides === 2) {
+        initialProperties = [
+            realSlidesData[1], // hide (last property)
+            realSlidesData[0], // prev (first property)
+            realSlidesData[1], // act (second property)
+            realSlidesData[0], // next (first property)
+            realSlidesData[1]  // new-next (second property)
+        ];
+        initialIndices = [1, 0, 1, 0, 1];
+        currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
+    } else if (totalSlides === 3) {
+        initialProperties = [
+            realSlidesData[2], // hide (last property)
+            realSlidesData[0], // prev (first property)
+            realSlidesData[1], // act (second property)
+            realSlidesData[2], // next (last property)
+            realSlidesData[0]  // new-next (first property)
+        ];
+        initialIndices = [2, 0, 1, 2, 0];
+        currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
+    } else if (totalSlides === 4) {
+        initialProperties = [
+            realSlidesData[3], // hide (last property)
+            realSlidesData[0], // prev (first property)
+            realSlidesData[1], // act (second property)
+            realSlidesData[2], // next (third property)
+            realSlidesData[3]  // new-next (last property)
+        ];
+        initialIndices = [3, 0, 1, 2, 3];
+        currentPropertyIndex = 1; // The 'act' element is the second property (index 1)
+    }
+     else { // 5 or more properties
+        initialProperties = [
+            realSlidesData[totalSlides - 2], // For hide
+            realSlidesData[totalSlides - 1], // For prev
+            realSlidesData[0], // For act
+            realSlidesData[1], // For next
+            realSlidesData[2]  // For new-next
+        ];
+        initialIndices = [totalSlides - 2, totalSlides - 1, 0, 1, 2];
+        currentPropertyIndex = 0; // The 'act' element is the first property (index 0)
     }
     
-    // Append initial cards
+    // Append initial cards with their respective classes
     initialProperties.forEach((prop, index) => {
         const card = createCardElement(prop);
-        
-        // Assign initial classes based on the example's setup
-        // The indices here correspond to the position in the 5-element carousel window
-        if (index === 0) card.classList.add('hide'); // Element that will be removed on 'next'
-        else if (index === 1) card.classList.add('prev'); // Element on the left
-        else if (index === 2) card.classList.add('act'); // Central, active element
-        else if (index === 3) card.classList.add('next'); // Element on the right
-        else if (index === 4) card.classList.add('new-next'); // Element that will be brought in on 'next'
-        
+        if (index === 0) card.classList.add('hide');
+        else if (index === 1) card.classList.add('prev');
+        else if (index === 2) card.classList.add('act');
+        else if (index === 3) card.classList.add('next');
+        else if (index === 4) card.classList.add('new-next');
         list.appendChild(card);
     });
 
-    let currentPropertyIndex = 0; // Tracks the index within realSlidesData for what's currently 'act'
-    // Adjust initial index based on how `initialProperties` was populated
-    if (totalSlides > 0) {
-        // Find the index of the 'act' slide in realSlidesData
-        // The 'act' slide is initialProperties[2]
-        const actualActProperty = initialProperties[2];
-        currentPropertyIndex = realSlidesData.findIndex(p => p === actualActProperty);
-    }
+    // We'll update currentPropertyIndex based on the 'act' element after each slide
+    // It is important that `currentPropertyIndex` always reflects the actual index of the property shown in the 'act' position.
 
-    // Get the query selector from the example
-    // AANPASSING: Deze $ helper is nu alleen voor elementen binnen de 'list'
+    // AANPASSING: De $ helper wordt aangepast om alleen binnen de 'list' te zoeken.
+    // Dit is cruciaal om te voorkomen dat het document globaal wordt doorzocht
+    // en conflicten/null errors veroorzaakt.
     const $ = selector => list.querySelector(selector);
 
     function getNextPropertyData() {
-        currentPropertyIndex = (currentPropertyIndex + 1) % totalSlides;
+        const actEl = $(".brantjes-carousel-list .act");
+        if (!actEl || actEl.propertyData === undefined) {
+             console.error("Could not find 'act' element or its propertyData.");
+             return realSlidesData[0]; // Fallback to first property
+        }
+        const currentIndex = realSlidesData.indexOf(actEl.propertyData);
+        currentPropertyIndex = (currentIndex + 1) % totalSlides;
         return realSlidesData[currentPropertyIndex];
     }
 
     function getPrevPropertyData() {
-        currentPropertyIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
+        const actEl = $(".brantjes-carousel-list .act");
+        if (!actEl || actEl.propertyData === undefined) {
+            console.error("Could not find 'act' element or its propertyData.");
+            return realSlidesData[0]; // Fallback to first property
+        }
+        const currentIndex = realSlidesData.indexOf(actEl.propertyData);
+        currentPropertyIndex = (currentIndex - 1 + totalSlides) % totalSlides;
         return realSlidesData[currentPropertyIndex];
     }
 
     function next() {
-        // Check if totalSlides is 0, if so, do nothing
-        if (totalSlides === 0) return;
+        // Find elements using the list-specific $ helper
+        const hideEl = $(".brantjes-carousel-list .hide");
+        const prevEl = $(".brantjes-carousel-list .prev");
+        const actEl = $(".brantjes-carousel-list .act");
+        const nextEl = $(".brantjes-carousel-list .next");
+        const newNextEl = $(".brantjes-carousel-list .new-next"); // This might be null if totalSlides < 5 initially
 
-        const hideEl = $(".brantjes-carousel-list .hide"); // Select within list
+        // 1. Remove the 'hide' element
         if (hideEl) {
             hideEl.remove();
         }
 
-        const prevEl = $(".brantjes-carousel-list .prev"); // Select within list
+        // 2. Shift classes
         if (prevEl) {
             prevEl.classList.add("hide");
             prevEl.classList.remove("prev");
         }
-
-        const actEl = $(".brantjes-carousel-list .act"); // Select within list
         if (actEl) {
             actEl.classList.add("prev");
             actEl.classList.remove("act");
         }
-
-
-        const nextEl = $(".brantjes-carousel-list .next"); // Select within list
         if (nextEl) {
             nextEl.classList.add("act");
             nextEl.classList.remove("next");
         }
-
-        const newNextEl = $(".brantjes-carousel-list .new-next");
-        if (newNextEl) {
-             newNextEl.classList.remove("new-next");
+        if (newNextEl) { // Only remove if it exists
+            newNextEl.classList.remove("new-next");
         }
 
 
-        // Add a new 'next' and 'new-next' card at the end
+        // 3. Add a new 'new-next' element at the end
         const addedEl = createCardElement(getNextPropertyData());
         list.appendChild(addedEl);
-        addedEl.classList.add("next", "new-next");
+        addedEl.classList.add("next", "new-next"); // The new element starts as next and new-next
 
         updateZIndexes();
     }
 
     function prev() {
-        // Check if totalSlides is 0, if so, do nothing
-        if (totalSlides === 0) return;
-        
-        const currentNewNext = $(".brantjes-carousel-list .new-next");
-        if (currentNewNext) {
-            currentNewNext.remove();
-        }
-
-        const nextEl = $(".brantjes-carousel-list .next");
-        if (nextEl) {
-            nextEl.classList.add("new-next");
-        }
-
+        // Find elements using the list-specific $ helper
+        const hideEl = $(".brantjes-carousel-list .hide");
+        const prevEl = $(".brantjes-carousel-list .prev");
         const actEl = $(".brantjes-carousel-list .act");
+        const nextEl = $(".brantjes-carousel-list .next");
+        const newNextEl = $(".brantjes-carousel-list .new-next");
+
+        // 1. Remove the 'new-next' element
+        if (newNextEl) {
+            newNextEl.remove();
+        }
+
+        // 2. Shift classes
+        if (nextEl) {
+            nextEl.classList.add("new-next"); // Old 'next' becomes 'new-next'
+        }
         if (actEl) {
             actEl.classList.add("next");
             actEl.classList.remove("act");
         }
-
-        const prevEl = $(".brantjes-carousel-list .prev");
         if (prevEl) {
             prevEl.classList.add("act");
             prevEl.classList.remove("prev");
         }
-
-        const hideEl = $(".brantjes-carousel-list .hide");
-        if (hideEl) {
+        if (hideEl) { // Only add if it exists
             hideEl.classList.add("prev");
             hideEl.classList.remove("hide");
         }
 
-
-        // Add a new 'hide' card at the beginning
+        // 3. Add a new 'hide' element at the beginning
         const addedEl = createCardElement(getPrevPropertyData());
         list.insertBefore(addedEl, list.firstChild);
-        addedEl.classList.add("hide");
+        addedEl.classList.add("hide"); // The new element starts as hide
 
         updateZIndexes();
     }
+
 
     function updateZIndexes() {
         list.querySelectorAll('.brantjes-property-card').forEach(card => {
@@ -887,6 +932,11 @@ export const BrantjesExtension = {
     updateZIndexes();
 
     const slide = element => {
+        // Ensure element is a valid card
+        if (!element || !element.classList || !element.classList.contains('brantjes-property-card')) {
+            return;
+        }
+
         /* Next slide */
         if (element.classList.contains('next')) {
             next();
@@ -896,9 +946,8 @@ export const BrantjesExtension = {
         }
     }
 
-    // AANGEPAST: Gebruik 'list' direct in plaats van opnieuw te query'en met $()
     const slider = list; // Fix voor "TypeError: Cannot set properties of null (setting 'onclick')"
-    // OPMERKING: Hammer.js is verwijderd, dus de swipeContainer en gerelateerde CSS/JS zijn niet langer nodig.
+                         // 'list' is al het correcte element (de UL)
 
     slider.onclick = event => {
         slide(event.target.closest('.brantjes-property-card')); // Ensure we click the card element itself
