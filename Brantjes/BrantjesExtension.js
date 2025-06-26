@@ -133,11 +133,11 @@ export const BrantjesExtension = {
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
-        font-size: 16px;
+        font-size: 12px;
       }
       .brantjes-card-info p:first-child {
         font-weight: bold;
-        font-size: 18px;
+        font-size: 12px;
         color: white;
       }
       .brantjes-viewing-button {
@@ -732,23 +732,25 @@ export const BrantjesExtension = {
       const straat = propertyData.adres?.straat || '';
       const huisnummer = propertyData.adres?.huisnummer?.hoofdnummer || '';
       const plaats = propertyData.adres?.plaats || '';
-      const address = [straat, huisnummer, plaats].filter(Boolean).join(' ');
+      const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
       const price = propertyData.financieel?.overdracht?.koopprijs || 0;
       const energy = propertyData.algemeen?.energieklasse || '';
       const area = propertyData.algemeen?.woonoppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
 
       const title = document.createElement('p');
-      title.textContent = address || 'Onbekend adres';
+      title.textContent = streetAddress || 'Onbekend adres';
+      const city = document.createElement('p');
+      city.textContent = plaats || '';
       const priceP = document.createElement('p');
       priceP.textContent = `€ ${price.toLocaleString('nl-NL')} k.k.`;
       const extra = document.createElement('p');
-      extra.style.fontSize = '14px';
+      extra.style.fontSize = '12px';
       extra.innerHTML =
-        (energy ? `<span title=\"Energielabel\">${energy}</span> &nbsp;` : '') +
         (area ? `<span title=\"Woonoppervlakte\">${area} m²</span> &nbsp;` : '') +
         (rooms ? `<span title=\"Kamers\">${rooms} kamers</span>` : '');
       info.appendChild(title);
+      info.appendChild(city);
       info.appendChild(priceP);
       info.appendChild(extra);
       overlay.appendChild(info);
