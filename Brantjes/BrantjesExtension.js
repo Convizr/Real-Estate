@@ -907,8 +907,9 @@ export const BrantjesExtension = {
         }
     }
 
-    const slider = $(".brantjes-carousel-list"),
-          swipeContainer = document.createElement('div'); // Create a dedicated swipe area
+    // AANGEPAST: Gebruik 'list' direct in plaats van opnieuw te query'en met $()
+    const slider = list; // Fix voor "TypeError: Cannot set properties of null (setting 'onclick')"
+    const swipeContainer = document.createElement('div'); // Create a dedicated swipe area
     swipeContainer.className = 'swipe'; // Assign the swipe class
     carouselContainer.appendChild(swipeContainer); // Append it to the main carousel container
 
@@ -933,8 +934,7 @@ export const BrantjesExtension = {
     // Ensure Hammer is loaded. If not, you might need to add a script tag to load it.
     // window.Hammer is assumed to be globally available by the prompt.
     if (typeof Hammer === 'undefined') {
-        console.warn("Hammer.js is not loaded. Swipe gestures will not work.");
-        // You might need to dynamically load Hammer.js here if it's not guaranteed to be present.
+        console.warn("Hammer.js is not loaded. Swipe gestures will not work. Zorg ervoor dat Hammer.js in je HTML is geladen, bijv. via <script src=\"https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js\"></script>.");
     } else {
         const swipe = new Hammer(swipeContainer);
 
