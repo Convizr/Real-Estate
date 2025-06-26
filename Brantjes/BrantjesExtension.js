@@ -138,6 +138,7 @@ export const BrantjesExtension = {
       .brantjes-card-info p:first-child {
         font-weight: bold;
         font-size: 18px;
+        color: #51b2df;
       }
       .brantjes-viewing-button {
         position: absolute;
@@ -163,10 +164,10 @@ export const BrantjesExtension = {
         left: -10px;
         width: calc(100% + 20px);
         height: 100%;
-        background-color: #1E7FCB;
+        background-color: #51b2df;
         transform: scaleX(0);
         transform-origin: left;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, background-color 0.3s ease;
       }
       .brantjes-viewing-button .cta-text {
         position: relative;
@@ -192,6 +193,11 @@ export const BrantjesExtension = {
         transform: translateX(0);
         opacity: 1;
         transition-delay: 0.2s;
+      }
+      
+      /* Hover effect for the viewing button itself */
+      .brantjes-property-card.act:hover .brantjes-viewing-button:hover .cta-box {
+        background-color: #3a9bc7;
       }
       .brantjes-property-card img {
         width: 100%;
