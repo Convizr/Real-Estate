@@ -115,7 +115,9 @@ export const BrantjesExtension = {
     let currentIndex = 1;
     let isTransitioning = false;
 
-    const containerDiv = element.querySelector('.brantjes-carousel-container');
+    const containerDiv = document.createElement('div');
+    containerDiv.className = 'brantjes-carousel-container';
+    element.appendChild(containerDiv);
     const track = document.createElement('div'); track.className='brantjes-carousel-track'; containerDiv.appendChild(track);
 
     function createCard(prop) {
