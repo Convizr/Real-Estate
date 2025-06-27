@@ -361,6 +361,7 @@ export const BrantjesExtension = {
         align-items: end;
         height: 240px;
         justify-content: flex-start;
+        position: relative;
       }
       .detail-popup-thumbnail {
         width: 150px;
@@ -372,9 +373,13 @@ export const BrantjesExtension = {
         box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         opacity: 0;
         transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        position: absolute;
+        pointer-events: none;
       }
       .detail-popup-thumbnail.fade-in {
         opacity: 1;
+        position: static;
+        pointer-events: auto;
       }
       .detail-popup-info-row {
         display: flex;
@@ -849,7 +854,12 @@ export const BrantjesExtension = {
         thumbsCol.className = 'detail-popup-thumbnails';
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
-            for (let i = 1; i < Math.min(5, imageList.length); i++) {
+            // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
+            const totalThumbs = Math.min(8, imageList.length);
+            // Determine the start index for visible thumbs (1-4 in imageList)
+            let start = 1;
+            // If user has clicked a thumbnail, imageList is rotated so [0] is main, [1-4] are visible
+            for (let i = 1; i < totalThumbs; i++) {
                 const thumbDiv = document.createElement('div');
                 thumbDiv.className = 'detail-popup-thumbnail';
                 let thumbUrl = imageList[i].url;
@@ -857,10 +867,18 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                // Fade-in effect for new thumbnails
-                requestAnimationFrame(() => {
+                // Position in grid
+                let gridPos = i;
+                if (gridPos <= 4) {
+                  // Visible thumbs
                   thumbDiv.classList.add('fade-in');
-                });
+                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                } else {
+                  // Preloaded invisible thumbs
+                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                }
                 thumbDiv.onclick = () => {
                     // Move all images before this one (including main) to end
                     imageList = imageList.slice(i).concat(imageList.slice(0, i));
