@@ -255,19 +255,22 @@ export const BrantjesExtension = {
 
       /* Modal Styles */
       .brantjes-modal-backdrop {
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
+        right: 0;
+        bottom: 0;
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.6);
         z-index: 1000;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         backdrop-filter: blur(5px);
         opacity: 0;
         transition: opacity 0.3s ease;
+        overflow: hidden;
       }
       .brantjes-modal-backdrop.visible {
         opacity: 1;
@@ -279,8 +282,11 @@ export const BrantjesExtension = {
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         width: 90%;
         max-width: 900px;
+        max-height: 90vh;
+        overflow-y: auto;
         transform: scale(0.9);
         transition: transform 0.3s ease;
+        margin-top: 2rem;
       }
       .brantjes-modal-backdrop.visible .brantjes-modal-container {
         transform: scale(1);
