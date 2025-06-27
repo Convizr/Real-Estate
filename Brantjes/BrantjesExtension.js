@@ -356,19 +356,27 @@ export const BrantjesExtension = {
       .detail-popup-thumbnails {
         display: grid;
         grid-template-columns: 120px 120px;
-        grid-template-rows: 100px 100px;
+        grid-template-rows: 115px 115px;
         gap: 10px;
         align-items: end;
         height: 240px;
+        justify-content: flex-start;
       }
       .detail-popup-thumbnail {
         width: 120px;
-        height: 100px;
+        height: 115px;
         background-size: cover;
         background-position: center;
         border-radius: 8px;
         cursor: pointer;
         box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .detail-popup-thumbnail.fade-in {
+        opacity: 1;
+        transform: translateY(0);
       }
       .detail-popup-info-row {
         display: flex;
@@ -851,6 +859,10 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
+                // Fade-in effect
+                setTimeout(() => {
+                  thumbDiv.classList.add('fade-in');
+                }, 10 + i * 40);
                 thumbDiv.onclick = () => {
                     // Move all images before this one (including main) to end
                     imageList = imageList.slice(i).concat(imageList.slice(0, i));
