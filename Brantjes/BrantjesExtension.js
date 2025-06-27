@@ -124,11 +124,11 @@ export const BrantjesExtension = {
       }
       .brantjes-card-overlay {
         position: absolute;
-        bottom: 60px;
+        bottom: 0;
         left: 0;
         right: 0;
-        padding: 15px 15px 0 15px;
-        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        padding: 15px 15px 50px 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.08) 100%);
         z-index: 2;
       }
       .brantjes-card-info p {
@@ -614,11 +614,11 @@ export const BrantjesExtension = {
       /* Overlay content area moves up to make room for pill and button */
       .brantjes-card-overlay {
         position: absolute;
-        bottom: 60px;
+        bottom: 0;
         left: 0;
         right: 0;
-        padding: 15px 15px 0 15px;
-        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        padding: 15px 15px 50px 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.08) 100%);
         z-index: 2;
       }
       /* Ensure viewing button is below the content */
