@@ -958,6 +958,13 @@ export const BrantjesExtension = {
             });
         let imageList = [...allImgs];
 
+        // --- COMMON PROPERTY VARIABLES ---
+        const straat = property.adres?.straat || '';
+        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        const energy = property.algemeen?.energieklasse || '';
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
@@ -970,9 +977,6 @@ export const BrantjesExtension = {
         const headerLeft = document.createElement('div');
         headerLeft.className = 'detail-header-left';
         // Title
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
         const title = document.createElement('div');
         title.className = 'detail-header-title';
         title.textContent = streetAddress || 'Onbekend adres';
@@ -1005,13 +1009,10 @@ export const BrantjesExtension = {
           meta.appendChild(phoneSpan);
         }
         // Energy label
-        const energy = property.algemeen?.energieklasse || '';
-        if (energy) {
-          const energyDiv = document.createElement('span');
-          energyDiv.className = `detail-header-energy energy-label-${energy}`;
-          energyDiv.textContent = energy;
-          meta.appendChild(energyDiv);
-        }
+        const energyDivHeader = document.createElement('span');
+        energyDivHeader.className = `detail-header-energy energy-label-${energy}`;
+        energyDivHeader.textContent = energy;
+        meta.appendChild(energyDivHeader);
         headerLeft.appendChild(meta);
 
         // RIGHT SIDE (Price/status box)
@@ -1024,7 +1025,6 @@ export const BrantjesExtension = {
         statusDiv.textContent = status;
         headerRight.appendChild(statusDiv);
         // Price
-        const price = property.financieel?.overdracht?.koopprijs || 0;
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-header-price';
         priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')}`;
@@ -1148,10 +1148,10 @@ export const BrantjesExtension = {
         infoRow.appendChild(makelaarDiv);
 
         // Energy label and price row
-        const energyDiv = document.createElement('div');
-        energyDiv.className = `energy-label energy-label-${energy} detail-popup-energy`;
-        energyDiv.textContent = energy;
-        infoRow.appendChild(energyDiv);
+        const energyDivInfo = document.createElement('div');
+        energyDivInfo.className = `energy-label energy-label-${energy} detail-popup-energy`;
+        energyDivInfo.textContent = energy;
+        infoRow.appendChild(energyDivInfo);
         // Price
         const priceInfo = document.createElement('div');
         priceInfo.className = 'detail-popup-price';
