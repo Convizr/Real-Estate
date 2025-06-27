@@ -270,7 +270,7 @@ export const BrantjesExtension = {
         backdrop-filter: blur(5px);
         opacity: 0;
         transition: opacity 0.3s ease;
-        overflow: hidden;
+        overflow: auto;
       }
       .brantjes-modal-backdrop.visible {
         opacity: 1;
@@ -282,11 +282,14 @@ export const BrantjesExtension = {
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         width: 90%;
         max-width: 900px;
-        max-height: 90vh;
+        height: auto;
+        max-height: 100%;
         overflow-y: auto;
         transform: scale(0.9);
         transition: transform 0.3s ease;
         margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
       }
       .brantjes-modal-backdrop.visible .brantjes-modal-container {
         transform: scale(1);
@@ -309,28 +312,43 @@ export const BrantjesExtension = {
 
       /* Detail Pop-up Layout */
       .detail-popup-content {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 20px;
+        display: flex;
+        flex-direction: row;
+        gap: 24px;
+      }
+      .detail-popup-main-image {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 220px;
+        max-width: 320px;
       }
       .detail-popup-main-image img {
         width: 100%;
+        max-width: 320px;
         border-radius: 8px;
+        margin-bottom: 12px;
       }
       .detail-popup-thumbnails {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 8px;
+        width: 100%;
       }
       .detail-popup-thumbnail {
-        background-color: #f0f0f0;
+        width: 70px;
+        height: 70px;
+        background-size: cover;
+        background-position: center;
         border-radius: 8px;
-        width: 100%;
-        padding-bottom: 75%; /* 4:3 aspect ratio */
+        cursor: pointer;
       }
       .detail-popup-info {
-        grid-column: 1 / -1;
-        padding-top: 20px;
+        flex: 2 1 0;
+        min-width: 0;
+        overflow: hidden;
+        padding-top: 0;
       }
       .detail-popup-info h2 {
         color: #1E7FCB;
@@ -716,7 +734,10 @@ export const BrantjesExtension = {
         const media = Array.isArray(property.media) ? property.media : [];
         const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
             || media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-        const mainImgSrc = mainImgObj ? mainImgObj.link : '';
+        let mainImgSrc = mainImgObj ? mainImgObj.link : '';
+        if (mainImgSrc) {
+            mainImgSrc += mainImgSrc.includes('?') ? '&resize=4' : '?resize=4';
+        }
         const fotoImgs = media.filter(m => m.vrijgave && m.soort === 'FOTO' && m.mimetype && m.mimetype.startsWith('image/'));
         const allSlideshowImgs = fotoImgs.map(f => f.link);
         const thumbnails = fotoImgs.slice(0, 4);
@@ -725,46 +746,33 @@ export const BrantjesExtension = {
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
 
-        // --- LEFT: Main image + thumbnails ---
+        // --- LEFT: Main image + thumbnails (side by side) ---
         const leftCol = document.createElement('div');
-        leftCol.style.display = 'flex';
-        leftCol.style.flexDirection = 'column';
-        leftCol.style.gap = '16px';
-        leftCol.style.alignItems = 'center';
-        leftCol.style.justifyContent = 'flex-start';
-        leftCol.style.minWidth = '320px';
-        leftCol.style.maxWidth = '420px';
+        leftCol.className = 'detail-popup-main-image';
 
         // Main image
         const mainImg = document.createElement('img');
         mainImg.src = mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image';
         mainImg.alt = 'Hoofdfoto';
-        mainImg.style.width = '100%';
-        mainImg.style.maxWidth = '380px';
-        mainImg.style.borderRadius = '8px';
         mainImg.style.cursor = 'pointer';
         mainImg.onclick = () => openSlideshow(0);
         leftCol.appendChild(mainImg);
 
-        // Thumbnails
-        const thumbsRow = document.createElement('div');
-        thumbsRow.style.display = 'grid';
-        thumbsRow.style.gridTemplateColumns = 'repeat(2, 1fr)';
-        thumbsRow.style.gap = '10px';
-        thumbsRow.style.width = '100%';
+        // Thumbnails (2x2 grid next to main image)
+        const thumbsCol = document.createElement('div');
+        thumbsCol.className = 'detail-popup-thumbnails';
         thumbnails.forEach((thumb, idx) => {
             const thumbDiv = document.createElement('div');
             thumbDiv.className = 'detail-popup-thumbnail';
-            thumbDiv.style.backgroundImage = `url('${thumb.link}')`;
-            thumbDiv.style.backgroundSize = 'cover';
-            thumbDiv.style.backgroundPosition = 'center';
-            thumbDiv.style.borderRadius = '8px';
-            thumbDiv.style.cursor = 'pointer';
+            let thumbUrl = thumb.link;
+            if (thumbUrl) {
+                thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
+            }
+            thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
             thumbDiv.onclick = () => openSlideshow(idx);
-            thumbDiv.style.aspectRatio = '4/3';
-            thumbsRow.appendChild(thumbDiv);
+            thumbsCol.appendChild(thumbDiv);
         });
-        leftCol.appendChild(thumbsRow);
+        leftCol.appendChild(thumbsCol);
         detailContent.appendChild(leftCol);
 
         // --- RIGHT: Info ---
