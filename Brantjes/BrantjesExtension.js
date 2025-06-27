@@ -620,7 +620,7 @@ export const BrantjesExtension = {
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 15px 15px 50px 15px;
+        padding: 15px 15px 22px 15px;
         background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.08) 100%);
         z-index: 2;
       }
@@ -674,11 +674,11 @@ export const BrantjesExtension = {
 
     // --- MODAL FUNCTIONS (UNCHANGED) ---
     function openModal(contentElement) {
-        let modalBackdrop = document.querySelector('.brantjes-modal-backdrop');
+        let modalBackdrop = element.querySelector('.brantjes-modal-backdrop');
         if (!modalBackdrop) {
             modalBackdrop = document.createElement('div');
             modalBackdrop.className = 'brantjes-modal-backdrop';
-            document.body.appendChild(modalBackdrop);
+            element.appendChild(modalBackdrop);
         }
 
         const modalContainer = document.createElement('div');
