@@ -262,15 +262,14 @@ export const BrantjesExtension = {
         bottom: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
         z-index: 1000;
         display: flex;
+        flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-        backdrop-filter: blur(5px);
         opacity: 0;
         transition: opacity 0.3s ease;
-        overflow: auto;
+        overflow: hidden;
       }
       .brantjes-modal-backdrop.visible {
         opacity: 1;
@@ -280,8 +279,8 @@ export const BrantjesExtension = {
         padding: 2rem;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        width: 90%;
-        max-width: 900px;
+        width: 98%;
+        max-width: 1200px;
         height: auto;
         max-height: 100%;
         overflow-y: auto;
@@ -320,7 +319,7 @@ export const BrantjesExtension = {
         display: flex;
         flex-direction: row;
         gap: 10px;
-        align-items: flex-start;
+        align-items: flex-end;
         margin-bottom: 10px;
       }
       .detail-popup-main-image {
@@ -359,7 +358,8 @@ export const BrantjesExtension = {
         grid-template-columns: 120px 120px;
         grid-template-rows: 100px 100px;
         gap: 10px;
-        align-items: stretch;
+        align-items: end;
+        height: 240px;
       }
       .detail-popup-thumbnail {
         width: 120px;
@@ -804,12 +804,15 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
         // --- IMAGE DATA ---
         const media = Array.isArray(property.media) ? property.media : [];
+        // Track original indices for counter
         const allImgs = [];
         const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
             || media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-        if (mainImgObj) allImgs.push(mainImgObj.link);
+        if (mainImgObj) allImgs.push({ url: mainImgObj.link, originalIndex: allImgs.length });
         media.filter(m => m.vrijgave && m.soort === 'FOTO' && m.mimetype && m.mimetype.startsWith('image/'))
-            .forEach(f => { if (!allImgs.includes(f.link)) allImgs.push(f.link); });
+            .forEach(f => {
+                if (!allImgs.some(img => img.url === f.link)) allImgs.push({ url: f.link, originalIndex: allImgs.length });
+            });
         let imageList = [...allImgs];
 
         // --- MODAL CONTENT ---
@@ -823,14 +826,15 @@ export const BrantjesExtension = {
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
         const mainImg = document.createElement('img');
-        mainImg.src = (imageList[0] ? (imageList[0] + (imageList[0].includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
         mainImgCol.appendChild(mainImg);
         // Image counter
+        let counter;
         if (imageList.length > 1) {
-            const counter = document.createElement('div');
+            counter = document.createElement('div');
             counter.className = 'detail-popup-main-image-counter';
-            counter.textContent = `1/${imageList.length}`;
+            counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
             mainImgCol.appendChild(counter);
         }
         imagesRow.appendChild(mainImgCol);
@@ -842,7 +846,7 @@ export const BrantjesExtension = {
             for (let i = 1; i < Math.min(5, imageList.length); i++) {
                 const thumbDiv = document.createElement('div');
                 thumbDiv.className = 'detail-popup-thumbnail';
-                let thumbUrl = imageList[i];
+                let thumbUrl = imageList[i].url;
                 if (thumbUrl) {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
@@ -851,14 +855,9 @@ export const BrantjesExtension = {
                     // Move all images before this one (including main) to end
                     imageList = imageList.slice(i).concat(imageList.slice(0, i));
                     // Re-render main image and thumbnails
-                    mainImg.src = (imageList[0] ? (imageList[0] + (imageList[0].includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
-                    if (imageList.length > 1) {
-                        if (!mainImgCol.querySelector('.detail-popup-main-image-counter')) {
-                            const counter = document.createElement('div');
-                            counter.className = 'detail-popup-main-image-counter';
-                            mainImgCol.appendChild(counter);
-                        }
-                        mainImgCol.querySelector('.detail-popup-main-image-counter').textContent = `1/${imageList.length}`;
+                    mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                    if (counter) {
+                        counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
                     }
                     renderThumbnails();
                 };
