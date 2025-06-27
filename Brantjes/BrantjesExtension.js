@@ -124,12 +124,12 @@ export const BrantjesExtension = {
       }
       .brantjes-card-overlay {
         position: absolute;
-        bottom: 0;
+        bottom: 60px;
         left: 0;
         right: 0;
-        padding: 15px;
-        padding-bottom: 27px;
+        padding: 15px 15px 0 15px;
         background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        z-index: 2;
       }
       .brantjes-card-info p {
         margin: 0 0 5px;
@@ -557,46 +557,82 @@ export const BrantjesExtension = {
       /* Card Title (Street + Number) */
       .brantjes-card-title {
         font-weight: bold;
-        font-size: 18px;
-        color: #51b2df;
+        font-size: 22px;
+        color: #fff;
         margin-bottom: 2px;
+        line-height: 1.1;
       }
       /* City + Postal */
       .brantjes-card-city {
-        font-size: 13px;
-        color: #888;
+        font-size: 15px;
+        color: #fff;
         font-weight: 400;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         margin-top: 0;
+        opacity: 0.85;
       }
       /* Price */
       .brantjes-card-price {
+        font-size: 15px;
+        color: #fff;
+        margin-bottom: 8px;
+        margin-top: 0;
+      }
+      .brantjes-card-price-numbers {
         font-weight: bold;
-        font-size: 18px;
-        color: #222;
+        font-size: 15px;
+        color: #fff;
+      }
+      .brantjes-card-price-kk {
+        font-weight: 400;
+        font-size: 15px;
+        color: #fff;
+        opacity: 0.85;
       }
       /* Details pill */
       .brantjes-card-details-pill {
-        position: absolute;
-        bottom: 12px;
-        right: 12px;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        padding: 4px 14px;
-        font-size: 13px;
-        color: #333;
-        display: flex;
+        margin: 0 0 10px 0;
+        background: rgba(0,0,0,0.25);
+        border-radius: 3px;
+        box-shadow: none;
+        padding: 3px 12px;
+        font-size: 12px;
+        color: #fff;
+        display: inline-flex;
         align-items: center;
         gap: 10px;
         z-index: 4;
-        border: 1px solid #eee;
+        border: none;
+        position: static;
       }
       .brantjes-card-details-pill span {
         display: flex;
         align-items: center;
         gap: 3px;
+        color: #fff;
       }
+      /* Overlay content area moves up to make room for pill and button */
+      .brantjes-card-overlay {
+        position: absolute;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        padding: 15px 15px 0 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        z-index: 2;
+      }
+      /* Ensure viewing button is below the content */
+      .brantjes-viewing-button {
+        position: absolute;
+        bottom: 7px;
+        left: 15px;
+        /* ...existing styles... */
+      }
+      /* All text in overlay white */
+      .brantjes-card-overlay, .brantjes-card-overlay * {
+        color: #fff !important;
+      }
+
       /* Image hover overlay */
       .brantjes-img-hover-overlay {
         position: absolute;
@@ -719,13 +755,14 @@ export const BrantjesExtension = {
         city.className = 'brantjes-card-city';
         // Price
         const priceP = document.createElement('p');
-        priceP.innerHTML = `<span class="brantjes-card-price">€ ${price.toLocaleString('nl-NL')}</span> k.k.`;
+        priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">k.k.</span>`;
+        priceP.className = 'brantjes-card-price';
         // Details pill (area, rooms)
         const detailsPill = document.createElement('div');
         detailsPill.className = 'brantjes-card-details-pill';
         detailsPill.innerHTML =
-          (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M3 21v-2h18v2H3zm2-4V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10H5zm2-2h10V7H7v8zm2-2h6V9H9v4z'/></svg> ${area} m²</span>` : '') +
-          (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M7 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm10 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6c-4.42 0-8-1.79-8-4V7c0-2.21 3.58-4 8-4s8 1.79 8 4v9c0 2.21-3.58 4-8 4z'/></svg> ${rooms}</span>` : '');
+          (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 576 512'><path fill='white' d='M64 112a16 16 0 1 0 0-32 16 16 0 1 0 0 32zm24 43.3V356.7c16 6.5 28.9 19.3 35.3 35.3H324.7c6.5-16 19.3-28.9 35.3-35.3V155.3c-16-6.5-28.9-19.3-35.3-35.3H123.3c-6.5 16-19.3 28.9-35.3 35.3zM123.3 440c-9.5 23.5-32.5 40-59.3 40c-35.3 0-64-28.7-64-64c0-26.9 16.5-49.9 40-59.3V155.3C16.5 145.9 0 122.9 0 96C0 60.7 28.7 32 64 32c26.9 0 49.9 16.5 59.3 40H324.7c9.5-23.5 32.5-40 59.3-40c35.3 0 64 28.7 64 64c0 26.9-16.5 49.9-40 59.3V356.7c23.5 9.5 40 32.5 40 59.3c0 35.3-28.7 64-64 64c-26.9 0-49.9-16.5-59.3-40H123.3zM80 416a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm320 0a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm0-320a16 16 0 1 0 -32 0 16 16 0 1 0 32 0z'></path></svg> ${area} m²</span>` : '') +
+          (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 640 512'><path fill='white' d='M32 80V205.8c14.5-7.7 30.8-12.4 48-13.6l0-.3V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32h32V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32l0 .3c17.2 1.1 33.5 5.9 48 13.6V80c0-26.5-21.5-48-48-48H80C53.5 32 32 53.5 32 80zM88 224c-48.6 0-88 39.4-88 88v80 64c0 13.3 10.7 24 24 24s24-10.7 24-24V416H464v40c0 13.3 10.7 24 24 24s24-10.7 24-24V392 312c0-48.6-39.4-88-88-88H88zM464 368H48V312c0-22.1 17.9-40 40-40H424c22.1 0 40 17.9 40 40v56z'></path></svg> ${rooms}</span>` : '');
 
         infoSection.appendChild(title);
         infoSection.appendChild(city);
@@ -856,20 +893,23 @@ export const BrantjesExtension = {
       city.className = 'brantjes-card-city';
       // Price
       const priceP = document.createElement('p');
-      priceP.innerHTML = `<span class="brantjes-card-price">€ ${price.toLocaleString('nl-NL')}</span> k.k.`;
+      priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">k.k.</span>`;
+      priceP.className = 'brantjes-card-price';
       // Details pill (area, rooms)
       const detailsPill = document.createElement('div');
       detailsPill.className = 'brantjes-card-details-pill';
       detailsPill.innerHTML =
-        (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M3 21v-2h18v2H3zm2-4V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10H5zm2-2h10V7H7v8zm2-2h6V9H9v4z'/></svg> ${area} m²</span>` : '') +
-        (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 24 24'><path fill='#333' d='M7 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm10 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm-5 6c-4.42 0-8-1.79-8-4V7c0-2.21 3.58-4 8-4s8 1.79 8 4v9c0 2.21-3.58 4-8 4z'/></svg> ${rooms}</span>` : '');
+        (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 576 512'><path fill='white' d='M64 112a16 16 0 1 0 0-32 16 16 0 1 0 0 32zm24 43.3V356.7c16 6.5 28.9 19.3 35.3 35.3H324.7c6.5-16 19.3-28.9 35.3-35.3V155.3c-16-6.5-28.9-19.3-35.3-35.3H123.3c-6.5 16-19.3 28.9-35.3 35.3zM123.3 440c-9.5 23.5-32.5 40-59.3 40c-35.3 0-64-28.7-64-64c0-26.9 16.5-49.9 40-59.3V155.3C16.5 145.9 0 122.9 0 96C0 60.7 28.7 32 64 32c26.9 0 49.9 16.5 59.3 40H324.7c9.5-23.5 32.5-40 59.3-40c35.3 0 64 28.7 64 64c0 26.9-16.5 49.9-40 59.3V356.7c23.5 9.5 40 32.5 40 59.3c0 35.3-28.7 64-64 64c-26.9 0-49.9-16.5-59.3-40H123.3zM80 416a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm320 0a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm0-320a16 16 0 1 0 -32 0 16 16 0 1 0 32 0z'></path></svg> ${area} m²</span>` : '') +
+        (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 640 512'><path fill='white' d='M32 80V205.8c14.5-7.7 30.8-12.4 48-13.6l0-.3V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32h32V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32l0 .3c17.2 1.1 33.5 5.9 48 13.6V80c0-26.5-21.5-48-48-48H80C53.5 32 32 53.5 32 80zM88 224c-48.6 0-88 39.4-88 88v80 64c0 13.3 10.7 24 24 24s24-10.7 24-24V416H464v40c0 13.3 10.7 24 24 24s24-10.7 24-24V392 312c0-48.6-39.4-88-88-88H88zM464 368H48V312c0-22.1 17.9-40 40-40H424c22.1 0 40 17.9 40 40v56z'></path></svg> ${rooms}</span>` : '');
 
+      // Clear info and append in new order
+      info.innerHTML = '';
       info.appendChild(title);
       info.appendChild(city);
       info.appendChild(priceP);
+      info.appendChild(detailsPill);
       overlay.appendChild(info);
       cardInner.appendChild(overlay);
-      cardInner.appendChild(detailsPill);
 
       // Add image overlay for hover effect
       const imgOverlay = document.createElement('div');
