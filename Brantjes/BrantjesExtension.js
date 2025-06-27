@@ -319,38 +319,51 @@ export const BrantjesExtension = {
       .detail-popup-images-row {
         display: flex;
         flex-direction: row;
-        gap: 18px;
+        gap: 10px;
         align-items: flex-start;
-        margin-bottom: 18px;
+        margin-bottom: 10px;
       }
       .detail-popup-main-image {
-        width: 260px;
-        height: 200px;
-        min-width: 260px;
-        max-width: 260px;
-        max-height: 200px;
-        border-radius: 12px;
+        width: 320px;
+        height: 240px;
+        min-width: 320px;
+        max-width: 320px;
+        max-height: 240px;
+        border-radius: 10px;
         overflow: hidden;
         display: flex;
         align-items: flex-start;
         justify-content: center;
+        position: relative;
       }
       .detail-popup-main-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 10px;
+      }
+      .detail-popup-main-image-counter {
+        position: absolute;
+        bottom: 8px;
+        right: 12px;
+        background: rgba(0,0,0,0.55);
+        color: #fff;
+        font-size: 0.95rem;
+        padding: 2px 10px;
         border-radius: 12px;
+        font-weight: 500;
+        z-index: 2;
       }
       .detail-popup-thumbnails {
         display: grid;
-        grid-template-columns: 110px 110px;
-        grid-template-rows: 90px 90px;
-        gap: 18px;
+        grid-template-columns: 120px 120px;
+        grid-template-rows: 100px 100px;
+        gap: 10px;
         align-items: stretch;
       }
       .detail-popup-thumbnail {
-        width: 110px;
-        height: 90px;
+        width: 120px;
+        height: 100px;
         background-size: cover;
         background-position: center;
         border-radius: 8px;
@@ -362,44 +375,44 @@ export const BrantjesExtension = {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 10px;
+        gap: 10px;
+        margin-bottom: 6px;
         flex-wrap: wrap;
       }
       .detail-popup-title {
-        font-size: 2rem;
+        font-size: 1.1rem;
         font-weight: 700;
         color: #1E7FCB;
         margin: 0 0 2px 0;
         line-height: 1.1;
         flex: 2 1 0;
-        min-width: 180px;
+        min-width: 120px;
       }
       .detail-popup-address {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         color: #222;
-        margin-right: 12px;
+        margin-right: 8px;
         flex: 1 1 0;
-        min-width: 120px;
+        min-width: 80px;
       }
       .detail-popup-broker {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         color: #222;
-        margin-right: 12px;
+        margin-right: 8px;
         flex: 1 1 0;
-        min-width: 120px;
+        min-width: 80px;
       }
       .detail-popup-energy {
-        margin-right: 12px;
+        margin-right: 8px;
         flex: 0 0 auto;
       }
       .detail-popup-price {
-        font-size: 1.3rem;
+        font-size: 1.05rem;
         font-weight: 700;
         color: #222;
         text-align: right;
         flex: 0 0 auto;
-        min-width: 120px;
+        min-width: 80px;
       }
       .detail-popup-info {
         width: 100%;
@@ -791,15 +804,13 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
         // --- IMAGE DATA ---
         const media = Array.isArray(property.media) ? property.media : [];
+        const allImgs = [];
         const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
             || media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-        let mainImgSrc = mainImgObj ? mainImgObj.link : '';
-        if (mainImgSrc) {
-            mainImgSrc += mainImgSrc.includes('?') ? '&resize=4' : '?resize=4';
-        }
-        const fotoImgs = media.filter(m => m.vrijgave && m.soort === 'FOTO' && m.mimetype && m.mimetype.startsWith('image/'));
-        const allSlideshowImgs = fotoImgs.map(f => f.link);
-        const thumbnails = fotoImgs.slice(0, 4);
+        if (mainImgObj) allImgs.push(mainImgObj.link);
+        media.filter(m => m.vrijgave && m.soort === 'FOTO' && m.mimetype && m.mimetype.startsWith('image/'))
+            .forEach(f => { if (!allImgs.includes(f.link)) allImgs.push(f.link); });
+        let imageList = [...allImgs];
 
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
@@ -812,26 +823,49 @@ export const BrantjesExtension = {
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
         const mainImg = document.createElement('img');
-        mainImg.src = mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image';
+        mainImg.src = (imageList[0] ? (imageList[0] + (imageList[0].includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
-        mainImg.style.cursor = 'pointer';
-        mainImg.onclick = () => openSlideshow(0);
         mainImgCol.appendChild(mainImg);
+        // Image counter
+        if (imageList.length > 1) {
+            const counter = document.createElement('div');
+            counter.className = 'detail-popup-main-image-counter';
+            counter.textContent = `1/${imageList.length}`;
+            mainImgCol.appendChild(counter);
+        }
         imagesRow.appendChild(mainImgCol);
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        thumbnails.forEach((thumb, idx) => {
-            const thumbDiv = document.createElement('div');
-            thumbDiv.className = 'detail-popup-thumbnail';
-            let thumbUrl = thumb.link;
-            if (thumbUrl) {
-                thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
+        function renderThumbnails() {
+            thumbsCol.innerHTML = '';
+            for (let i = 1; i < Math.min(5, imageList.length); i++) {
+                const thumbDiv = document.createElement('div');
+                thumbDiv.className = 'detail-popup-thumbnail';
+                let thumbUrl = imageList[i];
+                if (thumbUrl) {
+                    thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
+                }
+                thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
+                thumbDiv.onclick = () => {
+                    // Move all images before this one (including main) to end
+                    imageList = imageList.slice(i).concat(imageList.slice(0, i));
+                    // Re-render main image and thumbnails
+                    mainImg.src = (imageList[0] ? (imageList[0] + (imageList[0].includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                    if (imageList.length > 1) {
+                        if (!mainImgCol.querySelector('.detail-popup-main-image-counter')) {
+                            const counter = document.createElement('div');
+                            counter.className = 'detail-popup-main-image-counter';
+                            mainImgCol.appendChild(counter);
+                        }
+                        mainImgCol.querySelector('.detail-popup-main-image-counter').textContent = `1/${imageList.length}`;
+                    }
+                    renderThumbnails();
+                };
+                thumbsCol.appendChild(thumbDiv);
             }
-            thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-            thumbDiv.onclick = () => openSlideshow(idx);
-            thumbsCol.appendChild(thumbDiv);
-        });
+        }
+        renderThumbnails();
         imagesRow.appendChild(thumbsCol);
         detailContent.appendChild(imagesRow);
 
@@ -974,78 +1008,6 @@ export const BrantjesExtension = {
         infoCol.appendChild(specsTable);
 
         detailContent.appendChild(infoCol);
-
-        // --- SLIDESHOW/LIGHTBOX ---
-        function openSlideshow(startIdx) {
-            if (!allSlideshowImgs.length) return;
-            let idx = startIdx;
-            const lightbox = document.createElement('div');
-            lightbox.style.position = 'fixed';
-            lightbox.style.top = '0';
-            lightbox.style.left = '0';
-            lightbox.style.width = '100vw';
-            lightbox.style.height = '100vh';
-            lightbox.style.background = 'rgba(0,0,0,0.85)';
-            lightbox.style.display = 'flex';
-            lightbox.style.alignItems = 'center';
-            lightbox.style.justifyContent = 'center';
-            lightbox.style.zIndex = '2000';
-
-            const img = document.createElement('img');
-            img.src = allSlideshowImgs[idx];
-            img.style.maxWidth = '90vw';
-            img.style.maxHeight = '80vh';
-            img.style.borderRadius = '8px';
-            img.style.boxShadow = '0 4px 24px rgba(0,0,0,0.5)';
-            lightbox.appendChild(img);
-
-            // Navigation
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '<';
-            prevBtn.style.position = 'absolute';
-            prevBtn.style.left = '40px';
-            prevBtn.style.top = '50%';
-            prevBtn.style.transform = 'translateY(-50%)';
-            prevBtn.style.fontSize = '2rem';
-            prevBtn.style.background = 'rgba(0,0,0,0.3)';
-            prevBtn.style.color = '#fff';
-            prevBtn.style.border = 'none';
-            prevBtn.style.borderRadius = '50%';
-            prevBtn.style.width = '48px';
-            prevBtn.style.height = '48px';
-            prevBtn.style.cursor = 'pointer';
-            prevBtn.onclick = (e) => {
-                e.stopPropagation();
-                idx = (idx - 1 + allSlideshowImgs.length) % allSlideshowImgs.length;
-                img.src = allSlideshowImgs[idx];
-            };
-            lightbox.appendChild(prevBtn);
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '>';
-            nextBtn.style.position = 'absolute';
-            nextBtn.style.right = '40px';
-            nextBtn.style.top = '50%';
-            nextBtn.style.transform = 'translateY(-50%)';
-            nextBtn.style.fontSize = '2rem';
-            nextBtn.style.background = 'rgba(0,0,0,0.3)';
-            nextBtn.style.color = '#fff';
-            nextBtn.style.border = 'none';
-            nextBtn.style.borderRadius = '50%';
-            nextBtn.style.width = '48px';
-            nextBtn.style.height = '48px';
-            nextBtn.style.cursor = 'pointer';
-            nextBtn.onclick = (e) => {
-                e.stopPropagation();
-                idx = (idx + 1) % allSlideshowImgs.length;
-                img.src = allSlideshowImgs[idx];
-            };
-            lightbox.appendChild(nextBtn);
-            // Close on click outside
-            lightbox.onclick = () => {
-                lightbox.remove();
-            };
-            document.body.appendChild(lightbox);
-        }
 
         openModal(detailContent);
     }
