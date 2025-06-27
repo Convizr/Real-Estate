@@ -668,6 +668,31 @@ export const BrantjesExtension = {
         border-bottom: 16px solid transparent;
         border-left: 12px solid #1EC773;
       }
+      /* Inline energy label for header row */
+      .energy-label-inline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.8em;
+        min-width: 2.2em;
+        padding: 0 0.8em;
+        font-size: 1em;
+        font-weight: bold;
+        color: #fff;
+        border-radius: 1em;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        margin-left: 0.5rem;
+        position: static;
+        line-height: 1.1;
+        vertical-align: middle;
+      }
+      .energy-label-inline-A { background: #1EC773; }
+      .energy-label-inline-B { background: #8DD800; }
+      .energy-label-inline-C { background: #F7D900; color: #333; }
+      .energy-label-inline-D { background: #F7A600; }
+      .energy-label-inline-E { background: #F76B1C; }
+      .energy-label-inline-F { background: #E2001A; }
+      .energy-label-inline-G { background: #A50021; }
       .energy-label-A { background: #1EC773; }
       .energy-label-B { background: #8DD800; }
       .energy-label-C { background: #F7D900; color: #333; }
@@ -675,13 +700,6 @@ export const BrantjesExtension = {
       .energy-label-E { background: #F76B1C; }
       .energy-label-F { background: #E2001A; }
       .energy-label-G { background: #A50021; }
-      .energy-label-A::after { border-left-color: #1EC773; }
-      .energy-label-B::after { border-left-color: #8DD800; }
-      .energy-label-C::after { border-left-color: #F7D900; }
-      .energy-label-D::after { border-left-color: #F7A600; }
-      .energy-label-E::after { border-left-color: #F76B1C; }
-      .energy-label-F::after { border-left-color: #E2001A; }
-      .energy-label-G::after { border-left-color: #A50021; }
 
       /* Styling for single card container */
       .brantjes-single-card-container {
@@ -948,7 +966,7 @@ export const BrantjesExtension = {
         // Energy label
         if (hasEnergy) {
           const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label energy-label-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.className = `energy-label-inline energy-label-inline-${property.algemeen.energieklasse} detail-popup-header-energy`;
           energyDiv.textContent = property.algemeen.energieklasse;
           headerRow.appendChild(energyDiv);
         }
