@@ -371,17 +371,10 @@ export const BrantjesExtension = {
         cursor: pointer;
         box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .detail-popup-thumbnail.fade-in {
         opacity: 1;
-        transform: translateY(0);
-      }
-      .detail-popup-thumbnail.fade-out {
-        opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .detail-popup-info-row {
         display: flex;
@@ -854,7 +847,7 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        function renderThumbnails(fadeDirection) {
+        function renderThumbnails() {
             thumbsCol.innerHTML = '';
             for (let i = 1; i < Math.min(5, imageList.length); i++) {
                 const thumbDiv = document.createElement('div');
@@ -864,28 +857,19 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                if (fadeDirection === 'in') {
-                  setTimeout(() => {
-                    thumbDiv.classList.add('fade-in');
-                  }, 10 + i * 40);
-                } else {
+                // Fade-in effect for new thumbnails
+                requestAnimationFrame(() => {
                   thumbDiv.classList.add('fade-in');
-                }
+                });
                 thumbDiv.onclick = () => {
-                    // Fade out all thumbnails first
-                    const allThumbs = thumbsCol.querySelectorAll('.detail-popup-thumbnail');
-                    allThumbs.forEach(t => t.classList.remove('fade-in'));
-                    allThumbs.forEach(t => t.classList.add('fade-out'));
-                    setTimeout(() => {
-                        // Move all images before this one (including main) to end
-                        imageList = imageList.slice(i).concat(imageList.slice(0, i));
-                        // Re-render main image and thumbnails
-                        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
-                        if (counter) {
-                            counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
-                        }
-                        renderThumbnails('in');
-                    }, 350);
+                    // Move all images before this one (including main) to end
+                    imageList = imageList.slice(i).concat(imageList.slice(0, i));
+                    // Re-render main image and thumbnails
+                    mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                    if (counter) {
+                        counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
+                    }
+                    renderThumbnails();
                 };
                 thumbsCol.appendChild(thumbDiv);
             }
