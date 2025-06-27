@@ -324,37 +324,23 @@ export const BrantjesExtension = {
       .detail-popup-header-row {
         display: flex;
         flex-direction: row;
-        align-items: flex-end;
-        justify-content: space-between;
+        align-items: center;
+        justify-content: flex-start;
         gap: 1.5rem;
-      }
-      .detail-popup-title-main {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1E7FCB;
-        margin: 0;
-        line-height: 1.1;
+        margin-top: 0.2rem;
       }
       .detail-popup-header-details {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 0.7rem;
         font-size: 1.08rem;
         color: #222;
         font-weight: 700;
-      }
-      .detail-popup-header-details .broker-link {
-        color: #1E7FCB;
-        text-decoration: none;
-        font-weight: 600;
+        margin-right: 1.2rem;
       }
       .detail-popup-header-price-energy {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 1.2rem;
-        min-width: 180px;
+        min-width: 0;
       }
       .detail-popup-header-price {
         font-size: 1.08rem;
@@ -362,6 +348,7 @@ export const BrantjesExtension = {
         color: #222;
         margin: 0;
         line-height: 1.1;
+        margin-right: 1.2rem;
       }
       .detail-popup-header-energy {
         margin-top: 0.2rem;
@@ -379,16 +366,17 @@ export const BrantjesExtension = {
         background: #1E7FCB;
         color: #fff;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 1.08rem;
         font-weight: 700;
-        padding: 0.6em 1.3em;
-        margin-left: 1.2rem;
+        padding: 0.7em 2.1em;
+        margin-left: 0;
         cursor: pointer;
         transition: background 0.2s;
         box-shadow: 0 2px 8px rgba(30,127,203,0.08);
         display: flex;
         align-items: center;
+        height: 2.6em;
       }
       .detail-popup-header-viewing-btn:hover {
         background: #166BB5;
@@ -929,49 +917,44 @@ export const BrantjesExtension = {
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
 
-        // Left: address (postal code + city) + dot + energy label
-        const detailsLeft = document.createElement('div');
-        detailsLeft.className = 'detail-popup-header-details';
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
         const postcode = property.adres?.postcode || '';
-        if (postcode || plaats) {
+        let hasAddress = Boolean(postcode || plaats);
+        let hasEnergy = Boolean(property.algemeen?.energieklasse);
+        if (hasAddress) {
           const addrSpan = document.createElement('span');
+          addrSpan.className = 'detail-popup-header-details';
           addrSpan.textContent = `${postcode} ${plaats}`.trim();
           addrSpan.style.fontWeight = 'bold';
-          detailsLeft.appendChild(addrSpan);
+          headerRow.appendChild(addrSpan);
         }
-        // Dot separator
-        const dot = document.createElement('span');
-        dot.className = 'detail-popup-dot';
-        dot.textContent = '•';
-        detailsLeft.appendChild(dot);
+        // Dot separator only if both address and energy label
+        if (hasAddress && hasEnergy) {
+          const dot = document.createElement('span');
+          dot.className = 'detail-popup-dot';
+          dot.textContent = '•';
+          headerRow.appendChild(dot);
+        }
         // Energy label
-        const energy = property.algemeen?.energieklasse || '';
-        if (energy) {
+        if (hasEnergy) {
           const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label energy-label-${energy} detail-popup-header-energy`;
-          energyDiv.textContent = energy;
-          detailsLeft.appendChild(energyDiv);
+          energyDiv.className = `energy-label energy-label-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.textContent = property.algemeen.energieklasse;
+          headerRow.appendChild(energyDiv);
         }
-        headerRow.appendChild(detailsLeft);
-
-        // Right: price and viewing button
-        const priceEnergy = document.createElement('div');
-        priceEnergy.className = 'detail-popup-header-price-energy';
         // Price
         const price = property.financieel?.overdracht?.koopprijs || 0;
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-        priceEnergy.appendChild(priceDiv);
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
         viewingBtn.textContent = 'Plan bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
-        priceEnergy.appendChild(viewingBtn);
-        headerRow.appendChild(priceEnergy);
+        headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
 
