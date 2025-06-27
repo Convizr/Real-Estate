@@ -776,6 +776,11 @@ export const BrantjesExtension = {
           font-size: 10px;
         }
       }
+
+      .brantjes-modal-container,
+      .brantjes-modal-container * {
+        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
+      }
     `;
     element.appendChild(style);
 
