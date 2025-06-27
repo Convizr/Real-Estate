@@ -319,38 +319,38 @@ export const BrantjesExtension = {
       .detail-popup-images-row {
         display: flex;
         flex-direction: row;
-        gap: 32px;
-        align-items: center;
+        gap: 18px;
+        align-items: flex-start;
         margin-bottom: 18px;
       }
       .detail-popup-main-image {
-        flex: 0 0 340px;
-        max-width: 340px;
-        min-width: 220px;
+        width: 260px;
+        height: 200px;
+        min-width: 260px;
+        max-width: 260px;
+        max-height: 200px;
+        border-radius: 12px;
+        overflow: hidden;
         display: flex;
-        flex-direction: column;
         align-items: flex-start;
+        justify-content: center;
       }
       .detail-popup-main-image img {
         width: 100%;
-        max-width: 340px;
-        border-radius: 12px;
-        margin-bottom: 0;
-        aspect-ratio: 4/3;
+        height: 100%;
         object-fit: cover;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border-radius: 12px;
       }
       .detail-popup-thumbnails {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        gap: 12px;
-        width: 160px;
-        height: 160px;
+        grid-template-columns: 110px 110px;
+        grid-template-rows: 90px 90px;
+        gap: 18px;
+        align-items: stretch;
       }
       .detail-popup-thumbnail {
-        width: 76px;
-        height: 76px;
+        width: 110px;
+        height: 90px;
         background-size: cover;
         background-position: center;
         border-radius: 8px;
