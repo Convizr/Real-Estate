@@ -127,7 +127,7 @@ export const BrantjesExtension = {
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 15px 15px 50px 15px;
+        padding: 15px 15px 22px 15px;
         background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.08) 100%);
         z-index: 2;
       }
@@ -605,11 +605,14 @@ export const BrantjesExtension = {
         border: none;
         position: static;
       }
+      .brantjes-card-details-pill svg {
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: normal !important;
+        transition: none !important;
+      }
       .brantjes-card-details-pill span {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        color: #fff;
+        font-weight: 400 !important;
       }
       /* Overlay content area moves up to make room for pill and button */
       .brantjes-card-overlay {
@@ -703,87 +706,280 @@ export const BrantjesExtension = {
     }
 
     function showDetailModal(property) {
+        // --- IMAGE DATA ---
+        const media = Array.isArray(property.media) ? property.media : [];
+        const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
+            || media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
+        const mainImgSrc = mainImgObj ? mainImgObj.link : '';
+        const fotoImgs = media.filter(m => m.vrijgave && m.soort === 'FOTO' && m.mimetype && m.mimetype.startsWith('image/'));
+        const allSlideshowImgs = fotoImgs.map(f => f.link);
+        const thumbnails = fotoImgs.slice(0, 4);
+
+        // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
 
-        const mainImageContainer = document.createElement('div');
-        mainImageContainer.className = 'detail-popup-main-image';
-        let mainImgSrc = '';
-        if (Array.isArray(property.media)) {
-            let imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/') && m.soort === 'HOOFDFOTO');
-            if (!imgObj) {
-                imgObj = property.media.find(m => m.vrijgave && m.mimetype && m.mimetype.startsWith('image/'));
-            }
-            if (imgObj) {
-                mainImgSrc = imgObj.link;
-                if (mainImgSrc) {
-                    mainImgSrc += mainImgSrc.includes('?') ? '&resize=8' : '?resize=8'; // Higher resolution for detail
-                }
-            }
-        }
-        mainImageContainer.innerHTML = `<img src="${mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image'}" alt="Property Main Image">`;
-        detailContent.appendChild(mainImageContainer);
+        // --- LEFT: Main image + thumbnails ---
+        const leftCol = document.createElement('div');
+        leftCol.style.display = 'flex';
+        leftCol.style.flexDirection = 'column';
+        leftCol.style.gap = '16px';
+        leftCol.style.alignItems = 'center';
+        leftCol.style.justifyContent = 'flex-start';
+        leftCol.style.minWidth = '320px';
+        leftCol.style.maxWidth = '420px';
 
-        // Add dummy thumbnails for now
-        const thumbnailsContainer = document.createElement('div');
-        thumbnailsContainer.className = 'detail-popup-thumbnails';
-        for (let i = 0; i < 4; i++) {
-            thumbnailsContainer.innerHTML += `<div class="detail-popup-thumbnail" style="background-image: url('https://via.placeholder.com/150x112?text=Thumb'); background-size: cover;"></div>`;
-        }
-        detailContent.appendChild(thumbnailsContainer);
+        // Main image
+        const mainImg = document.createElement('img');
+        mainImg.src = mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image';
+        mainImg.alt = 'Hoofdfoto';
+        mainImg.style.width = '100%';
+        mainImg.style.maxWidth = '380px';
+        mainImg.style.borderRadius = '8px';
+        mainImg.style.cursor = 'pointer';
+        mainImg.onclick = () => openSlideshow(0);
+        leftCol.appendChild(mainImg);
 
-        const infoSection = document.createElement('div');
-        infoSection.className = 'detail-popup-info';
+        // Thumbnails
+        const thumbsRow = document.createElement('div');
+        thumbsRow.style.display = 'grid';
+        thumbsRow.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        thumbsRow.style.gap = '10px';
+        thumbsRow.style.width = '100%';
+        thumbnails.forEach((thumb, idx) => {
+            const thumbDiv = document.createElement('div');
+            thumbDiv.className = 'detail-popup-thumbnail';
+            thumbDiv.style.backgroundImage = `url('${thumb.link}')`;
+            thumbDiv.style.backgroundSize = 'cover';
+            thumbDiv.style.backgroundPosition = 'center';
+            thumbDiv.style.borderRadius = '8px';
+            thumbDiv.style.cursor = 'pointer';
+            thumbDiv.onclick = () => openSlideshow(idx);
+            thumbDiv.style.aspectRatio = '4/3';
+            thumbsRow.appendChild(thumbDiv);
+        });
+        leftCol.appendChild(thumbsRow);
+        detailContent.appendChild(leftCol);
+
+        // --- RIGHT: Info ---
+        const rightCol = document.createElement('div');
+        rightCol.className = 'detail-popup-info';
+        rightCol.style.display = 'flex';
+        rightCol.style.flexDirection = 'column';
+        rightCol.style.gap = '10px';
+        rightCol.style.justifyContent = 'flex-start';
+        rightCol.style.width = '100%';
+
+        // Title (street + number)
         const straat = property.adres?.straat || '';
         const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        const title = document.createElement('h2');
+        title.textContent = streetAddress || 'Onbekend adres';
+        title.style.color = '#1E7FCB';
+        title.style.margin = '0 0 4px 0';
+        rightCol.appendChild(title);
+
+        // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
         const postcode = property.adres?.postcode || '';
-        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
         const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const area = property.algemeen?.woonoppervlakte || '';
-        const rooms = property.algemeen?.aantalKamers || '';
+        const addrP = document.createElement('div');
+        addrP.textContent = cityPostal;
+        addrP.style.fontSize = '16px';
+        addrP.style.color = '#333';
+        rightCol.appendChild(addrP);
+
+        // Broker info (dummy for now, can be improved with lookup)
+        const makelaarId = property.algemeen?.gekoppeldeMakelaar;
+        const makelaarDiv = document.createElement('div');
+        makelaarDiv.innerHTML = `<span style="font-weight:600">Makelaar:</span> ${makelaarId || 'Onbekend'}`;
+        makelaarDiv.style.fontSize = '15px';
+        rightCol.appendChild(makelaarDiv);
+
+        // Energy label and price row
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.gap = '10px';
+        // Energy label
         const energy = property.algemeen?.energieklasse || '';
-
-        // Card Title (Street + Number)
-        const title = document.createElement('p');
-        title.textContent = streetAddress || 'Onbekend adres';
-        title.className = 'brantjes-card-title';
-        // City + Postal code
-        const city = document.createElement('p');
-        city.textContent = cityPostal;
-        city.className = 'brantjes-card-city';
+        const energyDiv = document.createElement('div');
+        energyDiv.className = `energy-label energy-label-${energy}`;
+        energyDiv.textContent = energy;
+        row.appendChild(energyDiv);
         // Price
-        const priceP = document.createElement('p');
-        priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">k.k.</span>`;
-        priceP.className = 'brantjes-card-price';
-        // Details pill (area, rooms)
-        const detailsPill = document.createElement('div');
-        detailsPill.className = 'brantjes-card-details-pill';
-        detailsPill.innerHTML =
-          (area ? `<span title=\"Woonoppervlakte\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 576 512'><path fill='white' d='M64 112a16 16 0 1 0 0-32 16 16 0 1 0 0 32zm24 43.3V356.7c16 6.5 28.9 19.3 35.3 35.3H324.7c6.5-16 19.3-28.9 35.3-35.3V155.3c-16-6.5-28.9-19.3-35.3-35.3H123.3c-6.5 16-19.3 28.9-35.3 35.3zM123.3 440c-9.5 23.5-32.5 40-59.3 40c-35.3 0-64-28.7-64-64c0-26.9 16.5-49.9 40-59.3V155.3C16.5 145.9 0 122.9 0 96C0 60.7 28.7 32 64 32c26.9 0 49.9 16.5 59.3 40H324.7c9.5-23.5 32.5-40 59.3-40c35.3 0 64 28.7 64 64c0 26.9-16.5 49.9-40 59.3V356.7c23.5 9.5 40 32.5 40 59.3c0 35.3-28.7 64-64 64c-26.9 0-49.9-16.5-59.3-40H123.3zM80 416a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm320 0a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm0-320a16 16 0 1 0 -32 0 16 16 0 1 0 32 0z'></path></svg> ${area} m²</span>` : '') +
-          (rooms ? ` <span title=\"Kamers\"><svg style='vertical-align:middle' width='18' height='18' viewBox='0 0 640 512'><path fill='white' d='M32 80V205.8c14.5-7.7 30.8-12.4 48-13.6l0-.3V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32h32V160c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v32l0 .3c17.2 1.1 33.5 5.9 48 13.6V80c0-26.5-21.5-48-48-48H80C53.5 32 32 53.5 32 80zM88 224c-48.6 0-88 39.4-88 88v80 64c0 13.3 10.7 24 24 24s24-10.7 24-24V416H464v40c0 13.3 10.7 24 24 24s24-10.7 24-24V392 312c0-48.6-39.4-88-88-88H88zM464 368H48V312c0-22.1 17.9-40 40-40H424c22.1 0 40 17.9 40 40v56z'></path></svg> ${rooms}</span>` : '');
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const priceDiv = document.createElement('div');
+        priceDiv.innerHTML = `<span style="font-weight:bold;font-size:20px;">€ ${price.toLocaleString('nl-NL')}</span> <span style="font-size:16px;">k.k.</span>`;
+        priceDiv.style.textAlign = 'right';
+        row.appendChild(priceDiv);
+        rightCol.appendChild(row);
 
-        infoSection.appendChild(title);
-        infoSection.appendChild(city);
-        infoSection.appendChild(priceP);
-        infoSection.appendChild(detailsPill);
+        // --- Description with 'toon meer' ---
+        const desc = property.teksten?.aanbiedingstekst || '';
+        const descDiv = document.createElement('div');
+        descDiv.style.margin = '16px 0 0 0';
+        descDiv.style.fontSize = '15px';
+        descDiv.style.color = '#333';
+        let truncated = false;
+        let expanded = false;
+        let shortDesc = desc;
+        if (desc.length > 400) {
+            shortDesc = desc.slice(0, 400).split('\n').slice(0, 3).join('\n') + '...';
+            truncated = true;
+        }
+        descDiv.textContent = truncated ? shortDesc : desc;
+        if (truncated) {
+            const moreBtn = document.createElement('button');
+            moreBtn.textContent = 'Toon meer';
+            moreBtn.style.background = 'none';
+            moreBtn.style.color = '#1E7FCB';
+            moreBtn.style.border = 'none';
+            moreBtn.style.cursor = 'pointer';
+            moreBtn.style.fontWeight = 'bold';
+            moreBtn.onclick = () => {
+                if (!expanded) {
+                    descDiv.textContent = desc;
+                    moreBtn.textContent = 'Toon minder';
+                    expanded = true;
+                } else {
+                    descDiv.textContent = shortDesc;
+                    moreBtn.textContent = 'Toon meer';
+                    expanded = false;
+                }
+                descDiv.appendChild(moreBtn);
+            };
+            descDiv.appendChild(moreBtn);
+        }
+        rightCol.appendChild(descDiv);
 
-        // Add image overlay for hover effect
-        const imgOverlay = document.createElement('div');
-        imgOverlay.className = 'brantjes-img-hover-overlay';
-        infoSection.appendChild(imgOverlay);
+        // --- Property Specifications List ---
+        const specsTable = document.createElement('table');
+        specsTable.style.width = '100%';
+        specsTable.style.marginTop = '18px';
+        specsTable.style.fontSize = '14px';
+        specsTable.style.borderCollapse = 'collapse';
+        // Helper to add a row
+        function addSpecRow(label, value) {
+            const tr = document.createElement('tr');
+            const td1 = document.createElement('td');
+            td1.textContent = label;
+            td1.style.fontWeight = 'bold';
+            td1.style.padding = '4px 8px 4px 0';
+            td1.style.color = '#333';
+            const td2 = document.createElement('td');
+            td2.textContent = value;
+            td2.style.padding = '4px 0 4px 8px';
+            td2.style.color = '#444';
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            specsTable.appendChild(tr);
+        }
+        // Overdracht
+        addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
+        addSpecRow('Status', property.financieel?.overdracht?.status || '');
+        addSpecRow('Aanvaarding', property.financieel?.overdracht?.aanvaarding || '');
+        // Bouw
+        addSpecRow('Type object', property.object?.type?.objecttype || '');
+        addSpecRow('Soort', property.algemeen?.woonhuissoort || '');
+        addSpecRow('Type', property.algemeen?.woonhuistype || '');
+        addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
+        addSpecRow('Dak type', (property.detail?.buitenruimte?.daktype || ''));
+        addSpecRow('Isolatievormen', (property.algemeen?.isolatievormen || []).join(', '));
+        // Oppervlaktes en inhoud
+        addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + ' m2');
+        addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + ' m2');
+        addSpecRow('Inhoud', (property.algemeen?.inhoud || '') + ' m3');
+        addSpecRow('Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + ' m2');
+        // Indeling
+        addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
+        addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
+        // Locatie
+        addSpecRow('Ligging', (property.algemeen?.liggingen || []).join(', '));
+        // Tuin
+        addSpecRow('Type', (property.detail?.buitenruimte?.tuintypes || []).join(', '));
+        addSpecRow('Staat', property.detail?.buitenruimte?.tuinkwaliteit || '');
+        addSpecRow('Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || '');
+        addSpecRow('Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee');
+        // Uitrusting
+        addSpecRow('Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', '));
+        addSpecRow('Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', '));
+        rightCol.appendChild(specsTable);
 
-        detailContent.appendChild(infoSection);
+        detailContent.appendChild(rightCol);
 
-        // Add event listener to the "Plan bezichtiging" button within the detail modal
-        const planViewingButton = infoSection.querySelector('.submit-btn');
-        if (planViewingButton) {
-            planViewingButton.addEventListener('click', () => {
-                // Close detail modal first, then open booking modal
-                document.querySelector('.brantjes-modal-backdrop')?.remove();
-                showBookingModal(property);
-            });
+        // --- SLIDESHOW/LIGHTBOX ---
+        function openSlideshow(startIdx) {
+            if (!allSlideshowImgs.length) return;
+            let idx = startIdx;
+            const lightbox = document.createElement('div');
+            lightbox.style.position = 'fixed';
+            lightbox.style.top = '0';
+            lightbox.style.left = '0';
+            lightbox.style.width = '100vw';
+            lightbox.style.height = '100vh';
+            lightbox.style.background = 'rgba(0,0,0,0.85)';
+            lightbox.style.display = 'flex';
+            lightbox.style.alignItems = 'center';
+            lightbox.style.justifyContent = 'center';
+            lightbox.style.zIndex = '2000';
+
+            const img = document.createElement('img');
+            img.src = allSlideshowImgs[idx];
+            img.style.maxWidth = '90vw';
+            img.style.maxHeight = '80vh';
+            img.style.borderRadius = '8px';
+            img.style.boxShadow = '0 4px 24px rgba(0,0,0,0.5)';
+            lightbox.appendChild(img);
+
+            // Navigation
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '<';
+            prevBtn.style.position = 'absolute';
+            prevBtn.style.left = '40px';
+            prevBtn.style.top = '50%';
+            prevBtn.style.transform = 'translateY(-50%)';
+            prevBtn.style.fontSize = '2rem';
+            prevBtn.style.background = 'rgba(0,0,0,0.3)';
+            prevBtn.style.color = '#fff';
+            prevBtn.style.border = 'none';
+            prevBtn.style.borderRadius = '50%';
+            prevBtn.style.width = '48px';
+            prevBtn.style.height = '48px';
+            prevBtn.style.cursor = 'pointer';
+            prevBtn.onclick = (e) => {
+                e.stopPropagation();
+                idx = (idx - 1 + allSlideshowImgs.length) % allSlideshowImgs.length;
+                img.src = allSlideshowImgs[idx];
+            };
+            lightbox.appendChild(prevBtn);
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '>';
+            nextBtn.style.position = 'absolute';
+            nextBtn.style.right = '40px';
+            nextBtn.style.top = '50%';
+            nextBtn.style.transform = 'translateY(-50%)';
+            nextBtn.style.fontSize = '2rem';
+            nextBtn.style.background = 'rgba(0,0,0,0.3)';
+            nextBtn.style.color = '#fff';
+            nextBtn.style.border = 'none';
+            nextBtn.style.borderRadius = '50%';
+            nextBtn.style.width = '48px';
+            nextBtn.style.height = '48px';
+            nextBtn.style.cursor = 'pointer';
+            nextBtn.onclick = (e) => {
+                e.stopPropagation();
+                idx = (idx + 1) % allSlideshowImgs.length;
+                img.src = allSlideshowImgs[idx];
+            };
+            lightbox.appendChild(nextBtn);
+            // Close on click outside
+            lightbox.onclick = () => {
+                lightbox.remove();
+            };
+            document.body.appendChild(lightbox);
         }
 
         openModal(detailContent);
