@@ -313,46 +313,105 @@ export const BrantjesExtension = {
       /* Detail Pop-up Layout */
       .detail-popup-content {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 24px;
       }
+      .detail-popup-images-row {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
       .detail-popup-main-image {
-        flex: 1 1 0;
+        flex: 0 0 340px;
+        max-width: 340px;
+        min-width: 220px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        min-width: 220px;
-        max-width: 320px;
       }
       .detail-popup-main-image img {
         width: 100%;
-        max-width: 320px;
-        border-radius: 8px;
-        margin-bottom: 12px;
+        max-width: 340px;
+        border-radius: 12px;
+        margin-bottom: 0;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
       }
       .detail-popup-thumbnails {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        width: 100%;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+        width: 160px;
+        height: 160px;
       }
       .detail-popup-thumbnail {
-        width: 70px;
-        height: 70px;
+        width: 76px;
+        height: 76px;
         background-size: cover;
         background-position: center;
         border-radius: 8px;
         cursor: pointer;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      }
+      .detail-popup-info-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .detail-popup-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1E7FCB;
+        margin: 0 0 2px 0;
+        line-height: 1.1;
+        flex: 2 1 0;
+        min-width: 180px;
+      }
+      .detail-popup-address {
+        font-size: 1.1rem;
+        color: #222;
+        margin-right: 12px;
+        flex: 1 1 0;
+        min-width: 120px;
+      }
+      .detail-popup-broker {
+        font-size: 1.1rem;
+        color: #222;
+        margin-right: 12px;
+        flex: 1 1 0;
+        min-width: 120px;
+      }
+      .detail-popup-energy {
+        margin-right: 12px;
+        flex: 0 0 auto;
+      }
+      .detail-popup-price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #222;
+        text-align: right;
+        flex: 0 0 auto;
+        min-width: 120px;
       }
       .detail-popup-info {
-        flex: 2 1 0;
+        width: 100%;
         min-width: 0;
         overflow: hidden;
         padding-top: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
       }
       .detail-popup-info h2 {
-        color: #1E7FCB;
-        margin: 0 0 10px;
+        display: none;
       }
 
       /* Booking Form Layout */
@@ -746,19 +805,20 @@ export const BrantjesExtension = {
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
 
-        // --- LEFT: Main image + thumbnails (side by side) ---
-        const leftCol = document.createElement('div');
-        leftCol.className = 'detail-popup-main-image';
-
+        // --- IMAGES ROW ---
+        const imagesRow = document.createElement('div');
+        imagesRow.className = 'detail-popup-images-row';
         // Main image
+        const mainImgCol = document.createElement('div');
+        mainImgCol.className = 'detail-popup-main-image';
         const mainImg = document.createElement('img');
         mainImg.src = mainImgSrc || 'https://via.placeholder.com/600x400?text=No+Image';
         mainImg.alt = 'Hoofdfoto';
         mainImg.style.cursor = 'pointer';
         mainImg.onclick = () => openSlideshow(0);
-        leftCol.appendChild(mainImg);
-
-        // Thumbnails (2x2 grid next to main image)
+        mainImgCol.appendChild(mainImg);
+        imagesRow.appendChild(mainImgCol);
+        // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
         thumbnails.forEach((thumb, idx) => {
@@ -772,64 +832,55 @@ export const BrantjesExtension = {
             thumbDiv.onclick = () => openSlideshow(idx);
             thumbsCol.appendChild(thumbDiv);
         });
-        leftCol.appendChild(thumbsCol);
-        detailContent.appendChild(leftCol);
+        imagesRow.appendChild(thumbsCol);
+        detailContent.appendChild(imagesRow);
 
         // --- RIGHT: Info ---
-        const rightCol = document.createElement('div');
-        rightCol.className = 'detail-popup-info';
-        rightCol.style.display = 'flex';
-        rightCol.style.flexDirection = 'column';
-        rightCol.style.gap = '10px';
-        rightCol.style.justifyContent = 'flex-start';
-        rightCol.style.width = '100%';
+        const infoCol = document.createElement('div');
+        infoCol.className = 'detail-popup-info';
 
         // Title (street + number)
         const straat = property.adres?.straat || '';
         const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
         const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
-        const title = document.createElement('h2');
+        // Info row
+        const infoRow = document.createElement('div');
+        infoRow.className = 'detail-popup-info-row';
+        // Title
+        const title = document.createElement('div');
+        title.className = 'detail-popup-title';
         title.textContent = streetAddress || 'Onbekend adres';
-        title.style.color = '#1E7FCB';
-        title.style.margin = '0 0 4px 0';
-        rightCol.appendChild(title);
+        infoRow.appendChild(title);
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
         const postcode = property.adres?.postcode || '';
         const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
-        const addrP = document.createElement('div');
-        addrP.textContent = cityPostal;
-        addrP.style.fontSize = '16px';
-        addrP.style.color = '#333';
-        rightCol.appendChild(addrP);
+        const addrDiv = document.createElement('div');
+        addrDiv.className = 'detail-popup-address';
+        addrDiv.textContent = cityPostal;
+        infoRow.appendChild(addrDiv);
 
         // Broker info (dummy for now, can be improved with lookup)
         const makelaarId = property.algemeen?.gekoppeldeMakelaar;
         const makelaarDiv = document.createElement('div');
+        makelaarDiv.className = 'detail-popup-broker';
         makelaarDiv.innerHTML = `<span style="font-weight:600">Makelaar:</span> ${makelaarId || 'Onbekend'}`;
-        makelaarDiv.style.fontSize = '15px';
-        rightCol.appendChild(makelaarDiv);
+        infoRow.appendChild(makelaarDiv);
 
         // Energy label and price row
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.justifyContent = 'space-between';
-        row.style.gap = '10px';
-        // Energy label
         const energy = property.algemeen?.energieklasse || '';
         const energyDiv = document.createElement('div');
-        energyDiv.className = `energy-label energy-label-${energy}`;
+        energyDiv.className = `energy-label energy-label-${energy} detail-popup-energy`;
         energyDiv.textContent = energy;
-        row.appendChild(energyDiv);
+        infoRow.appendChild(energyDiv);
         // Price
         const price = property.financieel?.overdracht?.koopprijs || 0;
         const priceDiv = document.createElement('div');
-        priceDiv.innerHTML = `<span style="font-weight:bold;font-size:20px;">€ ${price.toLocaleString('nl-NL')}</span> <span style="font-size:16px;">k.k.</span>`;
-        priceDiv.style.textAlign = 'right';
-        row.appendChild(priceDiv);
-        rightCol.appendChild(row);
+        priceDiv.className = 'detail-popup-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1rem;font-weight:400;">k.k.</span>`;
+        infoRow.appendChild(priceDiv);
+        infoCol.appendChild(infoRow);
 
         // --- Description with 'toon meer' ---
         const desc = property.teksten?.aanbiedingstekst || '';
@@ -867,7 +918,7 @@ export const BrantjesExtension = {
             };
             descDiv.appendChild(moreBtn);
         }
-        rightCol.appendChild(descDiv);
+        infoCol.appendChild(descDiv);
 
         // --- Property Specifications List ---
         const specsTable = document.createElement('table');
@@ -920,9 +971,9 @@ export const BrantjesExtension = {
         // Uitrusting
         addSpecRow('Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', '));
         addSpecRow('Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', '));
-        rightCol.appendChild(specsTable);
+        infoCol.appendChild(specsTable);
 
-        detailContent.appendChild(rightCol);
+        detailContent.appendChild(infoCol);
 
         // --- SLIDESHOW/LIGHTBOX ---
         function openSlideshow(startIdx) {
