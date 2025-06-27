@@ -355,7 +355,7 @@ export const BrantjesExtension = {
       }
       .detail-popup-thumbnails {
         display: grid;
-        grid-template-columns: 120px 120px;
+        grid-template-columns: 150px 150px;
         grid-template-rows: 115px 115px;
         gap: 10px;
         align-items: end;
@@ -363,7 +363,7 @@ export const BrantjesExtension = {
         justify-content: flex-start;
       }
       .detail-popup-thumbnail {
-        width: 120px;
+        width: 150px;
         height: 115px;
         background-size: cover;
         background-position: center;
@@ -377,6 +377,11 @@ export const BrantjesExtension = {
       .detail-popup-thumbnail.fade-in {
         opacity: 1;
         transform: translateY(0);
+      }
+      .detail-popup-thumbnail.fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .detail-popup-info-row {
         display: flex;
@@ -849,7 +854,7 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        function renderThumbnails() {
+        function renderThumbnails(fadeDirection) {
             thumbsCol.innerHTML = '';
             for (let i = 1; i < Math.min(5, imageList.length); i++) {
                 const thumbDiv = document.createElement('div');
@@ -859,19 +864,28 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                // Fade-in effect
-                setTimeout(() => {
+                if (fadeDirection === 'in') {
+                  setTimeout(() => {
+                    thumbDiv.classList.add('fade-in');
+                  }, 10 + i * 40);
+                } else {
                   thumbDiv.classList.add('fade-in');
-                }, 10 + i * 40);
+                }
                 thumbDiv.onclick = () => {
-                    // Move all images before this one (including main) to end
-                    imageList = imageList.slice(i).concat(imageList.slice(0, i));
-                    // Re-render main image and thumbnails
-                    mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
-                    if (counter) {
-                        counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
-                    }
-                    renderThumbnails();
+                    // Fade out all thumbnails first
+                    const allThumbs = thumbsCol.querySelectorAll('.detail-popup-thumbnail');
+                    allThumbs.forEach(t => t.classList.remove('fade-in'));
+                    allThumbs.forEach(t => t.classList.add('fade-out'));
+                    setTimeout(() => {
+                        // Move all images before this one (including main) to end
+                        imageList = imageList.slice(i).concat(imageList.slice(0, i));
+                        // Re-render main image and thumbnails
+                        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                        if (counter) {
+                            counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
+                        }
+                        renderThumbnails('in');
+                    }, 350);
                 };
                 thumbsCol.appendChild(thumbDiv);
             }
