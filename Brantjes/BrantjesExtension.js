@@ -325,22 +325,17 @@ export const BrantjesExtension = {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
-        gap: 1.5rem;
+        flex-wrap: nowrap;
+        gap: 1.2rem;
         margin-top: 0.2rem;
+        width: 100%;
       }
       .detail-popup-header-details {
         font-size: 1.08rem;
         color: #222;
         font-weight: 700;
         margin-right: 1.2rem;
-      }
-      .detail-popup-header-price-energy {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 1.2rem;
-        min-width: 0;
+        white-space: nowrap;
       }
       .detail-popup-header-price {
         font-size: 1.08rem;
@@ -349,10 +344,15 @@ export const BrantjesExtension = {
         margin: 0;
         line-height: 1.1;
         margin-right: 1.2rem;
+        margin-left: auto;
+        white-space: nowrap;
       }
       .detail-popup-header-energy {
-        margin-top: 0.2rem;
+        margin-top: 0;
         margin-left: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        vertical-align: middle;
       }
       .detail-popup-dot {
         display: inline-block;
@@ -846,6 +846,15 @@ export const BrantjesExtension = {
       .brantjes-modal-container,
       .brantjes-modal-container * {
         font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
+      }
+
+      .detail-popup-title-main {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1E7FCB !important;
+        margin: 0 0 0.2em 0;
+        line-height: 1.1;
+        display: block;
       }
     `;
     element.appendChild(style);
