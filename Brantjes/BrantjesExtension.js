@@ -315,6 +315,57 @@ export const BrantjesExtension = {
         flex-direction: column;
         gap: 24px;
       }
+      .detail-popup-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 18px;
+      }
+      .detail-popup-header-row {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .detail-popup-title-main {
+        font-size: 2.1rem;
+        font-weight: 700;
+        color: #1E7FCB;
+        margin: 0;
+        line-height: 1.1;
+      }
+      .detail-popup-header-details {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.2rem;
+        font-size: 1.08rem;
+        color: #222;
+        font-weight: 500;
+      }
+      .detail-popup-header-details .broker-link {
+        color: #1E7FCB;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .detail-popup-header-price-energy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+        min-width: 180px;
+      }
+      .detail-popup-header-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #222;
+        margin: 0;
+        line-height: 1.1;
+      }
+      .detail-popup-header-energy {
+        margin-top: 0.2rem;
+      }
       .detail-popup-images-row {
         display: flex;
         flex-direction: row;
@@ -781,133 +832,6 @@ export const BrantjesExtension = {
       .brantjes-modal-container * {
         font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
       }
-      .detail-header-row {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 18px;
-        gap: 32px;
-      }
-      .detail-header-left {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        min-width: 0;
-      }
-      .detail-header-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1E7FCB;
-        margin: 0;
-        line-height: 1.1;
-        word-break: break-word;
-      }
-      .detail-header-meta {
-        font-size: 1.1rem;
-        color: #222;
-        font-weight: 600;
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-      }
-      .detail-header-meta .broker-link {
-        color: #1E7FCB;
-        text-decoration: underline;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .detail-header-meta .phone {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-weight: 400;
-      }
-      .detail-header-energy {
-        display: inline-flex;
-        align-items: center;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border-radius: 6px;
-        padding: 2px 14px;
-        margin-left: 8px;
-        background: #1EC773;
-        color: #fff;
-        min-width: 36px;
-        height: 32px;
-      }
-      .detail-header-energy.energy-label-A { background: #1EC773; }
-      .detail-header-energy.energy-label-B { background: #8DD800; }
-      .detail-header-energy.energy-label-C { background: #F7D900; color: #333; }
-      .detail-header-energy.energy-label-D { background: #F7A600; }
-      .detail-header-energy.energy-label-E { background: #F76B1C; }
-      .detail-header-energy.energy-label-F { background: #E2001A; }
-      .detail-header-energy.energy-label-G { background: #A50021; }
-      .detail-header-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 10px;
-        min-width: 220px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(30,127,203,0.08);
-        padding: 18px 28px 18px 28px;
-        margin-top: 2px;
-      }
-      .detail-header-status {
-        background: #1EC773;
-        color: #fff;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border-radius: 8px;
-        padding: 2px 14px;
-        margin-bottom: 6px;
-        display: inline-block;
-      }
-      .detail-header-price {
-        font-size: 2.1rem;
-        font-weight: 700;
-        color: #222;
-        margin-bottom: 2px;
-      }
-      .detail-header-kk {
-        font-size: 1.1rem;
-        font-weight: 400;
-        color: #222;
-        margin-left: 2px;
-      }
-      .detail-header-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-      .detail-header-btn {
-        background: #1E7FCB;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        padding: 10px 0;
-        width: 100%;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-bottom: 0;
-      }
-      .detail-header-btn:last-child {
-        background: #eaf7ff;
-        color: #1E7FCB;
-        border: 1px solid #1E7FCB;
-      }
-      .detail-header-btn:hover {
-        background: #166BB5;
-        color: #fff;
-      }
     `;
     element.appendChild(style);
 
@@ -958,102 +882,70 @@ export const BrantjesExtension = {
             });
         let imageList = [...allImgs];
 
-        // --- COMMON PROPERTY VARIABLES ---
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
-        const energy = property.algemeen?.energieklasse || '';
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
 
-        // --- HEADER ROW (Brantjes style) ---
-        const headerRow = document.createElement('div');
-        headerRow.className = 'detail-header-row';
+        // --- HEADER SECTION (Brantjes style) ---
+        const header = document.createElement('div');
+        header.className = 'detail-popup-header';
+        // Title (street + number)
+        const straat = property.adres?.straat || '';
+        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        const titleMain = document.createElement('h1');
+        titleMain.className = 'detail-popup-title-main';
+        titleMain.textContent = streetAddress || 'Onbekend adres';
+        header.appendChild(titleMain);
 
-        // LEFT SIDE
-        const headerLeft = document.createElement('div');
-        headerLeft.className = 'detail-header-left';
-        // Title
-        const title = document.createElement('div');
-        title.className = 'detail-header-title';
-        title.textContent = streetAddress || 'Onbekend adres';
-        headerLeft.appendChild(title);
-        // Meta row
-        const meta = document.createElement('div');
-        meta.className = 'detail-header-meta';
-        // Address
+        // Row: address, broker, phone, energy label, price
+        const headerRow = document.createElement('div');
+        headerRow.className = 'detail-popup-header-row';
+
+        // Left: address, broker, phone
+        const detailsLeft = document.createElement('div');
+        detailsLeft.className = 'detail-popup-header-details';
+        // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
         const postcode = property.adres?.postcode || '';
-        const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
-        const addrSpan = document.createElement('span');
-        addrSpan.textContent = cityPostal;
-        meta.appendChild(addrSpan);
-        // Broker (dummy link for now)
-        const makelaarNaam = property.algemeen?.makelaarNaam || property.algemeen?.gekoppeldeMakelaar || 'Onbekend';
-        const makelaarSpan = document.createElement('span');
-        makelaarSpan.className = 'broker-link';
-        makelaarSpan.textContent = makelaarNaam;
-        // If you have a URL, set makelaarSpan.onclick = () => window.open(url, '_blank');
-        meta.appendChild(document.createTextNode('• Makelaar: '));
-        meta.appendChild(makelaarSpan);
-        // Phone (dummy for now)
-        const phone = property.algemeen?.makelaarTelefoon || '';
-        if (phone) {
-          const phoneSpan = document.createElement('span');
-          phoneSpan.className = 'phone';
-          phoneSpan.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E7FCB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92V21a2 2 0 0 1-2.18 2A19.72 19.72 0 0 1 3 5.18 2 2 0 0 1 5 3h4.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.23.72 3.28a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.05.35 2.15.59 3.28.72A2 2 0 0 1 21 18.91V21z"></path></svg> ${phone}`;
-          meta.appendChild(document.createTextNode('• '));
-          meta.appendChild(phoneSpan);
+        if (postcode || plaats) {
+          const addrSpan = document.createElement('span');
+          addrSpan.textContent = `${postcode} ${plaats}`.trim();
+          addrSpan.style.fontWeight = 'bold';
+          detailsLeft.appendChild(addrSpan);
         }
-        // Energy label
-        const energyDivHeader = document.createElement('span');
-        energyDivHeader.className = `detail-header-energy energy-label-${energy}`;
-        energyDivHeader.textContent = energy;
-        meta.appendChild(energyDivHeader);
-        headerLeft.appendChild(meta);
+        // Broker info (dummy for now, can be improved with lookup)
+        const makelaarId = property.algemeen?.gekoppeldeMakelaar;
+        if (makelaarId) {
+          const brokerSpan = document.createElement('span');
+          brokerSpan.innerHTML = `Makelaar: <span class="broker-link">${makelaarId}</span>`;
+          detailsLeft.appendChild(brokerSpan);
+        }
+        // Phone (dummy, can be improved)
+        // detailsLeft.appendChild(document.createTextNode('• 0251 260 660'));
 
-        // RIGHT SIDE (Price/status box)
-        const headerRight = document.createElement('div');
-        headerRight.className = 'detail-header-right';
-        // Status
-        const status = property.financieel?.overdracht?.status || 'Beschikbaar';
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'detail-header-status';
-        statusDiv.textContent = status;
-        headerRight.appendChild(statusDiv);
+        headerRow.appendChild(detailsLeft);
+
+        // Right: price and energy label
+        const priceEnergy = document.createElement('div');
+        priceEnergy.className = 'detail-popup-header-price-energy';
         // Price
+        const price = property.financieel?.overdracht?.koopprijs || 0;
         const priceDiv = document.createElement('div');
-        priceDiv.className = 'detail-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')}`;
-        headerRight.appendChild(priceDiv);
-        // k.k.
-        const kkDiv = document.createElement('div');
-        kkDiv.className = 'detail-header-kk';
-        kkDiv.textContent = 'k.k.';
-        headerRight.appendChild(kkDiv);
-        // Actions
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'detail-header-actions';
-        // Plan bezichtiging
-        const planBtn = document.createElement('button');
-        planBtn.className = 'detail-header-btn';
-        planBtn.textContent = 'Plan bezichtiging';
-        planBtn.onclick = () => showBookingModal(property);
-        actionsDiv.appendChild(planBtn);
-        // WhatsApp (dummy)
-        const waBtn = document.createElement('button');
-        waBtn.className = 'detail-header-btn';
-        waBtn.textContent = 'Stuur een WhatsApp';
-        waBtn.onclick = () => window.open('https://wa.me/' + (phone.replace(/[^0-9]/g, '') || ''), '_blank');
-        actionsDiv.appendChild(waBtn);
-        headerRight.appendChild(actionsDiv);
-
-        headerRow.appendChild(headerLeft);
-        headerRow.appendChild(headerRight);
-        detailContent.appendChild(headerRow);
+        priceDiv.className = 'detail-popup-header-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.1rem;font-weight:400;">k.k.</span>`;
+        priceEnergy.appendChild(priceDiv);
+        // Energy label
+        const energy = property.algemeen?.energieklasse || '';
+        if (energy) {
+          const energyDiv = document.createElement('div');
+          energyDiv.className = `energy-label energy-label-${energy} detail-popup-header-energy`;
+          energyDiv.textContent = energy;
+          priceEnergy.appendChild(energyDiv);
+        }
+        headerRow.appendChild(priceEnergy);
+        header.appendChild(headerRow);
+        detailContent.appendChild(header);
 
         // --- IMAGES ROW ---
         const imagesRow = document.createElement('div');
@@ -1124,40 +1016,6 @@ export const BrantjesExtension = {
         // --- RIGHT: Info ---
         const infoCol = document.createElement('div');
         infoCol.className = 'detail-popup-info';
-
-        // Info row
-        const infoRow = document.createElement('div');
-        infoRow.className = 'detail-popup-info-row';
-        // Title
-        const titleInfo = document.createElement('div');
-        titleInfo.className = 'detail-popup-title';
-        titleInfo.textContent = streetAddress || 'Onbekend adres';
-        infoRow.appendChild(titleInfo);
-
-        // Address (postal code + city)
-        const addrDiv = document.createElement('div');
-        addrDiv.className = 'detail-popup-address';
-        addrDiv.textContent = cityPostal;
-        infoRow.appendChild(addrDiv);
-
-        // Broker info (dummy for now, can be improved with lookup)
-        const makelaarId = property.algemeen?.gekoppeldeMakelaar;
-        const makelaarDiv = document.createElement('div');
-        makelaarDiv.className = 'detail-popup-broker';
-        makelaarDiv.innerHTML = `<span style="font-weight:600">Makelaar:</span> ${makelaarId || 'Onbekend'}`;
-        infoRow.appendChild(makelaarDiv);
-
-        // Energy label and price row
-        const energyDivInfo = document.createElement('div');
-        energyDivInfo.className = `energy-label energy-label-${energy} detail-popup-energy`;
-        energyDivInfo.textContent = energy;
-        infoRow.appendChild(energyDivInfo);
-        // Price
-        const priceInfo = document.createElement('div');
-        priceInfo.className = 'detail-popup-price';
-        priceInfo.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1rem;font-weight:400;">k.k.</span>`;
-        infoRow.appendChild(priceInfo);
-        infoCol.appendChild(infoRow);
 
         // --- Description with 'toon meer' ---
         const desc = property.teksten?.aanbiedingstekst || '';
@@ -1338,8 +1196,11 @@ export const BrantjesExtension = {
       const info = document.createElement('div');
       info.className = 'brantjes-card-info';
 
+      const straat = propertyData.adres?.straat || '';
+      const huisnummer = propertyData.adres?.huisnummer?.hoofdnummer || '';
       const plaats = propertyData.adres?.plaats || '';
       const postcode = propertyData.adres?.postcode || '';
+      const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
       const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
       const price = propertyData.financieel?.overdracht?.koopprijs || 0;
       const area = propertyData.algemeen?.woonoppervlakte || '';
@@ -1354,6 +1215,10 @@ export const BrantjesExtension = {
       const city = document.createElement('p');
       city.textContent = cityPostal;
       city.className = 'brantjes-card-city';
+      // Price
+      const priceP = document.createElement('p');
+      priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">k.k.</span>`;
+      priceP.className = 'brantjes-card-price';
       // Details pill (area, rooms)
       const detailsPill = document.createElement('div');
       detailsPill.className = 'brantjes-card-details-pill';
@@ -1365,6 +1230,7 @@ export const BrantjesExtension = {
       info.innerHTML = '';
       info.appendChild(title);
       info.appendChild(city);
+      info.appendChild(priceP);
       info.appendChild(detailsPill);
       overlay.appendChild(info);
       cardInner.appendChild(overlay);
