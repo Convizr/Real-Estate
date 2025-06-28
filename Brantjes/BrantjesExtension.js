@@ -1157,6 +1157,7 @@ export const BrantjesExtension = {
         descDiv.style.color = '#333';
         descDiv.style.lineHeight = '1.6';
         descDiv.style.wordBreak = 'break-word';
+        let moreBtn = null;
         let truncated = false;
         let expanded = false;
         let shortDesc = desc;
