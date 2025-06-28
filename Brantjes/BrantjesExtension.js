@@ -913,6 +913,89 @@ export const BrantjesExtension = {
         white-space: nowrap;
         width: 100%;
       }
+
+      .brantjes-booking-form {
+        background: #eaf6fa;
+        border-radius: 10px;
+        padding: 24px 18px 18px 18px;
+        font-size: 15px;
+        color: #222;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .brantjes-booking-form label {
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .brantjes-booking-form input,
+      .brantjes-booking-form select,
+      .brantjes-booking-form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #c7e0ed;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 15px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+        font-family: inherit;
+        transition: border 0.2s;
+      }
+      .brantjes-booking-form input:focus,
+      .brantjes-booking-form select:focus,
+      .brantjes-booking-form textarea:focus {
+        border: 1.5px solid #1E7FCB;
+        outline: none;
+      }
+      .brantjes-booking-form .form-row {
+        display: flex;
+        gap: 12px;
+      }
+      .brantjes-booking-form .form-row > div {
+        flex: 1 1 0;
+      }
+      .brantjes-booking-form .form-group {
+        margin-bottom: 10px;
+      }
+      .brantjes-booking-form .form-group.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .brantjes-booking-form .form-group.checkbox label {
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .brantjes-booking-form .submit-btn {
+        background: #1E7FCB;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 28px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+      .brantjes-booking-form .submit-btn:hover {
+        background: #166BB5;
+      }
+      .brantjes-booking-form .section-title {
+        color: #1E7FCB;
+        font-size: 1.3em;
+        font-weight: 700;
+        margin: 18px 0 10px 0;
+        display: block;
+      }
+      .brantjes-booking-form .required {
+        color: #E2001A;
+        margin-left: 2px;
+        font-weight: 700;
+      }
     `;
     element.appendChild(style);
 
@@ -1368,40 +1451,167 @@ export const BrantjesExtension = {
     function showBookingModal(property) {
         const bookingContent = document.createElement('div');
         bookingContent.className = 'booking-form-content';
-        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer, property.adres?.plaats].filter(Boolean).join(' ');
+        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' ');
 
-        bookingContent.innerHTML = `
-            <h2>Bezichtiging plannen voor ${address || 'deze woning'}</h2>
-            <form class="booking-form">
-                <div class="form-group">
-                    <label for="name">Naam:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group full-width">
-                    <label for="phone">Telefoonnummer:</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-                <div class="form-group full-width">
-                    <label for="date">Voorkeursdatum:</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <div class="form-group full-width">
-                    <label for="time">Voorkeurstijd:</label>
-                    <input type="time" id="time" name="time">
-                </div>
-                <div class="form-group full-width">
-                    <label for="message">Opmerkingen:</label>
-                    <textarea id="message" name="message" rows="4"></textarea>
-                </div>
-                <button type="submit" class="submit-btn full-width">Verzoek indienen</button>
-            </form>
+        // Add Brantjes-style form CSS
+        const style = document.createElement('style');
+        style.innerHTML = `
+          .brantjes-booking-form {
+            background: #eaf6fa;
+            border-radius: 10px;
+            padding: 24px 18px 18px 18px;
+            font-size: 15px;
+            color: #222;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          .brantjes-booking-form label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+          }
+          .brantjes-booking-form input,
+          .brantjes-booking-form select,
+          .brantjes-booking-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #c7e0ed;
+            border-radius: 7px;
+            background: #fff;
+            font-size: 15px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-family: inherit;
+            transition: border 0.2s;
+          }
+          .brantjes-booking-form input:focus,
+          .brantjes-booking-form select:focus,
+          .brantjes-booking-form textarea:focus {
+            border: 1.5px solid #1E7FCB;
+            outline: none;
+          }
+          .brantjes-booking-form .form-row {
+            display: flex;
+            gap: 12px;
+          }
+          .brantjes-booking-form .form-row > div {
+            flex: 1 1 0;
+          }
+          .brantjes-booking-form .form-group {
+            margin-bottom: 10px;
+          }
+          .brantjes-booking-form .form-group.checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+          }
+          .brantjes-booking-form .form-group.checkbox label {
+            font-weight: 400;
+            margin-bottom: 0;
+          }
+          .brantjes-booking-form .submit-btn {
+            background: #1E7FCB;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 28px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+          }
+          .brantjes-booking-form .submit-btn:hover {
+            background: #166BB5;
+          }
+          .brantjes-booking-form .section-title {
+            color: #1E7FCB;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 18px 0 10px 0;
+            display: block;
+          }
+          .brantjes-booking-form .required {
+            color: #E2001A;
+            margin-left: 2px;
+            font-weight: 700;
+          }
+        `;
+        bookingContent.appendChild(style);
+
+        bookingContent.innerHTML += `
+          <form class="brantjes-booking-form">
+            <div class="form-group">
+              <label for="property-address">Je plant een bezichtiging voor:</label>
+              <input type="text" id="property-address" name="property-address" value="${address || ''}" readonly>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="day">Voorkeursdag <span class="required">*</span></label>
+                <select id="day" name="day" required>
+                  <option value="">Maak een keuze</option>
+                  <option value="geen">Geen voorkeur</option>
+                  <option value="maandag">Maandag</option>
+                  <option value="dinsdag">Dinsdag</option>
+                  <option value="woensdag">Woensdag</option>
+                  <option value="donderdag">Donderdag</option>
+                  <option value="vrijdag">Vrijdag</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="partofday">Dagdeel <span class="required">*</span></label>
+                <select id="partofday" name="partofday" required>
+                  <option value="">Maak een keuze</option>
+                  <option value="geen">Geen voorkeur</option>
+                  <option value="ochtend">Ochtend</option>
+                  <option value="middag">Middag</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="message">Jouw bericht</label>
+              <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
+            </div>
+            <span class="section-title">Contactgegevens</span>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="first-name">Voornaam <span class="required">*</span></label>
+                <input type="text" id="first-name" name="first-name" placeholder="Typ je voornaam in" required>
+              </div>
+              <div class="form-group">
+                <label for="last-name">Achternaam <span class="required">*</span></label>
+                <input type="text" id="last-name" name="last-name" placeholder="Typ je achternaam in" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">E-mail <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="Typ je e-mailadres in" required>
+              </div>
+              <div class="form-group">
+                <label for="phone">Telefoon <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="Typ je telefoonnummer in" required>
+              </div>
+            </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="advies-ja" name="advies" value="ja">
+              <label for="advies-ja">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
+            </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
+              <label for="nieuwsbrief">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</label>
+            </div>
+            <div class="form-group checkbox">
+              <input type="checkbox" id="privacy" name="privacy" required>
+              <label for="privacy">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
+            </div>
+            <button type="submit" class="submit-btn">Verzend</button>
+          </form>
         `;
 
-        const bookingForm = bookingContent.querySelector('.booking-form');
+        const bookingForm = bookingContent.querySelector('.brantjes-booking-form');
         if (bookingForm) {
             bookingForm.addEventListener('submit', (e) => {
                 e.preventDefault();
