@@ -385,7 +385,7 @@ export const BrantjesExtension = {
         flex-direction: row;
         gap: 10px;
         align-items: flex-end;
-        margin-bottom: 10px;
+        margin-bottom: 0;
       }
       .detail-popup-main-image {
         width: 320px;
@@ -899,6 +899,20 @@ export const BrantjesExtension = {
         margin: 0 0 0.2em 0;
         display: block;
       }
+
+      .detail-popup-specs-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.7rem;
+        font-size: 1.1rem;
+        margin: 0;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
     `;
     element.appendChild(style);
 
@@ -1083,13 +1097,7 @@ export const BrantjesExtension = {
 
         // --- SPECIFICATIONS ROW (Brantjes style) ---
         const specsRow = document.createElement('div');
-        specsRow.style.display = 'flex';
-        specsRow.style.flexDirection = 'row';
-        specsRow.style.alignItems = 'center';
-        specsRow.style.gap = '0.7rem';
-        specsRow.style.fontSize = '1.1rem';
-        specsRow.style.margin = '18px 0 0 0';
-        specsRow.style.flexWrap = 'wrap';
+        specsRow.className = 'detail-popup-specs-row';
 
         // Woonoppervlakte
         const woonopp = property.algemeen?.woonoppervlakte;
