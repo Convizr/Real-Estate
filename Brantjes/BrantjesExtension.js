@@ -905,7 +905,7 @@ export const BrantjesExtension = {
         flex-direction: row;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         margin: 0;
         flex-wrap: nowrap;
         overflow: hidden;
@@ -1155,6 +1155,8 @@ export const BrantjesExtension = {
         descDiv.style.margin = '16px 0 0 0';
         descDiv.style.fontSize = '15px';
         descDiv.style.color = '#333';
+        descDiv.style.lineHeight = '1.6';
+        descDiv.style.wordBreak = 'break-word';
         let truncated = false;
         let expanded = false;
         let shortDesc = desc;
@@ -1162,7 +1164,29 @@ export const BrantjesExtension = {
             shortDesc = desc.slice(0, 400).split('\n').slice(0, 3).join('\n') + '...';
             truncated = true;
         }
-        descDiv.textContent = truncated ? shortDesc : desc;
+
+        // Helper to render markdown using marked
+        function renderMarkdown(md) {
+          if (window.marked) {
+            descDiv.innerHTML = window.marked.parse(md);
+          } else {
+            descDiv.textContent = md;
+          }
+        }
+
+        // Inject marked if not present
+        if (!window.marked) {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+          script.onload = () => {
+            renderMarkdown(truncated ? shortDesc : desc);
+          };
+          document.head.appendChild(script);
+        }
+
+        // Initial render
+        renderMarkdown(truncated ? shortDesc : desc);
+
         if (truncated) {
             const moreBtn = document.createElement('button');
             moreBtn.textContent = 'Toon meer';
@@ -1173,11 +1197,11 @@ export const BrantjesExtension = {
             moreBtn.style.fontWeight = 'bold';
             moreBtn.onclick = () => {
                 if (!expanded) {
-                    descDiv.textContent = desc;
+                    renderMarkdown(desc);
                     moreBtn.textContent = 'Toon minder';
                     expanded = true;
                 } else {
-                    descDiv.textContent = shortDesc;
+                    renderMarkdown(shortDesc);
                     moreBtn.textContent = 'Toon meer';
                     expanded = false;
                 }
