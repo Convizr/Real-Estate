@@ -282,11 +282,12 @@ export const BrantjesExtension = {
         width: 98%;
         max-width: 1200px;
         height: auto;
-        max-height: 90vh;
+        max-height: 100vh;
         overflow-y: auto;
+        box-sizing: border-box;
         transform: scale(0.9);
         transition: transform 0.3s ease;
-        margin-top: 2rem;
+        margin-top: 0;
         display: flex;
         flex-direction: column;
       }
