@@ -362,7 +362,7 @@ export const BrantjesExtension = {
         font-weight: bold;
       }
       .detail-popup-header-viewing-btn {
-        background: #1E7FCB;
+        background: #51b2df;
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -458,7 +458,7 @@ export const BrantjesExtension = {
       .detail-popup-title {
         font-size: 1.1rem;
         font-weight: 700;
-        color: #1E7FCB;
+        color: #51b2df;
         margin: 0 0 2px 0;
         line-height: 1.1;
         flex: 2 1 0;
@@ -505,7 +505,7 @@ export const BrantjesExtension = {
 
       /* Booking Form Layout */
       .booking-form-content h2 {
-        color: #1E7FCB;
+        color: #51b2df;
         text-align: center;
         margin-bottom: 1.5rem;
       }
@@ -534,11 +534,11 @@ export const BrantjesExtension = {
         font-size: 1rem;
       }
       .booking-form input:focus, .booking-form select:focus, .booking-form textarea:focus {
-        outline: 2px solid #1E7FCB;
-        border-color: #1E7FCB;
+        outline: 2px solid #51b2df;
+        border-color: #51b2df;
       }
       .booking-form .submit-btn {
-        background: #1E7FCB;
+        background: #51b2df;
         color: white;
         border: none;
         padding: 1rem;
