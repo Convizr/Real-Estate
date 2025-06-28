@@ -319,7 +319,6 @@ export const BrantjesExtension = {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-        margin-bottom: 18px;
       }
       .detail-popup-header-row {
         display: flex;
@@ -367,7 +366,7 @@ export const BrantjesExtension = {
         color: #fff;
         border: none;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 12px;
         font-weight: 600;
         padding: 0.5em 1.5em;
         margin-left: 0;
@@ -898,7 +897,6 @@ export const BrantjesExtension = {
         font-weight: 700;
         color: #1E7FCB !important;
         margin: 0 0 0.2em 0;
-        line-height: 1.1;
         display: block;
       }
     `;
@@ -1011,7 +1009,7 @@ export const BrantjesExtension = {
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
-        viewingBtn.textContent = 'Plan bezichtiging';
+        viewingBtn.textContent = 'Bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
@@ -1083,6 +1081,62 @@ export const BrantjesExtension = {
         imagesRow.appendChild(thumbsCol);
         detailContent.appendChild(imagesRow);
 
+        // --- SPECIFICATIONS ROW (Brantjes style) ---
+        const specsRow = document.createElement('div');
+        specsRow.style.display = 'flex';
+        specsRow.style.flexDirection = 'row';
+        specsRow.style.alignItems = 'center';
+        specsRow.style.gap = '0.7rem';
+        specsRow.style.fontSize = '1.1rem';
+        specsRow.style.margin = '18px 0 0 0';
+        specsRow.style.flexWrap = 'wrap';
+
+        // Woonoppervlakte
+        const woonopp = property.algemeen?.woonoppervlakte;
+        if (woonopp) {
+          const woonoppSpan = document.createElement('span');
+          woonoppSpan.innerHTML = `<strong>${woonopp} m²</strong> woonoppervlakte`;
+          specsRow.appendChild(woonoppSpan);
+        }
+        // Dot
+        const dot1 = document.createElement('span');
+        dot1.className = 'detail-popup-dot';
+        dot1.textContent = '•';
+        specsRow.appendChild(dot1);
+        // Slaapkamers
+        const slaapkamers = property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || property.algemeen?.aantalSlaapkamers;
+        if (slaapkamers) {
+          const slaapSpan = document.createElement('span');
+          slaapSpan.innerHTML = `<strong>${slaapkamers}</strong> slaapkamers`;
+          specsRow.appendChild(slaapSpan);
+        }
+        // Dot
+        const dot2 = document.createElement('span');
+        dot2.className = 'detail-popup-dot';
+        dot2.textContent = '•';
+        specsRow.appendChild(dot2);
+        // Bouwjaar
+        const bouwjaar = property.algemeen?.bouwjaar;
+        if (bouwjaar) {
+          const bouwjaarSpan = document.createElement('span');
+          bouwjaarSpan.innerHTML = `Bouwjaar <strong>${bouwjaar}</strong>`;
+          specsRow.appendChild(bouwjaarSpan);
+        }
+        // Dot
+        const dot3 = document.createElement('span');
+        dot3.className = 'detail-popup-dot';
+        dot3.textContent = '•';
+        specsRow.appendChild(dot3);
+        // Perceel
+        const perceel = property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte;
+        if (perceel) {
+          const perceelSpan = document.createElement('span');
+          perceelSpan.innerHTML = `<strong>${perceel} m²</strong> perceel`;
+          specsRow.appendChild(perceelSpan);
+        }
+
+        detailContent.appendChild(specsRow);
+
         // --- RIGHT: Info ---
         const infoCol = document.createElement('div');
         infoCol.className = 'detail-popup-info';
@@ -1123,7 +1177,8 @@ export const BrantjesExtension = {
             };
             descDiv.appendChild(moreBtn);
         }
-        infoCol.appendChild(descDiv);
+        // Place description after specs row
+        detailContent.appendChild(descDiv);
 
         // --- Property Specifications List ---
         const specsTable = document.createElement('table');
