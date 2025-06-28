@@ -695,12 +695,15 @@ export const BrantjesExtension = {
         box-shadow: 0 2px 6px rgba(0,0,0,0.10);
         margin-left: 0.5rem;
         line-height: 1.1;
-        position: static;
+        position: relative;
         background: #1EC773;
+        overflow: visible;
       }
       .energy-label-detail::after {
         content: '';
-        display: block;
+        position: absolute;
+        right: -18px;
+        top: 0;
         width: 0;
         height: 0;
         border-top: 16px solid transparent;
@@ -708,7 +711,7 @@ export const BrantjesExtension = {
         border-left: 18px solid #1EC773;
         border-radius: 0;
         margin-left: 0;
-        position: relative;
+        z-index: 2;
       }
       .energy-label-detail-A { background: #1EC773; }
       .energy-label-detail-A::after { border-left-color: #1EC773; }
