@@ -1172,6 +1172,9 @@ export const BrantjesExtension = {
           } else {
             descDiv.textContent = md;
           }
+          if (truncated && moreBtn) {
+            descDiv.appendChild(moreBtn);
+          }
         }
 
         // Inject marked if not present
@@ -1188,7 +1191,7 @@ export const BrantjesExtension = {
         renderMarkdown(truncated ? shortDesc : desc);
 
         if (truncated) {
-            const moreBtn = document.createElement('button');
+            moreBtn = document.createElement('button');
             moreBtn.textContent = 'Toon meer';
             moreBtn.style.background = 'none';
             moreBtn.style.color = '#1E7FCB';
@@ -1205,7 +1208,6 @@ export const BrantjesExtension = {
                     moreBtn.textContent = 'Toon meer';
                     expanded = false;
                 }
-                descDiv.appendChild(moreBtn);
             };
             descDiv.appendChild(moreBtn);
         }
