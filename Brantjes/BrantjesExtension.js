@@ -276,25 +276,22 @@ export const BrantjesExtension = {
       }
       .brantjes-modal-container {
         background: white;
-        padding: 1rem;
+        padding: 2rem;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         width: 98%;
         max-width: 1200px;
         height: auto;
-        max-height: calc(100vh - 2rem);
+        max-height: 100%;
         overflow-y: auto;
-        box-sizing: border-box;
         transform: scale(0.9);
         transition: transform 0.3s ease;
-        margin-top: 0;
+        margin-top: 2rem;
         display: flex;
         flex-direction: column;
-        overscroll-behavior: contain;
       }
-      .brantjes-modal-container > .detail-popup-content {
-        overflow-y: visible;
-        max-height: none;
+      .brantjes-modal-backdrop.visible .brantjes-modal-container {
+        transform: scale(1);
       }
       .brantjes-modal-close {
         position: absolute;
@@ -365,7 +362,7 @@ export const BrantjesExtension = {
         font-weight: bold;
       }
       .detail-popup-header-viewing-btn {
-        background: #51b2df;
+        background: #1E7FCB;
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -375,13 +372,13 @@ export const BrantjesExtension = {
         margin-left: 0;
         cursor: pointer;
         transition: background 0.2s;
-        box-shadow: 0 2px 8px rgba(81,178,223,0.08);
+        box-shadow: 0 2px 8px rgba(30,127,203,0.08);
         display: flex;
         align-items: center;
         height: 2.2em;
       }
       .detail-popup-header-viewing-btn:hover {
-        background: #3a9bc7;
+        background: #166BB5;
       }
       .detail-popup-images-row {
         display: flex;
@@ -898,7 +895,7 @@ export const BrantjesExtension = {
       .detail-popup-title-main {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #51b2df !important;
+        color: #1E7FCB !important;
         margin: 0 0 0.2em 0;
         display: block;
       }
@@ -916,50 +913,17 @@ export const BrantjesExtension = {
         white-space: nowrap;
         width: 100%;
       }
-
-      .specs-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 32px 0 0 0;
-        font-size: 0.98rem;
-      }
-      .specs-table tr {
-        border-bottom: 1px solid #eee;
-      }
-      .specs-table td {
-        padding: 8px 6px 8px 0;
-        vertical-align: top;
-      }
-      .specs-section td {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #51b2df;
-        padding-top: 18px;
-        padding-bottom: 8px;
-        border-bottom: none;
-      }
-      .specs-table td:first-child {
-        font-weight: 600;
-        color: #111;
-        width: 44%;
-      }
-      .specs-table td:last-child {
-        color: #222;
-        font-weight: 400;
-        text-align: left;
-      }
     `;
     element.appendChild(style);
 
     // --- MODAL FUNCTIONS (UNCHANGED) ---
     function openModal(contentElement) {
-        // Remove any existing modal backdrop
-        const existingBackdrop = element.querySelector('.brantjes-modal-backdrop');
-        if (existingBackdrop) existingBackdrop.remove();
-
-        let modalBackdrop = document.createElement('div');
-        modalBackdrop.className = 'brantjes-modal-backdrop';
-        element.appendChild(modalBackdrop);
+        let modalBackdrop = element.querySelector('.brantjes-modal-backdrop');
+        if (!modalBackdrop) {
+            modalBackdrop = document.createElement('div');
+            modalBackdrop.className = 'brantjes-modal-backdrop';
+            element.appendChild(modalBackdrop);
+        }
 
         const modalContainer = document.createElement('div');
         modalContainer.className = 'brantjes-modal-container';
@@ -972,7 +936,7 @@ export const BrantjesExtension = {
             modalBackdrop.classList.remove('visible');
             modalContainer.classList.remove('visible');
             setTimeout(() => {
-                if (modalBackdrop.parentNode) modalBackdrop.remove();
+                modalBackdrop.remove();
             }, 300); // Allow transition to finish
         };
         modalContainer.appendChild(closeButton);
@@ -1193,7 +1157,6 @@ export const BrantjesExtension = {
         descDiv.style.color = '#333';
         descDiv.style.lineHeight = '1.6';
         descDiv.style.wordBreak = 'break-word';
-        descDiv.style.maxWidth = '100%';
         let moreBtn = null;
         let truncated = false;
         let expanded = false;
@@ -1204,179 +1167,198 @@ export const BrantjesExtension = {
         }
 
         // Helper to render markdown using marked
-        function renderMarkdown(md, appendButton) {
+        function renderMarkdown(md) {
           if (window.marked) {
             descDiv.innerHTML = window.marked.parse(md);
           } else {
             descDiv.textContent = md;
           }
-          if (appendButton && moreBtn) {
+          if (truncated && moreBtn) {
             descDiv.appendChild(moreBtn);
           }
         }
 
-        // Create the button up front so it always exists if needed
-        if (truncated) {
-          moreBtn = document.createElement('button');
-          moreBtn.textContent = 'Toon meer';
-          moreBtn.style.background = 'none';
-          moreBtn.style.color = '#51b2df';
-          moreBtn.style.border = 'none';
-          moreBtn.style.cursor = 'pointer';
-          moreBtn.style.fontWeight = 'bold';
-          moreBtn.style.marginLeft = '8px';
-          moreBtn.onclick = () => {
-            if (!expanded) {
-              renderMarkdown(desc, true);
-              moreBtn.textContent = 'Toon minder';
-              expanded = true;
-            } else {
-              renderMarkdown(shortDesc, true);
-              moreBtn.textContent = 'Toon meer';
-              expanded = false;
-            }
-          };
-        }
-
         // Inject marked if not present
-        function doInitialDescRender() {
-          if (truncated) {
-            renderMarkdown(shortDesc, true);
-          } else {
-            renderMarkdown(desc, false);
-          }
-        }
         if (!window.marked) {
           const script = document.createElement('script');
           script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-          script.onload = doInitialDescRender;
+          script.onload = () => {
+            renderMarkdown(truncated ? shortDesc : desc);
+          };
           document.head.appendChild(script);
-        } else {
-          doInitialDescRender();
+        }
+
+        // Initial render
+        renderMarkdown(truncated ? shortDesc : desc);
+
+        if (truncated) {
+            moreBtn = document.createElement('button');
+            moreBtn.textContent = 'Toon meer';
+            moreBtn.style.background = 'none';
+            moreBtn.style.color = '#1E7FCB';
+            moreBtn.style.border = 'none';
+            moreBtn.style.cursor = 'pointer';
+            moreBtn.style.fontWeight = 'bold';
+            moreBtn.onclick = () => {
+                if (!expanded) {
+                    renderMarkdown(desc);
+                    moreBtn.textContent = 'Toon minder';
+                    expanded = true;
+                } else {
+                    renderMarkdown(shortDesc);
+                    moreBtn.textContent = 'Toon meer';
+                    expanded = false;
+                }
+            };
+            descDiv.appendChild(moreBtn);
         }
         // Place description after specs row
         detailContent.appendChild(descDiv);
 
-        // --- Property Specifications List ---
-        // Helper to build a full specs table
-        function buildFullSpecsTable() {
-          const table = document.createElement('table');
-          table.className = 'specs-table';
-          function addSection(title) {
-            const tr = document.createElement('tr');
-            tr.className = 'specs-section';
-            const td = document.createElement('td');
-            td.colSpan = 2;
-            td.textContent = title;
-            tr.appendChild(td);
-            table.appendChild(tr);
+        // --- Compact, expandable specifications table ---
+        const specsSections = [
+          {
+            title: 'Overdracht',
+            rows: [
+              ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
+              ['Status', property.financieel?.overdracht?.status || ''],
+              ['Aanvaarding', property.financieel?.overdracht?.aanvaarding || ''],
+              ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
+            ]
+          },
+          {
+            title: 'Bouw',
+            rows: [
+              ['Type object', property.object?.type?.objecttype || ''],
+              ['Soort', property.algemeen?.woonhuissoort || ''],
+              ['Type', property.algemeen?.woonhuistype || ''],
+              ['Bouwjaar', property.algemeen?.bouwjaar || ''],
+              ['Dak type', property.detail?.buitenruimte?.daktype || ''],
+              ['Isolatievormen', (property.algemeen?.isolatievormen || []).join(', ')],
+            ]
+          },
+          {
+            title: 'Oppervlaktes en inhoud',
+            rows: [
+              ['Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + ' m²'],
+              ['Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + ' m²'],
+              ['Inhoud', (property.algemeen?.inhoud || '') + ' m³'],
+              ['Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + ' m²'],
+            ]
+          },
+          {
+            title: 'Indeling',
+            rows: [
+              ['Aantal kamers', property.algemeen?.aantalKamers || ''],
+              ['Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || ''],
+            ]
+          },
+          {
+            title: 'Locatie',
+            rows: [
+              ['Ligging', (property.algemeen?.liggingen || []).join(', ')],
+            ]
+          },
+          {
+            title: 'Tuin',
+            rows: [
+              ['Type', (property.detail?.buitenruimte?.tuintypes || []).join(', ')],
+              ['Staat', property.detail?.buitenruimte?.tuinkwaliteit || ''],
+              ['Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || ''],
+              ['Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee'],
+            ]
+          },
+          {
+            title: 'Uitrusting',
+            rows: [
+              ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', ')],
+              ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', ')],
+            ]
+          },
+        ];
+
+        const specsTable = document.createElement('table');
+        specsTable.style.width = '100%';
+        specsTable.style.marginTop = '10px';
+        specsTable.style.fontSize = '0.85rem';
+        specsTable.style.borderCollapse = 'collapse';
+        specsTable.style.background = 'white';
+        specsTable.style.lineHeight = '1.4';
+
+        // Add compact CSS for the table
+        specsTable.innerHTML = '';
+        let rowCount = 0;
+        let expanded = false;
+        const maxRows = 6;
+        let totalRows = 0;
+        specsSections.forEach(section => totalRows += section.rows.length + 1);
+
+        function renderSpecsTable(expand) {
+          specsTable.innerHTML = '';
+          let shownRows = 0;
+          for (const section of specsSections) {
+            // Section header
+            const th = document.createElement('tr');
+            const thCell = document.createElement('td');
+            thCell.colSpan = 2;
+            thCell.textContent = section.title;
+            thCell.style.fontWeight = 'bold';
+            thCell.style.fontSize = '1.1em';
+            thCell.style.color = '#1E7FCB';
+            thCell.style.padding = '10px 0 4px 0';
+            thCell.style.background = 'white';
+            th.appendChild(thCell);
+            specsTable.appendChild(th);
+            for (const [label, value] of section.rows) {
+              if (!expand && shownRows >= maxRows) return;
+              const tr = document.createElement('tr');
+              const td1 = document.createElement('td');
+              td1.textContent = label;
+              td1.style.fontWeight = 'bold';
+              td1.style.padding = '3px 8px 3px 0';
+              td1.style.color = '#222';
+              td1.style.borderBottom = '1px solid #eee';
+              td1.style.background = 'white';
+              const td2 = document.createElement('td');
+              td2.textContent = value;
+              td2.style.padding = '3px 0 3px 8px';
+              td2.style.color = '#444';
+              td2.style.borderBottom = '1px solid #eee';
+              td2.style.background = 'white';
+              tr.appendChild(td1);
+              tr.appendChild(td2);
+              specsTable.appendChild(tr);
+              shownRows++;
+            }
           }
-          function addSpecRow(label, value) {
-            const tr = document.createElement('tr');
-            const td1 = document.createElement('td');
-            td1.textContent = label;
-            const td2 = document.createElement('td');
-            td2.textContent = value;
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr);
-          }
-          // Overdracht
-          addSection('Overdracht');
-          addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
-          addSpecRow('Status', property.financieel?.overdracht?.status || '');
-          addSpecRow('Aanvaarding', property.financieel?.overdracht?.aanvaarding || '');
-          addSpecRow('Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || '');
-          // Bouw
-          addSection('Bouw');
-          addSpecRow('Type object', property.object?.type?.objecttype || '');
-          addSpecRow('Soort', property.algemeen?.woonhuissoort || '');
-          addSpecRow('Type', property.algemeen?.woonhuistype || '');
-          addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
-          addSpecRow('Dak type', (property.detail?.buitenruimte?.daktype || ''));
-          addSpecRow('Isolatievormen', (property.algemeen?.isolatievormen || []).join(', '));
-          // Oppervlaktes en inhoud
-          addSection('Oppervlaktes en inhoud');
-          addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte ? ' m²' : ''));
-          addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + (property.algemeen?.woonoppervlakte ? ' m²' : ''));
-          addSpecRow('Inhoud', (property.algemeen?.inhoud || '') + (property.algemeen?.inhoud ? ' m³' : ''));
-          addSpecRow('Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte ? ' m²' : ''));
-          // Indeling
-          addSection('Indeling');
-          addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
-          addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
-          // Locatie
-          addSection('Locatie');
-          addSpecRow('Ligging', (property.algemeen?.liggingen || []).join(', '));
-          // Tuin
-          addSection('Tuin');
-          addSpecRow('Type', (property.detail?.buitenruimte?.tuintypes || []).join(', '));
-          addSpecRow('Staat', property.detail?.buitenruimte?.tuinkwaliteit || '');
-          addSpecRow('Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || '');
-          addSpecRow('Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee');
-          // Uitrusting
-          addSection('Uitrusting');
-          addSpecRow('Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', '));
-          addSpecRow('Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', '));
-          return table;
         }
 
-        // Helper to build a compact specs table
-        function buildCompactSpecsTable() {
-          const table = document.createElement('table');
-          table.className = 'specs-table';
-          function addSpecRow(label, value) {
-            const tr = document.createElement('tr');
-            const td1 = document.createElement('td');
-            td1.textContent = label;
-            const td2 = document.createElement('td');
-            td2.textContent = value;
-            tr.appendChild(td1);
-            tr.appendChild(td2);
-            table.appendChild(tr);
-          }
-          addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
-          addSpecRow('Status', property.financieel?.overdracht?.status || '');
-          addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + (property.algemeen?.woonoppervlakte ? ' m²' : ''));
-          addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
-          addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
-          addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
-          addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte ? ' m²' : ''));
-          return table;
-        }
+        renderSpecsTable(false);
 
-        // Render compact table by default
-        let showingFullSpecs = false;
-        let specsTableWrapper = document.createElement('div');
-        let compactTable = buildCompactSpecsTable();
-        let fullTable = buildFullSpecsTable();
-        specsTableWrapper.appendChild(compactTable);
         // Toon alles button
-        const showAllBtn = document.createElement('button');
-        showAllBtn.textContent = 'Toon alles';
-        showAllBtn.style.background = 'none';
-        showAllBtn.style.color = '#51b2df';
-        showAllBtn.style.border = 'none';
-        showAllBtn.style.cursor = 'pointer';
-        showAllBtn.style.fontWeight = 'bold';
-        showAllBtn.style.margin = '12px 0 0 0';
-        showAllBtn.onclick = () => {
-          if (!showingFullSpecs) {
-            specsTableWrapper.innerHTML = '';
-            specsTableWrapper.appendChild(fullTable);
-            showAllBtn.textContent = 'Toon minder';
-            specsTableWrapper.appendChild(showAllBtn);
-            showingFullSpecs = true;
-          } else {
-            specsTableWrapper.innerHTML = '';
-            specsTableWrapper.appendChild(compactTable);
-            showAllBtn.textContent = 'Toon alles';
-            specsTableWrapper.appendChild(showAllBtn);
-            showingFullSpecs = false;
-          }
-        };
-        specsTableWrapper.appendChild(showAllBtn);
-        infoCol.appendChild(specsTableWrapper);
+        let specsBtn = null;
+        if (totalRows > maxRows) {
+          specsBtn = document.createElement('button');
+          specsBtn.textContent = 'Toon alles';
+          specsBtn.style.background = 'none';
+          specsBtn.style.color = '#1E7FCB';
+          specsBtn.style.border = 'none';
+          specsBtn.style.cursor = 'pointer';
+          specsBtn.style.fontWeight = 'bold';
+          specsBtn.style.margin = '8px 0 0 0';
+          specsBtn.onclick = () => {
+            expanded = !expanded;
+            renderSpecsTable(expanded);
+            specsBtn.textContent = expanded ? 'Toon minder' : 'Toon alles';
+            if (specsBtn.parentNode !== specsTable.parentNode) {
+              specsTable.parentNode.appendChild(specsBtn);
+            }
+          };
+        }
+
+        // Place table below description
+        detailContent.appendChild(specsTable);
+        if (specsBtn) detailContent.appendChild(specsBtn);
 
         detailContent.appendChild(infoCol);
 
