@@ -290,9 +290,11 @@ export const BrantjesExtension = {
         margin-top: 0;
         display: flex;
         flex-direction: column;
+        overscroll-behavior: contain;
       }
-      .brantjes-modal-backdrop.visible .brantjes-modal-container {
-        transform: scale(1);
+      .brantjes-modal-container > .detail-popup-content {
+        overflow-y: visible;
+        max-height: none;
       }
       .brantjes-modal-close {
         position: absolute;
@@ -1191,6 +1193,7 @@ export const BrantjesExtension = {
         descDiv.style.color = '#333';
         descDiv.style.lineHeight = '1.6';
         descDiv.style.wordBreak = 'break-word';
+        descDiv.style.maxWidth = '100%';
         let moreBtn = null;
         let truncated = false;
         let expanded = false;
@@ -1201,50 +1204,55 @@ export const BrantjesExtension = {
         }
 
         // Helper to render markdown using marked
-        function renderMarkdown(md) {
+        function renderMarkdown(md, appendButton) {
           if (window.marked) {
             descDiv.innerHTML = window.marked.parse(md);
           } else {
             descDiv.textContent = md;
           }
-          if (truncated && moreBtn) {
+          if (appendButton && moreBtn) {
             descDiv.appendChild(moreBtn);
           }
         }
 
+        // Create the button up front so it always exists if needed
+        if (truncated) {
+          moreBtn = document.createElement('button');
+          moreBtn.textContent = 'Toon meer';
+          moreBtn.style.background = 'none';
+          moreBtn.style.color = '#51b2df';
+          moreBtn.style.border = 'none';
+          moreBtn.style.cursor = 'pointer';
+          moreBtn.style.fontWeight = 'bold';
+          moreBtn.style.marginLeft = '8px';
+          moreBtn.onclick = () => {
+            if (!expanded) {
+              renderMarkdown(desc, true);
+              moreBtn.textContent = 'Toon minder';
+              expanded = true;
+            } else {
+              renderMarkdown(shortDesc, true);
+              moreBtn.textContent = 'Toon meer';
+              expanded = false;
+            }
+          };
+        }
+
         // Inject marked if not present
+        function doInitialDescRender() {
+          if (truncated) {
+            renderMarkdown(shortDesc, true);
+          } else {
+            renderMarkdown(desc, false);
+          }
+        }
         if (!window.marked) {
           const script = document.createElement('script');
           script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-          script.onload = () => {
-            renderMarkdown(truncated ? shortDesc : desc);
-          };
+          script.onload = doInitialDescRender;
           document.head.appendChild(script);
-        }
-
-        // Initial render
-        renderMarkdown(truncated ? shortDesc : desc);
-
-        if (truncated) {
-            moreBtn = document.createElement('button');
-            moreBtn.textContent = 'Toon meer';
-            moreBtn.style.background = 'none';
-            moreBtn.style.color = '#51b2df';
-            moreBtn.style.border = 'none';
-            moreBtn.style.cursor = 'pointer';
-            moreBtn.style.fontWeight = 'bold';
-            moreBtn.onclick = () => {
-                if (!expanded) {
-                    renderMarkdown(desc);
-                    moreBtn.textContent = 'Toon minder';
-                    expanded = true;
-                } else {
-                    renderMarkdown(shortDesc);
-                    moreBtn.textContent = 'Toon meer';
-                    expanded = false;
-                }
-            };
-            descDiv.appendChild(moreBtn);
+        } else {
+          doInitialDescRender();
         }
         // Place description after specs row
         detailContent.appendChild(descDiv);
