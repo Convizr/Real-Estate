@@ -282,7 +282,7 @@ export const BrantjesExtension = {
         width: 98%;
         max-width: 1200px;
         height: auto;
-        max-height: 100%;
+        max-height: 90vh;
         overflow-y: auto;
         transform: scale(0.9);
         transition: transform 0.3s ease;
@@ -950,12 +950,13 @@ export const BrantjesExtension = {
 
     // --- MODAL FUNCTIONS (UNCHANGED) ---
     function openModal(contentElement) {
-        let modalBackdrop = element.querySelector('.brantjes-modal-backdrop');
-        if (!modalBackdrop) {
-            modalBackdrop = document.createElement('div');
-            modalBackdrop.className = 'brantjes-modal-backdrop';
-            element.appendChild(modalBackdrop);
-        }
+        // Remove any existing modal backdrop
+        const existingBackdrop = element.querySelector('.brantjes-modal-backdrop');
+        if (existingBackdrop) existingBackdrop.remove();
+
+        let modalBackdrop = document.createElement('div');
+        modalBackdrop.className = 'brantjes-modal-backdrop';
+        element.appendChild(modalBackdrop);
 
         const modalContainer = document.createElement('div');
         modalContainer.className = 'brantjes-modal-container';
@@ -968,7 +969,7 @@ export const BrantjesExtension = {
             modalBackdrop.classList.remove('visible');
             modalContainer.classList.remove('visible');
             setTimeout(() => {
-                modalBackdrop.remove();
+                if (modalBackdrop.parentNode) modalBackdrop.remove();
             }, 300); // Allow transition to finish
         };
         modalContainer.appendChild(closeButton);
