@@ -276,13 +276,13 @@ export const BrantjesExtension = {
       }
       .brantjes-modal-container {
         background: white;
-        padding: 2rem;
+        padding: 1rem;
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         width: 98%;
         max-width: 1200px;
         height: auto;
-        max-height: 100vh;
+        max-height: calc(100vh - 2rem);
         overflow-y: auto;
         box-sizing: border-box;
         transform: scale(0.9);
