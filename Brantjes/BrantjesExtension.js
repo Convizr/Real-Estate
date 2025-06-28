@@ -639,17 +639,18 @@ export const BrantjesExtension = {
       .energy-label-chevron {
         display: inline-flex;
         align-items: center;
+        position: relative;
         height: 32px;
         padding: 0 18px 0 14px;
         font-size: 20px;
         font-weight: bold;
         color: #fff;
         border-radius: 6px 0 0 6px;
-        position: static;
         margin-left: 0.5rem;
         line-height: 1.1;
         box-shadow: 0 2px 6px rgba(0,0,0,0.10);
         background: #1EC773;
+        overflow: visible;
       }
       .energy-label-chevron::after {
         content: '';
@@ -658,9 +659,10 @@ export const BrantjesExtension = {
         height: 0;
         border-top: 16px solid transparent;
         border-bottom: 16px solid transparent;
-        border-left: 18px solid #1EC773;
-        border-radius: 0 6px 6px 0;
-        margin-left: 0px;
+        border-left: 24px solid #1EC773;
+        border-radius: 0;
+        margin-left: 0;
+        position: relative;
       }
       .energy-label-chevron-A { background: #1EC773; }
       .energy-label-chevron-A::after { border-left-color: #1EC773; }
