@@ -1159,7 +1159,7 @@ export const BrantjesExtension = {
         descDiv.style.wordBreak = 'break-word';
         let moreBtn = null;
         let truncated = false;
-        let expanded = false;
+        let descExpanded = false;
         let shortDesc = desc;
         if (desc.length > 400) {
             shortDesc = desc.slice(0, 400).split('\n').slice(0, 3).join('\n') + '...';
@@ -1200,14 +1200,14 @@ export const BrantjesExtension = {
             moreBtn.style.cursor = 'pointer';
             moreBtn.style.fontWeight = 'bold';
             moreBtn.onclick = () => {
-                if (!expanded) {
+                if (!descExpanded) {
                     renderMarkdown(desc);
                     moreBtn.textContent = 'Toon minder';
-                    expanded = true;
+                    descExpanded = true;
                 } else {
                     renderMarkdown(shortDesc);
                     moreBtn.textContent = 'Toon meer';
-                    expanded = false;
+                    descExpanded = false;
                 }
             };
             descDiv.appendChild(moreBtn);
@@ -1288,7 +1288,7 @@ export const BrantjesExtension = {
         // Add compact CSS for the table
         specsTable.innerHTML = '';
         let rowCount = 0;
-        let expanded = false;
+        let specsExpanded = false;
         const maxRows = 6;
         let totalRows = 0;
         specsSections.forEach(section => totalRows += section.rows.length + 1);
@@ -1347,9 +1347,9 @@ export const BrantjesExtension = {
           specsBtn.style.fontWeight = 'bold';
           specsBtn.style.margin = '8px 0 0 0';
           specsBtn.onclick = () => {
-            expanded = !expanded;
-            renderSpecsTable(expanded);
-            specsBtn.textContent = expanded ? 'Toon minder' : 'Toon alles';
+            specsExpanded = !specsExpanded;
+            renderSpecsTable(specsExpanded);
+            specsBtn.textContent = specsExpanded ? 'Toon minder' : 'Toon alles';
             if (specsBtn.parentNode !== specsTable.parentNode) {
               specsTable.parentNode.appendChild(specsBtn);
             }
