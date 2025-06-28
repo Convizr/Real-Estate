@@ -363,7 +363,7 @@ export const BrantjesExtension = {
         font-weight: bold;
       }
       .detail-popup-header-viewing-btn {
-        background: #1E7FCB;
+        background: #51b2df;
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -373,13 +373,13 @@ export const BrantjesExtension = {
         margin-left: 0;
         cursor: pointer;
         transition: background 0.2s;
-        box-shadow: 0 2px 8px rgba(30,127,203,0.08);
+        box-shadow: 0 2px 8px rgba(81,178,223,0.08);
         display: flex;
         align-items: center;
         height: 2.2em;
       }
       .detail-popup-header-viewing-btn:hover {
-        background: #166BB5;
+        background: #3a9bc7;
       }
       .detail-popup-images-row {
         display: flex;
@@ -896,7 +896,7 @@ export const BrantjesExtension = {
       .detail-popup-title-main {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #1E7FCB !important;
+        color: #51b2df !important;
         margin: 0 0 0.2em 0;
         display: block;
       }
@@ -931,7 +931,7 @@ export const BrantjesExtension = {
       .specs-section td {
         font-size: 1.25rem;
         font-weight: 700;
-        color: #1E7FCB;
+        color: #51b2df;
         padding-top: 18px;
         padding-bottom: 8px;
         border-bottom: none;
@@ -1229,7 +1229,7 @@ export const BrantjesExtension = {
             moreBtn = document.createElement('button');
             moreBtn.textContent = 'Toon meer';
             moreBtn.style.background = 'none';
-            moreBtn.style.color = '#1E7FCB';
+            moreBtn.style.color = '#51b2df';
             moreBtn.style.border = 'none';
             moreBtn.style.cursor = 'pointer';
             moreBtn.style.fontWeight = 'bold';
@@ -1250,67 +1250,125 @@ export const BrantjesExtension = {
         detailContent.appendChild(descDiv);
 
         // --- Property Specifications List ---
-        const specsTable = document.createElement('table');
-        specsTable.className = 'specs-table';
-        // Helper to add a section header
-        function addSection(title) {
-          const tr = document.createElement('tr');
-          tr.className = 'specs-section';
-          const td = document.createElement('td');
-          td.colSpan = 2;
-          td.textContent = title;
-          tr.appendChild(td);
-          specsTable.appendChild(tr);
+        // Helper to build a full specs table
+        function buildFullSpecsTable() {
+          const table = document.createElement('table');
+          table.className = 'specs-table';
+          function addSection(title) {
+            const tr = document.createElement('tr');
+            tr.className = 'specs-section';
+            const td = document.createElement('td');
+            td.colSpan = 2;
+            td.textContent = title;
+            tr.appendChild(td);
+            table.appendChild(tr);
+          }
+          function addSpecRow(label, value) {
+            const tr = document.createElement('tr');
+            const td1 = document.createElement('td');
+            td1.textContent = label;
+            const td2 = document.createElement('td');
+            td2.textContent = value;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            table.appendChild(tr);
+          }
+          // Overdracht
+          addSection('Overdracht');
+          addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
+          addSpecRow('Status', property.financieel?.overdracht?.status || '');
+          addSpecRow('Aanvaarding', property.financieel?.overdracht?.aanvaarding || '');
+          addSpecRow('Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || '');
+          // Bouw
+          addSection('Bouw');
+          addSpecRow('Type object', property.object?.type?.objecttype || '');
+          addSpecRow('Soort', property.algemeen?.woonhuissoort || '');
+          addSpecRow('Type', property.algemeen?.woonhuistype || '');
+          addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
+          addSpecRow('Dak type', (property.detail?.buitenruimte?.daktype || ''));
+          addSpecRow('Isolatievormen', (property.algemeen?.isolatievormen || []).join(', '));
+          // Oppervlaktes en inhoud
+          addSection('Oppervlaktes en inhoud');
+          addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte ? ' m²' : ''));
+          addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + (property.algemeen?.woonoppervlakte ? ' m²' : ''));
+          addSpecRow('Inhoud', (property.algemeen?.inhoud || '') + (property.algemeen?.inhoud ? ' m³' : ''));
+          addSpecRow('Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte ? ' m²' : ''));
+          // Indeling
+          addSection('Indeling');
+          addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
+          addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
+          // Locatie
+          addSection('Locatie');
+          addSpecRow('Ligging', (property.algemeen?.liggingen || []).join(', '));
+          // Tuin
+          addSection('Tuin');
+          addSpecRow('Type', (property.detail?.buitenruimte?.tuintypes || []).join(', '));
+          addSpecRow('Staat', property.detail?.buitenruimte?.tuinkwaliteit || '');
+          addSpecRow('Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || '');
+          addSpecRow('Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee');
+          // Uitrusting
+          addSection('Uitrusting');
+          addSpecRow('Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', '));
+          addSpecRow('Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', '));
+          return table;
         }
-        // Helper to add a row
-        function addSpecRow(label, value) {
-          const tr = document.createElement('tr');
-          const td1 = document.createElement('td');
-          td1.textContent = label;
-          const td2 = document.createElement('td');
-          td2.textContent = value;
-          tr.appendChild(td1);
-          tr.appendChild(td2);
-          specsTable.appendChild(tr);
+
+        // Helper to build a compact specs table
+        function buildCompactSpecsTable() {
+          const table = document.createElement('table');
+          table.className = 'specs-table';
+          function addSpecRow(label, value) {
+            const tr = document.createElement('tr');
+            const td1 = document.createElement('td');
+            td1.textContent = label;
+            const td2 = document.createElement('td');
+            td2.textContent = value;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            table.appendChild(tr);
+          }
+          addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
+          addSpecRow('Status', property.financieel?.overdracht?.status || '');
+          addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + (property.algemeen?.woonoppervlakte ? ' m²' : ''));
+          addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
+          addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
+          addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
+          addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte ? ' m²' : ''));
+          return table;
         }
-        // Overdracht
-        addSection('Overdracht');
-        addSpecRow('Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`);
-        addSpecRow('Status', property.financieel?.overdracht?.status || '');
-        addSpecRow('Aanvaarding', property.financieel?.overdracht?.aanvaarding || '');
-        addSpecRow('Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || '');
-        // Bouw
-        addSection('Bouw');
-        addSpecRow('Type object', property.object?.type?.objecttype || '');
-        addSpecRow('Soort', property.algemeen?.woonhuissoort || '');
-        addSpecRow('Type', property.algemeen?.woonhuistype || '');
-        addSpecRow('Bouwjaar', property.algemeen?.bouwjaar || '');
-        addSpecRow('Dak type', (property.detail?.buitenruimte?.daktype || ''));
-        addSpecRow('Isolatievormen', (property.algemeen?.isolatievormen || []).join(', '));
-        // Oppervlaktes en inhoud
-        addSection('Oppervlaktes en inhoud');
-        addSpecRow('Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte ? ' m²' : ''));
-        addSpecRow('Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + (property.algemeen?.woonoppervlakte ? ' m²' : ''));
-        addSpecRow('Inhoud', (property.algemeen?.inhoud || '') + (property.algemeen?.inhoud ? ' m³' : ''));
-        addSpecRow('Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte ? ' m²' : ''));
-        // Indeling
-        addSection('Indeling');
-        addSpecRow('Aantal kamers', property.algemeen?.aantalKamers || '');
-        addSpecRow('Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || '');
-        // Locatie
-        addSection('Locatie');
-        addSpecRow('Ligging', (property.algemeen?.liggingen || []).join(', '));
-        // Tuin
-        addSection('Tuin');
-        addSpecRow('Type', (property.detail?.buitenruimte?.tuintypes || []).join(', '));
-        addSpecRow('Staat', property.detail?.buitenruimte?.tuinkwaliteit || '');
-        addSpecRow('Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || '');
-        addSpecRow('Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee');
-        // Uitrusting
-        addSection('Uitrusting');
-        addSpecRow('Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', '));
-        addSpecRow('Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', '));
-        infoCol.appendChild(specsTable);
+
+        // Render compact table by default
+        let showingFullSpecs = false;
+        let specsTableWrapper = document.createElement('div');
+        let compactTable = buildCompactSpecsTable();
+        let fullTable = buildFullSpecsTable();
+        specsTableWrapper.appendChild(compactTable);
+        // Toon alles button
+        const showAllBtn = document.createElement('button');
+        showAllBtn.textContent = 'Toon alles';
+        showAllBtn.style.background = 'none';
+        showAllBtn.style.color = '#51b2df';
+        showAllBtn.style.border = 'none';
+        showAllBtn.style.cursor = 'pointer';
+        showAllBtn.style.fontWeight = 'bold';
+        showAllBtn.style.margin = '12px 0 0 0';
+        showAllBtn.onclick = () => {
+          if (!showingFullSpecs) {
+            specsTableWrapper.innerHTML = '';
+            specsTableWrapper.appendChild(fullTable);
+            showAllBtn.textContent = 'Toon minder';
+            specsTableWrapper.appendChild(showAllBtn);
+            showingFullSpecs = true;
+          } else {
+            specsTableWrapper.innerHTML = '';
+            specsTableWrapper.appendChild(compactTable);
+            showAllBtn.textContent = 'Toon alles';
+            specsTableWrapper.appendChild(showAllBtn);
+            showingFullSpecs = false;
+          }
+        };
+        specsTableWrapper.appendChild(showAllBtn);
+        infoCol.appendChild(specsTableWrapper);
 
         detailContent.appendChild(infoCol);
 
