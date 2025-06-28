@@ -635,52 +635,47 @@ export const BrantjesExtension = {
       }
 
 
-      /* Energy label styles */
-      .energy-label {
-        display: flex;
+      /* Brantjes-style energy label with right chevron */
+      .energy-label-chevron {
+        display: inline-flex;
         align-items: center;
-        justify-content: flex-start;
-        min-width: 36px;
         height: 32px;
-        background: #1EC773;
-        color: #fff;
-        font-weight: bold;
+        padding: 0 18px 0 14px;
         font-size: 20px;
-        line-height: 32px;
-        text-align: center;
+        font-weight: bold;
+        color: #fff;
         border-radius: 6px 0 0 6px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
-        padding: 0 14px 0 10px;
-        overflow: visible;
         position: static;
         margin-left: 0.5rem;
+        line-height: 1.1;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        background: #1EC773;
       }
-      .energy-label::after {
+      .energy-label-chevron::after {
         content: '';
-        position: relative;
-        right: auto;
-        top: auto;
+        display: block;
         width: 0;
         height: 0;
         border-top: 16px solid transparent;
         border-bottom: 16px solid transparent;
-        border-left: 12px solid #1EC773;
-        margin-left: -2px;
+        border-left: 18px solid #1EC773;
+        border-radius: 0 6px 6px 0;
+        margin-left: 0px;
       }
-      .energy-label-A { background: #1EC773; }
-      .energy-label-B { background: #8DD800; }
-      .energy-label-C { background: #F7D900; color: #333; }
-      .energy-label-D { background: #F7A600; }
-      .energy-label-E { background: #F76B1C; }
-      .energy-label-F { background: #E2001A; }
-      .energy-label-G { background: #A50021; }
-      .energy-label-A::after { border-left-color: #1EC773; }
-      .energy-label-B::after { border-left-color: #8DD800; }
-      .energy-label-C::after { border-left-color: #F7D900; }
-      .energy-label-D::after { border-left-color: #F7A600; }
-      .energy-label-E::after { border-left-color: #F76B1C; }
-      .energy-label-F::after { border-left-color: #E2001A; }
-      .energy-label-G::after { border-left-color: #A50021; }
+      .energy-label-chevron-A { background: #1EC773; }
+      .energy-label-chevron-A::after { border-left-color: #1EC773; }
+      .energy-label-chevron-B { background: #8DD800; }
+      .energy-label-chevron-B::after { border-left-color: #8DD800; }
+      .energy-label-chevron-C { background: #F7D900; color: #333; }
+      .energy-label-chevron-C::after { border-left-color: #F7D900; }
+      .energy-label-chevron-D { background: #F7A600; }
+      .energy-label-chevron-D::after { border-left-color: #F7A600; }
+      .energy-label-chevron-E { background: #F76B1C; }
+      .energy-label-chevron-E::after { border-left-color: #F76B1C; }
+      .energy-label-chevron-F { background: #E2001A; }
+      .energy-label-chevron-F::after { border-left-color: #E2001A; }
+      .energy-label-chevron-G { background: #A50021; }
+      .energy-label-chevron-G::after { border-left-color: #A50021; }
 
       /* Styling for single card container */
       .brantjes-single-card-container {
@@ -947,7 +942,7 @@ export const BrantjesExtension = {
         // Energy label
         if (hasEnergy) {
           const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label energy-label-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.className = `energy-label-chevron energy-label-chevron-${property.algemeen.energieklasse} detail-popup-header-energy`;
           energyDiv.textContent = property.algemeen.energieklasse;
           headerRow.appendChild(energyDiv);
         }
@@ -1277,7 +1272,7 @@ export const BrantjesExtension = {
 
       if (energy) {
         const labelDiv = document.createElement('div');
-        labelDiv.className = `energy-label energy-label-${energy}`;
+        labelDiv.className = `energy-label-chevron energy-label-chevron-${energy}`;
         labelDiv.textContent = energy;
         li.appendChild(labelDiv);
       }
