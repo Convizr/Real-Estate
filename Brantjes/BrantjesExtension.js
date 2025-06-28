@@ -367,16 +367,16 @@ export const BrantjesExtension = {
         color: #fff;
         border: none;
         border-radius: 8px;
-        font-size: 1.08rem;
-        font-weight: 700;
-        padding: 0.7em 2.1em;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.5em 1.5em;
         margin-left: 0;
         cursor: pointer;
         transition: background 0.2s;
         box-shadow: 0 2px 8px rgba(30,127,203,0.08);
         display: flex;
         align-items: center;
-        height: 2.6em;
+        height: 2.2em;
       }
       .detail-popup-header-viewing-btn:hover {
         background: #166BB5;
@@ -686,9 +686,9 @@ export const BrantjesExtension = {
       .energy-label-detail {
         display: inline-flex;
         align-items: center;
-        height: 32px;
-        padding: 0 18px 0 14px;
-        font-size: 20px;
+        height: 26px;
+        padding: 0 12px 0 10px;
+        font-size: 1rem;
         font-weight: bold;
         color: #fff;
         border-radius: 6px 0 0 6px;
@@ -702,13 +702,13 @@ export const BrantjesExtension = {
       .energy-label-detail::after {
         content: '';
         position: absolute;
-        right: -18px;
+        right: -14px;
         top: 0;
         width: 0;
         height: 0;
-        border-top: 16px solid transparent;
-        border-bottom: 16px solid transparent;
-        border-left: 18px solid #1EC773;
+        border-top: 13px solid transparent;
+        border-bottom: 13px solid transparent;
+        border-left: 14px solid #1EC773;
         border-radius: 0;
         margin-left: 0;
         z-index: 2;
@@ -996,6 +996,11 @@ export const BrantjesExtension = {
           energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
           energyDiv.textContent = property.algemeen.energieklasse;
           headerRow.appendChild(energyDiv);
+          // Dot after energy label
+          const dot2 = document.createElement('span');
+          dot2.className = 'detail-popup-dot';
+          dot2.textContent = '•';
+          headerRow.appendChild(dot2);
         }
         // Price
         const price = property.financieel?.overdracht?.koopprijs || 0;
