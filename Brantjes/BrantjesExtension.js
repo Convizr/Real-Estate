@@ -1848,5 +1848,44 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', prev);
 
     element.appendChild(carouselContainer);
+
+    // ————————————————
+// FREE-TEXT HANDLER: trigger 'default' path with hero‐card address
+// ————————————————
+(function attachDefaultPathListener() {
+  const chatInput = document.querySelector('.chat-input');
+  if (!chatInput) return;
+
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && chatInput.value.trim().length > 0) {
+      e.preventDefault(); // voorkom dubbele verzending
+
+      // safety check
+      const hero = realSlidesData[currentPropertyIndex];
+      if (!hero || !hero.adres) {
+        console.warn('Geen hero/adres gevonden voor index', currentPropertyIndex);
+        return;
+      }
+
+      const addr = hero.adres;
+      const HeroCardAddressPayload = {
+        street: addr.straat || '',
+        number: addr.huisnummer?.hoofdnummer || '',
+        postcode: addr.postcode || '',
+        city: addr.plaats || ''
+      };
+
+      // DEBUG: log de payload en event
+      console.log('[BrantjesExtension] Default-path listener triggered');
+      console.log('Payload to send:', HeroCardAddressPayload);
+
+      // trigger default path in Voiceflow
+      window.voiceflow.chat.interact({
+        type: 'default',
+        payload: HeroCardAddressPayload
+      });
+    }
+  });
+})();
   },
 };
