@@ -1848,41 +1848,5 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', prev);
 
     element.appendChild(carouselContainer);
-
-    // ————————————————
-// FREE-TEXT HANDLER: trigger 'default' path with hero‐card address
-// ————————————————
-
-(function attachDefaultPathListener() {
-  // adjust this to match your actual chat‐input element
-  const chatInput = document.querySelector('.chat-input');
-  if (!chatInput) return;
-
-  chatInput.addEventListener('keypress', (e) => {
-    // on Enter key, before sending chat, intercept
-    if (e.key === 'Enter' && chatInput.value.trim().length > 0) {
-      // grab current "hero" card:
-      const hero = realSlidesData[currentPropertyIndex];
-      const addr = hero.adres || {};
-
-      const payload = {
-        destinationPath: 'default',
-        heroAddress: {
-          street: addr.straat || '',
-          number: addr.huisnummer?.hoofdnummer || '',
-          postcode: addr.postcode || '',
-          city: addr.plaats || ''
-        }
-      };
-
-      // your app’s method to send an extension‐triggered message:
-      if (typeof window.sendExtensionMessage === 'function') {
-        window.sendExtensionMessage(payload);
-      } else {
-        console.warn('sendExtensionMessage() not found, please wire up your messaging API');
-      }
-    }
-  });
-  })();
   },
 };
