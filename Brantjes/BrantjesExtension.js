@@ -1849,21 +1849,36 @@ export const BrantjesExtension = {
 
     element.appendChild(carouselContainer);
 
-    // ————————————————
-// FREE-TEXT HANDLER: trigger 'default' path with hero‐card address
+// ————————————————
+// FREE-TEXT HANDLER: trigger 'default' path met hero‐card address (incl. debug)
 // ————————————————
 (function attachDefaultPathListener() {
+  console.log('[BrantjesExtension] Attaching default‐path listener…');
+
+  // Pas selector aan als jouw input een andere class/id heeft
   const chatInput = document.querySelector('.chat-input');
-  if (!chatInput) return;
+  if (!chatInput) {
+    console.error('[BrantjesExtension] ❌ chatInput niet gevonden met selector .chat-input');
+    return;
+  }
+  console.log('[BrantjesExtension] ✅ chatInput gevonden:', chatInput);
 
   chatInput.addEventListener('keydown', (e) => {
+    console.log('[BrantjesExtension] keydown event:', e.key);
+    // enkel bij Enter en niet‐leeg veld
     if (e.key === 'Enter' && chatInput.value.trim().length > 0) {
-      e.preventDefault(); // voorkom dubbele verzending
+      e.preventDefault();
+      console.log('[BrantjesExtension] Enter gedrukt, waarde:', chatInput.value);
 
-      // safety check
+      // safety check data
+      if (typeof currentPropertyIndex !== 'number' || !Array.isArray(realSlidesData)) {
+        console.error('[BrantjesExtension] ❌ realSlidesData of currentPropertyIndex niet beschikbaar');
+        return;
+      }
+
       const hero = realSlidesData[currentPropertyIndex];
       if (!hero || !hero.adres) {
-        console.warn('Geen hero/adres gevonden voor index', currentPropertyIndex);
+        console.warn('[BrantjesExtension] ⚠️ Geen hero of adres voor index', currentPropertyIndex);
         return;
       }
 
@@ -1875,17 +1890,22 @@ export const BrantjesExtension = {
         city: addr.plaats || ''
       };
 
-      // DEBUG: log de payload en event
-      console.log('[BrantjesExtension] Default-path listener triggered');
-      console.log('Payload to send:', HeroCardAddressPayload);
+      console.log('[BrantjesExtension] Payload klaargezet:', HeroCardAddressPayload);
 
       // trigger default path in Voiceflow
-      window.voiceflow.chat.interact({
-        type: 'default',
-        payload: HeroCardAddressPayload
-      });
+      if (window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.interact === 'function') {
+        console.log('[BrantjesExtension] Roep voiceflow.chat.interact aan…');
+        window.voiceflow.chat.interact({
+          type: 'default',
+          payload: HeroCardAddressPayload
+        });
+      } else {
+        console.error('[BrantjesExtension] ❌ voiceflow.chat.interact niet gevonden');
+      }
     }
   });
+
+  console.log('[BrantjesExtension] Listener succesvol aangehangen.');
 })();
   },
 };
