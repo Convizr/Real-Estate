@@ -4,7 +4,7 @@ export const BrantjesExtension = {
   match: ({ trace }) =>
     trace.type === 'ext_brantjes_recommendation' ||
     (trace.payload && trace.payload.name === 'ext_brantjes_recommendation'),
-  render: ({ trace, element }) => {
+  render: ({ trace, element, assistant }) => {
     console.log('Rendering BrantjesExtension');
 
     let payloadObj;
@@ -1543,12 +1543,12 @@ export const BrantjesExtension = {
 
         bookingContent.innerHTML += `
           <form class="brantjes-booking-form">
-            <div class="form-group">
+                <div class="form-group">
               <label for="property-address">Je plant een bezichtiging voor:</label>
               <input type="text" id="property-address" name="property-address" value="${address || ''}" readonly>
-            </div>
+                </div>
             <div class="form-row">
-              <div class="form-group">
+                <div class="form-group">
                 <label for="day">Voorkeursdag <span class="required">*</span></label>
                 <select id="day" name="day" required>
                   <option value="">Maak een keuze</option>
@@ -1559,7 +1559,7 @@ export const BrantjesExtension = {
                   <option value="donderdag">Donderdag</option>
                   <option value="vrijdag">Vrijdag</option>
                 </select>
-              </div>
+                </div>
               <div class="form-group">
                 <label for="partofday">Dagdeel <span class="required">*</span></label>
                 <select id="partofday" name="partofday" required>
@@ -1568,18 +1568,18 @@ export const BrantjesExtension = {
                   <option value="ochtend">Ochtend</option>
                   <option value="middag">Middag</option>
                 </select>
-              </div>
-            </div>
+                </div>
+                </div>
             <div class="form-group">
               <label for="message">Jouw bericht</label>
               <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
-            </div>
+                </div>
             <span class="section-title">Contactgegevens</span>
             <div class="form-row">
               <div class="form-group">
                 <label for="first-name">Voornaam <span class="required">*</span></label>
                 <input type="text" id="first-name" name="first-name" placeholder="Typ je voornaam in" required>
-              </div>
+                </div>
               <div class="form-group">
                 <label for="last-name">Achternaam <span class="required">*</span></label>
                 <input type="text" id="last-name" name="last-name" placeholder="Typ je achternaam in" required>
@@ -1608,7 +1608,7 @@ export const BrantjesExtension = {
               <label for="privacy">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
-          </form>
+            </form>
         `;
 
         const bookingForm = bookingContent.querySelector('.brantjes-booking-form');
@@ -1753,7 +1753,7 @@ export const BrantjesExtension = {
       singleCardContainer.appendChild(card);
       element.appendChild(singleCardContainer);
       
-      // Prepare and queue single card payload for Voiceflow
+      // Prepare and send single card payload to Voiceflow
       const heroProperty = realSlidesData[0];
       const payload = {
           address: heroProperty.adres,
@@ -1769,24 +1769,7 @@ export const BrantjesExtension = {
           buildYear: heroProperty.algemeen?.bouwjaar,
           description: heroProperty.teksten?.aanbiedingstekst
       };
-      latestHeroPayload = payload;
-      function trySendSingle() {
-          if (window.VF && typeof window.VF.send === 'function') {
-              window.VF.send({
-                  type: 'hero_card_update',
-                  payload: latestHeroPayload
-              });
-              console.log('✅ Sent single card payload to Voiceflow:', latestHeroPayload);
-              clearInterval(vfSendInterval);
-              vfSendInterval = null;
-          } else {
-              console.log('⏳ Waiting for VF.send to become available (single card)...');
-          }
-      }
-      if (!vfSendInterval) {
-          trySendSingle();
-          vfSendInterval = setInterval(trySendSingle, 300);
-      }
+      sendHeroCardToVoiceflow(payload);
       return; // Exit render function
     }
 
@@ -1807,8 +1790,32 @@ export const BrantjesExtension = {
     let currentPropertyIndex = 0; // Tracks the index of the active card in realSlidesData
 
     // Function to update Voiceflow with current hero card
-    let latestHeroPayload = null;
-    let vfSendInterval = null;
+    function sendHeroCardToVoiceflow(payload) {
+      if (
+        trace &&
+        Array.isArray(trace.paths) &&
+        typeof trace.defaultPath === 'number' &&
+        trace.paths[trace.defaultPath] &&
+        trace.paths[trace.defaultPath].event &&
+        trace.paths[trace.defaultPath].event.type
+      ) {
+        const pathType = trace.paths[trace.defaultPath].event.type;
+        const type = trace.type;
+        if (typeof assistant !== 'undefined' && assistant.customAction) {
+          console.log('🚀 Sending hero card payload to Voiceflow via assistant.customAction:', { type, payload, path: pathType });
+          assistant.customAction({
+            type,
+            payload,
+            path: pathType
+          });
+        } else {
+          console.log('❌ assistant.customAction not available. Cannot send payload.');
+        }
+      } else {
+        console.log('❌ Trace paths/defaultPath not available. Cannot send payload.');
+      }
+    }
+
     function updateVoiceflowHeroCard() {
         const heroProperty = realSlidesData[currentPropertyIndex];
         const payload = {
@@ -1825,24 +1832,7 @@ export const BrantjesExtension = {
             buildYear: heroProperty.algemeen?.bouwjaar,
             description: heroProperty.teksten?.aanbiedingstekst
         };
-        latestHeroPayload = payload;
-        function trySend() {
-            if (window.VF && typeof window.VF.send === 'function') {
-                window.VF.send({
-                    type: 'hero_card_update',
-                    payload: latestHeroPayload
-                });
-                console.log('✅ Sent hero card payload to Voiceflow:', latestHeroPayload);
-                clearInterval(vfSendInterval);
-                vfSendInterval = null;
-            } else {
-                console.log('⏳ Waiting for VF.send to become available...');
-            }
-        }
-        if (!vfSendInterval) {
-            trySend();
-            vfSendInterval = setInterval(trySend, 300);
-        }
+        sendHeroCardToVoiceflow(payload);
     }
 
     function updateCardClassesAndTransforms() {
