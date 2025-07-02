@@ -1625,6 +1625,10 @@ export const BrantjesExtension = {
     // --- INFINITE CAROUSEL SETUP (ADAPTED) ---
     const realSlidesData = properties;
     const totalSlides = realSlidesData.length;
+    
+    console.log('🔍 DEBUG: Properties data received:', properties);
+    console.log('🔍 DEBUG: First property sample:', realSlidesData[0]);
+    console.log('🔍 DEBUG: First property address:', realSlidesData[0]?.adres);
 
     // Helper to create a card element (unchanged)
     function createCardElement(propertyData) {
@@ -1752,23 +1756,34 @@ export const BrantjesExtension = {
       // Send single card to Voiceflow
       if (window.VF && typeof window.VF.send === 'function') {
           const heroProperty = realSlidesData[0];
+          const payload = {
+              address: heroProperty.adres,
+              id: heroProperty.id,
+              title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
+              city: heroProperty.adres?.plaats,
+              postcode: heroProperty.adres?.postcode,
+              price: heroProperty.financieel?.overdracht?.koopprijs,
+              energy: heroProperty.algemeen?.energieklasse,
+              area: heroProperty.algemeen?.woonoppervlakte,
+              rooms: heroProperty.algemeen?.aantalKamers,
+              bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
+              buildYear: heroProperty.algemeen?.bouwjaar,
+              description: heroProperty.teksten?.aanbiedingstekst
+          };
+          
+          console.log('🔍 DEBUG: Sending single card payload to Voiceflow:', {
+              type: 'hero_card_update',
+              payload: payload
+          });
+          console.log('🔍 DEBUG: Single card property raw data:', heroProperty);
+          console.log('🔍 DEBUG: Single card address object:', heroProperty.adres);
+          
           window.VF.send({
               type: 'hero_card_update',
-              payload: {
-                  address: heroProperty.adres,
-                  id: heroProperty.id,
-                  title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
-                  city: heroProperty.adres?.plaats,
-                  postcode: heroProperty.adres?.postcode,
-                  price: heroProperty.financieel?.overdracht?.koopprijs,
-                  energy: heroProperty.algemeen?.energieklasse,
-                  area: heroProperty.algemeen?.woonoppervlakte,
-                  rooms: heroProperty.algemeen?.aantalKamers,
-                  bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
-                  buildYear: heroProperty.algemeen?.bouwjaar,
-                  description: heroProperty.teksten?.aanbiedingstekst
-              }
+              payload: payload
           });
+      } else {
+          console.log('❌ DEBUG: VF.send not available for single card');
       }
       
       return; // Exit render function
@@ -1794,23 +1809,34 @@ export const BrantjesExtension = {
     function updateVoiceflowHeroCard() {
         if (window.VF && typeof window.VF.send === 'function') {
             const heroProperty = realSlidesData[currentPropertyIndex];
+            const payload = {
+                address: heroProperty.adres,
+                id: heroProperty.id,
+                title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
+                city: heroProperty.adres?.plaats,
+                postcode: heroProperty.adres?.postcode,
+                price: heroProperty.financieel?.overdracht?.koopprijs,
+                energy: heroProperty.algemeen?.energieklasse,
+                area: heroProperty.algemeen?.woonoppervlakte,
+                rooms: heroProperty.algemeen?.aantalKamers,
+                bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
+                buildYear: heroProperty.algemeen?.bouwjaar,
+                description: heroProperty.teksten?.aanbiedingstekst
+            };
+            
+            console.log('🔍 DEBUG: Sending hero card payload to Voiceflow:', {
+                type: 'hero_card_update',
+                payload: payload
+            });
+            console.log('🔍 DEBUG: Hero property raw data:', heroProperty);
+            console.log('🔍 DEBUG: Address object:', heroProperty.adres);
+            
             window.VF.send({
                 type: 'hero_card_update',
-                payload: {
-                    address: heroProperty.adres,
-                    id: heroProperty.id,
-                    title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
-                    city: heroProperty.adres?.plaats,
-                    postcode: heroProperty.adres?.postcode,
-                    price: heroProperty.financieel?.overdracht?.koopprijs,
-                    energy: heroProperty.algemeen?.energieklasse,
-                    area: heroProperty.algemeen?.woonoppervlakte,
-                    rooms: heroProperty.algemeen?.aantalKamers,
-                    bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
-                    buildYear: heroProperty.algemeen?.bouwjaar,
-                    description: heroProperty.teksten?.aanbiedingstekst
-                }
+                payload: payload
             });
+        } else {
+            console.log('❌ DEBUG: VF.send not available or not a function');
         }
     }
 
