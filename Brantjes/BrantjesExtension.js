@@ -4,7 +4,7 @@ export const BrantjesExtension = {
   match: ({ trace }) =>
     trace.type === 'ext_brantjes_recommendation' ||
     (trace.payload && trace.payload.name === 'ext_brantjes_recommendation'),
-  render: ({ trace, element, assistant }) => {
+  render: ({ trace, element }) => {
     console.log('Rendering BrantjesExtension');
 
     let payloadObj;
@@ -1543,12 +1543,12 @@ export const BrantjesExtension = {
 
         bookingContent.innerHTML += `
           <form class="brantjes-booking-form">
-                <div class="form-group">
+            <div class="form-group">
               <label for="property-address">Je plant een bezichtiging voor:</label>
               <input type="text" id="property-address" name="property-address" value="${address || ''}" readonly>
-                </div>
+            </div>
             <div class="form-row">
-                <div class="form-group">
+              <div class="form-group">
                 <label for="day">Voorkeursdag <span class="required">*</span></label>
                 <select id="day" name="day" required>
                   <option value="">Maak een keuze</option>
@@ -1559,7 +1559,7 @@ export const BrantjesExtension = {
                   <option value="donderdag">Donderdag</option>
                   <option value="vrijdag">Vrijdag</option>
                 </select>
-                </div>
+              </div>
               <div class="form-group">
                 <label for="partofday">Dagdeel <span class="required">*</span></label>
                 <select id="partofday" name="partofday" required>
@@ -1568,18 +1568,18 @@ export const BrantjesExtension = {
                   <option value="ochtend">Ochtend</option>
                   <option value="middag">Middag</option>
                 </select>
-                </div>
-                </div>
+              </div>
+            </div>
             <div class="form-group">
               <label for="message">Jouw bericht</label>
               <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
-                </div>
+            </div>
             <span class="section-title">Contactgegevens</span>
             <div class="form-row">
               <div class="form-group">
                 <label for="first-name">Voornaam <span class="required">*</span></label>
                 <input type="text" id="first-name" name="first-name" placeholder="Typ je voornaam in" required>
-                </div>
+              </div>
               <div class="form-group">
                 <label for="last-name">Achternaam <span class="required">*</span></label>
                 <input type="text" id="last-name" name="last-name" placeholder="Typ je achternaam in" required>
@@ -1608,7 +1608,7 @@ export const BrantjesExtension = {
               <label for="privacy">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
-            </form>
+          </form>
         `;
 
         const bookingForm = bookingContent.querySelector('.brantjes-booking-form');
@@ -1625,10 +1625,6 @@ export const BrantjesExtension = {
     // --- INFINITE CAROUSEL SETUP (ADAPTED) ---
     const realSlidesData = properties;
     const totalSlides = realSlidesData.length;
-    
-    console.log('🔍 DEBUG: Properties data received:', properties);
-    console.log('🔍 DEBUG: First property sample:', realSlidesData[0]);
-    console.log('🔍 DEBUG: First property address:', realSlidesData[0]?.adres);
 
     // Helper to create a card element (unchanged)
     function createCardElement(propertyData) {
@@ -1752,24 +1748,6 @@ export const BrantjesExtension = {
 
       singleCardContainer.appendChild(card);
       element.appendChild(singleCardContainer);
-      
-      // Prepare and send single card payload to Voiceflow
-      const heroProperty = realSlidesData[0];
-      const payload = {
-          address: heroProperty.adres,
-          id: heroProperty.id,
-          title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
-          city: heroProperty.adres?.plaats,
-          postcode: heroProperty.adres?.postcode,
-          price: heroProperty.financieel?.overdracht?.koopprijs,
-          energy: heroProperty.algemeen?.energieklasse,
-          area: heroProperty.algemeen?.woonoppervlakte,
-          rooms: heroProperty.algemeen?.aantalKamers,
-          bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
-          buildYear: heroProperty.algemeen?.bouwjaar,
-          description: heroProperty.teksten?.aanbiedingstekst
-      };
-      sendHeroCardToVoiceflow(payload);
       return; // Exit render function
     }
 
@@ -1788,52 +1766,6 @@ export const BrantjesExtension = {
     });
 
     let currentPropertyIndex = 0; // Tracks the index of the active card in realSlidesData
-
-    // Function to update Voiceflow with current hero card
-    function sendHeroCardToVoiceflow(payload) {
-      if (
-        trace &&
-        Array.isArray(trace.paths) &&
-        typeof trace.defaultPath === 'number' &&
-        trace.paths[trace.defaultPath] &&
-        trace.paths[trace.defaultPath].event &&
-        trace.paths[trace.defaultPath].event.type
-      ) {
-        const pathType = trace.paths[trace.defaultPath].event.type;
-        const type = trace.type;
-        if (typeof assistant !== 'undefined' && assistant.customAction) {
-          console.log('🚀 Sending hero card payload to Voiceflow via assistant.customAction:', { type, payload, path: pathType });
-          assistant.customAction({
-            type,
-            payload,
-            path: pathType
-          });
-        } else {
-          console.log('❌ assistant.customAction not available. Cannot send payload.');
-        }
-      } else {
-        console.log('❌ Trace paths/defaultPath not available. Cannot send payload.');
-      }
-    }
-
-    function updateVoiceflowHeroCard() {
-        const heroProperty = realSlidesData[currentPropertyIndex];
-        const payload = {
-            address: heroProperty.adres,
-            id: heroProperty.id,
-            title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
-            city: heroProperty.adres?.plaats,
-            postcode: heroProperty.adres?.postcode,
-            price: heroProperty.financieel?.overdracht?.koopprijs,
-            energy: heroProperty.algemeen?.energieklasse,
-            area: heroProperty.algemeen?.woonoppervlakte,
-            rooms: heroProperty.algemeen?.aantalKamers,
-            bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
-            buildYear: heroProperty.algemeen?.bouwjaar,
-            description: heroProperty.teksten?.aanbiedingstekst
-        };
-        sendHeroCardToVoiceflow(payload);
-    }
 
     function updateCardClassesAndTransforms() {
         const cards = Array.from(list.children); // Get all card elements in the DOM
@@ -1872,21 +1804,40 @@ export const BrantjesExtension = {
         });
     }
 
+    function sendHeroCardAddress(property) {
+        const straat = property.adres?.straat || '';
+        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        const postcode = property.adres?.postcode || '';
+        const plaats = property.adres?.plaats || '';
+        const payload = {
+            type: 'brantjes_hero_card_address',
+            straat,
+            huisnummer,
+            postcode,
+            plaats,
+            fullAddress: [straat, huisnummer, postcode, plaats].filter(Boolean).join(' ')
+        };
+        // Send to parent (Voiceflow widget host)
+        window.parent.postMessage(payload, '*');
+    }
+
     function next() {
         currentPropertyIndex = (currentPropertyIndex + 1) % totalSlides;
         updateCardClassesAndTransforms();
-        updateVoiceflowHeroCard(); // Update Voiceflow with new hero card
+        sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
     }
 
     function prev() {
         currentPropertyIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
         updateCardClassesAndTransforms();
-        updateVoiceflowHeroCard(); // Update Voiceflow with new hero card
+        sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
     }
 
     // Call initial update
     updateCardClassesAndTransforms();
-    updateVoiceflowHeroCard(); // Send initial hero card to Voiceflow
+    
+    // Send initial hero card address
+    sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
 
     // Click handler for cards
     list.addEventListener('click', event => {
@@ -1919,27 +1870,5 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', prev);
 
     element.appendChild(carouselContainer);
-
-    // Expose a global function to get current hero card
-    if (window.VF) {
-        window.VF.getCurrentHeroCard = function() {
-            if (totalSlides === 0) return null;
-            const heroProperty = realSlidesData[currentPropertyIndex];
-            return {
-                address: heroProperty.adres,
-                id: heroProperty.id,
-                title: [heroProperty.adres?.straat, heroProperty.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' '),
-                city: heroProperty.adres?.plaats,
-                postcode: heroProperty.adres?.postcode,
-                price: heroProperty.financieel?.overdracht?.koopprijs,
-                energy: heroProperty.algemeen?.energieklasse,
-                area: heroProperty.algemeen?.woonoppervlakte,
-                rooms: heroProperty.algemeen?.aantalKamers,
-                bedrooms: heroProperty.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || heroProperty.algemeen?.aantalSlaapkamers,
-                buildYear: heroProperty.algemeen?.bouwjaar,
-                description: heroProperty.teksten?.aanbiedingstekst
-            };
-        };
-    }
   },
 };
