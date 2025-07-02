@@ -1804,40 +1804,18 @@ export const BrantjesExtension = {
         });
     }
 
-    function sendHeroCardAddress(property) {
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const postcode = property.adres?.postcode || '';
-        const plaats = property.adres?.plaats || '';
-        const payload = {
-            type: 'brantjes_hero_card_address',
-            straat,
-            huisnummer,
-            postcode,
-            plaats,
-            fullAddress: [straat, huisnummer, postcode, plaats].filter(Boolean).join(' ')
-        };
-        // Send to parent (Voiceflow widget host)
-        window.parent.postMessage(payload, '*');
-    }
-
     function next() {
         currentPropertyIndex = (currentPropertyIndex + 1) % totalSlides;
         updateCardClassesAndTransforms();
-        sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
     }
 
     function prev() {
         currentPropertyIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
         updateCardClassesAndTransforms();
-        sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
     }
 
     // Call initial update
     updateCardClassesAndTransforms();
-    
-    // Send initial hero card address
-    sendHeroCardAddress(realSlidesData[currentPropertyIndex]);
 
     // Click handler for cards
     list.addEventListener('click', event => {
