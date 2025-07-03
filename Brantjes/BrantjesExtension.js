@@ -1993,50 +1993,29 @@ export const NearbyMap = {
           `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
         );
 
-        // 4) Init map
+        // 4) Init map with static Map ID for Advanced Markers
         const mapOptions = {
           center: { lat: latitude, lng: longitude },
           zoom: 13,
-          // Uncomment and fill in your Map ID below for Advanced Markers support:
-          // mapId: 'YOUR_MAP_ID_HERE'
+          mapId: '6b7c48eff51d2bc68fb2a1ea'
         };
-        // If you have a Map ID, uncomment the next line and set your Map ID
-        // mapOptions.mapId = 'YOUR_MAP_ID_HERE';
         const map = new google.maps.Map(mapEl, mapOptions);
 
-        // 5) Home marker (different color)
-        if (mapOptions.mapId) {
-          // Use AdvancedMarkerElement if Map ID is provided
-          new google.maps.marker.AdvancedMarkerElement({
-            map,
-            position: { lat: latitude, lng: longitude },
-            title: 'Your Home'
-          });
-        } else {
-          // Fallback to classic Marker if no Map ID
-          new google.maps.Marker({
-            map,
-            position: { lat: latitude, lng: longitude },
-            title: 'Your Home'
-          });
-        }
+        // 5) Home marker (AdvancedMarkerElement)
+        new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position: { lat: latitude, lng: longitude },
+          title: 'Your Home'
+        });
 
-        // 6) Nearby markers
+        // 6) Nearby markers (AdvancedMarkerElement)
         places.forEach(p => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
-            if (mapOptions.mapId) {
-              new google.maps.marker.AdvancedMarkerElement({
-                map,
-                position: { lat: p.lat, lng: p.lng },
-                title: p.name
-              });
-            } else {
-              new google.maps.Marker({
-                map,
-                position: { lat: p.lat, lng: p.lng },
-                title: p.name
-              });
-            }
+            new google.maps.marker.AdvancedMarkerElement({
+              map,
+              position: { lat: p.lat, lng: p.lng },
+              title: p.name
+            });
           }
         });
       } catch (error) {
