@@ -1901,16 +1901,13 @@ export const NearbyMap = {
       if (typeof trace.payload === 'string') {
         // Handle escaped newlines and other characters
         let cleanedPayload = trace.payload;
-        
-        // Remove escaped newlines and carriage returns
         cleanedPayload = cleanedPayload.replace(/\\n/g, '').replace(/\\r/g, '');
-        
-        // Handle double-escaped quotes
         cleanedPayload = cleanedPayload.replace(/\\"/g, '"');
-        
+        // Fix the specific malformed JSON pattern in the last place object
+        cleanedPayload = cleanedPayload.replace(/"lng":([0-9.-]+)"(?=,"place_id")/g, '"lng":$1,"');
         // Remove any trailing commas before closing braces/brackets
         cleanedPayload = cleanedPayload.replace(/,(\s*[}\]])/g, '$1');
-        
+        console.log('Cleaned payload:', cleanedPayload);
         payload = JSON.parse(cleanedPayload);
       } else {
         payload = trace.payload || {};
@@ -1918,26 +1915,50 @@ export const NearbyMap = {
     } catch (error) {
       console.error('Error parsing NearbyMap payload:', error);
       console.log('Raw payload:', trace.payload);
-      element.innerHTML = '<p>Error loading map data. Please try again.</p>';
-      return;
+      // Try a more aggressive repair approach
+      try {
+        let repairedPayload = trace.payload;
+        repairedPayload = repairedPayload.replace(/\\n/g, '').replace(/\\r/g, '');
+        repairedPayload = repairedPayload.replace(/\\"/g, '"');
+        // Find and fix the specific malformed pattern
+        const lastPlaceMatch = repairedPayload.match(/"lng":([0-9.-]+)"(?=,"place_id")/);
+        if (lastPlaceMatch) {
+          repairedPayload = repairedPayload.replace(/"lng":([0-9.-]+)"(?=,"place_id")/, '"lng":$1,"');
+        }
+        payload = JSON.parse(repairedPayload);
+        console.log('Successfully repaired JSON');
+      } catch (repairError) {
+        console.error('Failed to repair JSON:', repairError);
+        element.innerHTML = '<p>Error loading map data. Please try again.</p>';
+        return;
+      }
     }
 
-    // ─────────── NEW: convert coords from strings → numbers ───────────
+    // --- Option 1: Parse places if it's a string ---
+    let places = payload.places;
+    if (typeof places === 'string') {
+      try {
+        places = JSON.parse(places);
+      } catch (e) {
+        console.error('Failed to parse places as JSON:', e);
+        places = [];
+      }
+    }
+
+    // Convert coords from strings → numbers
     const latitude  = parseFloat(payload.latitude);
     const longitude = parseFloat(payload.longitude);
-    const places = (payload.places || []).map(p => ({
+    places = (places || []).map(p => ({
       ...p,
       lat: parseFloat(p.lat),
       lng: parseFloat(p.lng),
     }));
     const apiKey = payload.apiKey;
-    
     // Validate required data
     if (!apiKey) {
       element.innerHTML = '<p>Error: Google Maps API key is missing.</p>';
       return;
     }
-    
     if (isNaN(latitude) || isNaN(longitude)) {
       element.innerHTML = '<p>Error: Invalid coordinates provided.</p>';
       return;
