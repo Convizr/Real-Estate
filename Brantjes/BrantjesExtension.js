@@ -1976,6 +1976,8 @@ export const NearbyMap = {
 
     // 3) Load Google Maps JS
     function loadScript(src) {
+      // Prevent loading the script multiple times
+      if (window.google && window.google.maps) return Promise.resolve();
       return new Promise(res => {
         const s = document.createElement('script');
         s.src = src + '&libraries=marker'; // include the marker library
