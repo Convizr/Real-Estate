@@ -1850,3 +1850,77 @@ export const BrantjesExtension = {
     element.appendChild(carouselContainer);
   },
 };
+
+export const NearbyMap = {
+  name: 'NearbyMap',
+  type: 'response',
+
+  // Only render when your function emits this trace.type
+  match: ({ trace }) => trace.type === 'nearby_map',
+
+  render: ({ trace, element }) => {
+    // 1) Parse payload
+    const payload = typeof trace.payload === 'string'
+      ? JSON.parse(trace.payload)
+      : trace.payload;
+
+    const {
+      latitude,
+      longitude,
+      places = [],
+      apiKey
+    } = payload;
+
+    // 2) Create container
+    const mapEl = document.createElement('div');
+    mapEl.style.width = '100%';
+    mapEl.style.height = '400px';
+    element.appendChild(mapEl);
+
+    // 3) Load Google Maps JS
+    function loadScript(src) {
+      return new Promise(res => {
+        const s = document.createElement('script');
+        s.src = src;
+        document.head.appendChild(s);
+        s.onload = res;
+      });
+    }
+
+    (async () => {
+      await loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
+      );
+      
+      // 4) Init map
+      const map = new google.maps.Map(mapEl, {
+        center: { lat: latitude, lng: longitude },
+        zoom: 13
+      });
+
+      // 5) Home marker (different color)
+      new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: 'blue',
+          fillOpacity: 1,
+          strokeWeight: 2,
+          strokeColor: 'white'
+        },
+        title: 'Your Home'
+      });
+
+      // 6) Nearby markers
+      places.forEach(p => {
+        new google.maps.Marker({
+          position: { lat: p.lat, lng: p.lng },
+          map,
+          title: p.name
+        });
+      });
+    })();
+  }
+};
