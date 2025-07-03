@@ -1855,7 +1855,6 @@ export const NearbyMap = {
   name: 'NearbyMap',
   type: 'response',
 
-  // Only render when your function emits this trace.type
   match: ({ trace }) => trace.type === 'nearby_map',
 
   render: ({ trace, element }) => {
@@ -1864,12 +1863,16 @@ export const NearbyMap = {
       ? JSON.parse(trace.payload)
       : trace.payload;
 
-    const {
-      latitude,
-      longitude,
-      places = [],
-      apiKey
-    } = payload;
+    // ─────────── NEW: convert coords from strings → numbers ───────────
+    const latitude  = parseFloat(payload.latitude);
+    const longitude = parseFloat(payload.longitude);
+    const places = (payload.places || []).map(p => ({
+      ...p,
+      lat: parseFloat(p.lat),
+      lng: parseFloat(p.lng),
+    }));
+    const apiKey = payload.apiKey;
+    // ───────────────────────────────────────────────────────────────────
 
     // 2) Create container
     const mapEl = document.createElement('div');
@@ -1881,7 +1884,7 @@ export const NearbyMap = {
     function loadScript(src) {
       return new Promise(res => {
         const s = document.createElement('script');
-        s.src = src;
+        s.src = src + '&libraries=marker'; // include the marker library
         document.head.appendChild(s);
         s.onload = res;
       });
@@ -1891,17 +1894,19 @@ export const NearbyMap = {
       await loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
       );
-      
+
       // 4) Init map
       const map = new google.maps.Map(mapEl, {
         center: { lat: latitude, lng: longitude },
         zoom: 13
       });
 
+      // ─────────── UPDATED: use AdvancedMarkerElement & numeric coords ───────────
       // 5) Home marker (different color)
-      new google.maps.Marker({
-        position: { lat: latitude, lng: longitude },
+      new google.maps.marker.AdvancedMarkerElement({
         map,
+        position: { lat: latitude, lng: longitude },
+        title: 'Your Home',
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           scale: 10,
@@ -1909,18 +1914,19 @@ export const NearbyMap = {
           fillOpacity: 1,
           strokeWeight: 2,
           strokeColor: 'white'
-        },
-        title: 'Your Home'
+        }
       });
 
       // 6) Nearby markers
       places.forEach(p => {
-        new google.maps.Marker({
-          position: { lat: p.lat, lng: p.lng },
+        new google.maps.marker.AdvancedMarkerElement({
           map,
+          position: { lat: p.lat, lng: p.lng },
           title: p.name
         });
       });
+      // ────────────────────────────────────────────────────────────────────────────
+
     })();
   }
 };
