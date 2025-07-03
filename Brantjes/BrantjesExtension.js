@@ -1979,6 +1979,7 @@ export const NearbyMap = {
       return new Promise(res => {
         const s = document.createElement('script');
         s.src = src + '&libraries=marker'; // include the marker library
+        s.async = true; // Load script asynchronously for best practice
         document.head.appendChild(s);
         s.onload = res;
       });
@@ -1993,7 +1994,9 @@ export const NearbyMap = {
         // 4) Init map
         const map = new google.maps.Map(mapEl, {
           center: { lat: latitude, lng: longitude },
-          zoom: 13
+          zoom: 13,
+          // Uncomment and fill in your Map ID below for Advanced Markers support:
+          // mapId: 'YOUR_MAP_ID_HERE'
         });
 
         // 5) Home marker (different color) - removed 'icon' property
