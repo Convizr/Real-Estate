@@ -1994,28 +1994,49 @@ export const NearbyMap = {
         );
 
         // 4) Init map
-        const map = new google.maps.Map(mapEl, {
+        const mapOptions = {
           center: { lat: latitude, lng: longitude },
           zoom: 13,
           // Uncomment and fill in your Map ID below for Advanced Markers support:
           // mapId: 'YOUR_MAP_ID_HERE'
-        });
+        };
+        // If you have a Map ID, uncomment the next line and set your Map ID
+        // mapOptions.mapId = 'YOUR_MAP_ID_HERE';
+        const map = new google.maps.Map(mapEl, mapOptions);
 
-        // 5) Home marker (different color) - removed 'icon' property
-        new google.maps.marker.AdvancedMarkerElement({
-          map,
-          position: { lat: latitude, lng: longitude },
-          title: 'Your Home'
-        });
+        // 5) Home marker (different color)
+        if (mapOptions.mapId) {
+          // Use AdvancedMarkerElement if Map ID is provided
+          new google.maps.marker.AdvancedMarkerElement({
+            map,
+            position: { lat: latitude, lng: longitude },
+            title: 'Your Home'
+          });
+        } else {
+          // Fallback to classic Marker if no Map ID
+          new google.maps.Marker({
+            map,
+            position: { lat: latitude, lng: longitude },
+            title: 'Your Home'
+          });
+        }
 
         // 6) Nearby markers
         places.forEach(p => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
-            new google.maps.marker.AdvancedMarkerElement({
-              map,
-              position: { lat: p.lat, lng: p.lng },
-              title: p.name
-            });
+            if (mapOptions.mapId) {
+              new google.maps.marker.AdvancedMarkerElement({
+                map,
+                position: { lat: p.lat, lng: p.lng },
+                title: p.name
+              });
+            } else {
+              new google.maps.Marker({
+                map,
+                position: { lat: p.lat, lng: p.lng },
+                title: p.name
+              });
+            }
           }
         });
       } catch (error) {
