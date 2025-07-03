@@ -1443,6 +1443,43 @@ export const BrantjesExtension = {
         detailContent.appendChild(specsTable);
         if (specsBtn) detailContent.appendChild(specsBtn);
 
+        // --- "Zoek in de buurt" button ---
+        const searchNearbyDiv = document.createElement('div');
+        searchNearbyDiv.style.margin = '20px 0 0 0';
+        searchNearbyDiv.style.textAlign = 'center';
+        
+        const searchNearbyBtn = document.createElement('button');
+        searchNearbyBtn.textContent = 'Zoek in de buurt';
+        searchNearbyBtn.style.background = 'none';
+        searchNearbyBtn.style.color = '#1E7FCB';
+        searchNearbyBtn.style.border = 'none';
+        searchNearbyBtn.style.cursor = 'pointer';
+        searchNearbyBtn.style.fontWeight = 'bold';
+        searchNearbyBtn.style.fontSize = '15px';
+        searchNearbyBtn.style.textDecoration = 'underline';
+        searchNearbyBtn.style.padding = '8px 0';
+        searchNearbyBtn.onclick = () => {
+            // Extract street and house number from property
+            const straat = property.adres?.straat || '';
+            const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+            
+            // Check if Voiceflow API is available
+            if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
+                window.voiceflow.chat.interact({
+                    type: 'searchNearby',
+                    payload: { 
+                        straat: straat,
+                        huisnummer: huisnummer 
+                    },
+                });
+            } else {
+                console.warn('Voiceflow API not available');
+            }
+        };
+        
+        searchNearbyDiv.appendChild(searchNearbyBtn);
+        detailContent.appendChild(searchNearbyDiv);
+
         detailContent.appendChild(infoCol);
 
         openModal(detailContent);
