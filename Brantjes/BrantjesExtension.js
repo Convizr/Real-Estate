@@ -1895,10 +1895,32 @@ export const NearbyMap = {
   match: ({ trace }) => trace.type === 'nearby_map',
 
   render: ({ trace, element }) => {
-    // 1) Parse payload
-    const payload = typeof trace.payload === 'string'
-      ? JSON.parse(trace.payload)
-      : trace.payload;
+    // 1) Parse payload with better error handling
+    let payload;
+    try {
+      if (typeof trace.payload === 'string') {
+        // Handle escaped newlines and other characters
+        let cleanedPayload = trace.payload;
+        
+        // Remove escaped newlines and carriage returns
+        cleanedPayload = cleanedPayload.replace(/\\n/g, '').replace(/\\r/g, '');
+        
+        // Handle double-escaped quotes
+        cleanedPayload = cleanedPayload.replace(/\\"/g, '"');
+        
+        // Remove any trailing commas before closing braces/brackets
+        cleanedPayload = cleanedPayload.replace(/,(\s*[}\]])/g, '$1');
+        
+        payload = JSON.parse(cleanedPayload);
+      } else {
+        payload = trace.payload || {};
+      }
+    } catch (error) {
+      console.error('Error parsing NearbyMap payload:', error);
+      console.log('Raw payload:', trace.payload);
+      element.innerHTML = '<p>Error loading map data. Please try again.</p>';
+      return;
+    }
 
     // ─────────── NEW: convert coords from strings → numbers ───────────
     const latitude  = parseFloat(payload.latitude);
@@ -1909,6 +1931,17 @@ export const NearbyMap = {
       lng: parseFloat(p.lng),
     }));
     const apiKey = payload.apiKey;
+    
+    // Validate required data
+    if (!apiKey) {
+      element.innerHTML = '<p>Error: Google Maps API key is missing.</p>';
+      return;
+    }
+    
+    if (isNaN(latitude) || isNaN(longitude)) {
+      element.innerHTML = '<p>Error: Invalid coordinates provided.</p>';
+      return;
+    }
     // ───────────────────────────────────────────────────────────────────
 
     // 2) Create container
@@ -1928,42 +1961,48 @@ export const NearbyMap = {
     }
 
     (async () => {
-      await loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
-      );
+      try {
+        await loadScript(
+          `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
+        );
 
-      // 4) Init map
-      const map = new google.maps.Map(mapEl, {
-        center: { lat: latitude, lng: longitude },
-        zoom: 13
-      });
+        // 4) Init map
+        const map = new google.maps.Map(mapEl, {
+          center: { lat: latitude, lng: longitude },
+          zoom: 13
+        });
 
-      // ─────────── UPDATED: use AdvancedMarkerElement & numeric coords ───────────
-      // 5) Home marker (different color)
-      new google.maps.marker.AdvancedMarkerElement({
-        map,
-        position: { lat: latitude, lng: longitude },
-        title: 'Your Home',
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: 'blue',
-          fillOpacity: 1,
-          strokeWeight: 2,
-          strokeColor: 'white'
-        }
-      });
-
-      // 6) Nearby markers
-      places.forEach(p => {
+        // ─────────── UPDATED: use AdvancedMarkerElement & numeric coords ───────────
+        // 5) Home marker (different color)
         new google.maps.marker.AdvancedMarkerElement({
           map,
-          position: { lat: p.lat, lng: p.lng },
-          title: p.name
+          position: { lat: latitude, lng: longitude },
+          title: 'Your Home',
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: 'blue',
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: 'white'
+          }
         });
-      });
-      // ────────────────────────────────────────────────────────────────────────────
 
+        // 6) Nearby markers
+        places.forEach(p => {
+          if (!isNaN(p.lat) && !isNaN(p.lng)) {
+            new google.maps.marker.AdvancedMarkerElement({
+              map,
+              position: { lat: p.lat, lng: p.lng },
+              title: p.name
+            });
+          }
+        });
+        // ────────────────────────────────────────────────────────────────────────────
+      } catch (error) {
+        console.error('Error loading Google Maps:', error);
+        element.innerHTML = '<p>Error loading Google Maps.</p>';
+      }
     })();
   }
 };
