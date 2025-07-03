@@ -1907,6 +1907,8 @@ export const NearbyMap = {
         cleanedPayload = cleanedPayload.replace(/"lng":([0-9.-]+)"(?=,"place_id")/g, '"lng":$1,"');
         // Remove any trailing commas before closing braces/brackets
         cleanedPayload = cleanedPayload.replace(/,(\s*[}\]])/g, '$1');
+        // Remove extra comma before place_id in places array
+        cleanedPayload = cleanedPayload.replace(/,\s*",\s*"place_id"/g, ',"place_id"');
         console.log('Cleaned payload:', cleanedPayload);
         payload = JSON.parse(cleanedPayload);
       } else {
@@ -1925,6 +1927,8 @@ export const NearbyMap = {
         if (lastPlaceMatch) {
           repairedPayload = repairedPayload.replace(/"lng":([0-9.-]+)"(?=,"place_id")/, '"lng":$1,"');
         }
+        // Remove extra comma before place_id in places array
+        repairedPayload = repairedPayload.replace(/,\s*",\s*"place_id"/g, ',"place_id"');
         payload = JSON.parse(repairedPayload);
         console.log('Successfully repaired JSON');
       } catch (repairError) {
@@ -1963,7 +1967,6 @@ export const NearbyMap = {
       element.innerHTML = '<p>Error: Invalid coordinates provided.</p>';
       return;
     }
-    // ───────────────────────────────────────────────────────────────────
 
     // 2) Create container
     const mapEl = document.createElement('div');
@@ -1993,20 +1996,11 @@ export const NearbyMap = {
           zoom: 13
         });
 
-        // ─────────── UPDATED: use AdvancedMarkerElement & numeric coords ───────────
-        // 5) Home marker (different color)
+        // 5) Home marker (different color) - removed 'icon' property
         new google.maps.marker.AdvancedMarkerElement({
           map,
           position: { lat: latitude, lng: longitude },
-          title: 'Your Home',
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 10,
-            fillColor: 'blue',
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: 'white'
-          }
+          title: 'Your Home'
         });
 
         // 6) Nearby markers
@@ -2019,7 +2013,6 @@ export const NearbyMap = {
             });
           }
         });
-        // ────────────────────────────────────────────────────────────────────────────
       } catch (error) {
         console.error('Error loading Google Maps:', error);
         element.innerHTML = '<p>Error loading Google Maps.</p>';
