@@ -2046,6 +2046,10 @@ export const NearbyMap = {
                     max-width: 200px !important;
                     width: 200px !important;
                   }
+                  .gm-style-iw-d {
+                    width: 150px !important;
+                    max-width: 150px !important;
+                  }
                 </style>
               `);
               infoWindow.open(map, marker);
