@@ -291,6 +291,7 @@ export const BrantjesExtension = {
         margin-top: 2rem;
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
       }
       .brantjes-modal-backdrop.visible .brantjes-modal-container {
         transform: scale(1);
@@ -997,6 +998,25 @@ export const BrantjesExtension = {
         color: #E2001A;
         margin-left: 2px;
         font-weight: 700;
+      }
+      .brantjes-modal-container,
+      .brantjes-modal-container * {
+        box-sizing: border-box;
+      }
+      .brantjes-modal-container {
+        max-width: 98vw;
+        overflow-x: hidden;
+      }
+      .brantjes-modal-container img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+      .brantjes-modal-container table {
+        width: 100%;
+        table-layout: fixed;
+        overflow-x: auto;
+        display: block;
       }
     `;
     element.appendChild(style);
