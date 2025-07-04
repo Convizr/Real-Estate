@@ -261,7 +261,7 @@ export const BrantjesExtension = {
         right: 0;
         bottom: 0;
         width: 100%;
-        height: 100%;
+        height: 90vh;
         z-index: 1000;
         display: flex;
         flex-direction: row;
@@ -269,7 +269,7 @@ export const BrantjesExtension = {
         justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
-        overflow: hidden;
+        overflow-y: auto;
       }
       .brantjes-modal-backdrop.visible {
         opacity: 1;
@@ -282,7 +282,7 @@ export const BrantjesExtension = {
         width: 98%;
         max-width: 1200px;
         height: auto;
-        max-height: 100%;
+        max-height: 90vh;
         overflow-y: auto;
         transform: scale(0.9);
         transition: transform 0.3s ease;
@@ -330,14 +330,14 @@ export const BrantjesExtension = {
         width: 100%;
       }
       .detail-popup-header-details {
-        font-size: 1.08rem;
+        /*font-size: 1.08rem;*/
         color: #222;
         font-weight: 700;
         margin-right: 1.2rem;
         white-space: nowrap;
       }
       .detail-popup-header-price {
-        font-size: 1.08rem;
+        /*font-size: 1.08rem;*/
         font-weight: 700;
         color: #222;
         margin: 0;
@@ -362,11 +362,11 @@ export const BrantjesExtension = {
         font-weight: bold;
       }
       .detail-popup-header-viewing-btn {
-        background: #1E7FCB;
+        background: #51b2df;
         color: #fff;
         border: none;
         border-radius: 8px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         padding: 0.5em 1.5em;
         margin-left: 0;
@@ -458,7 +458,7 @@ export const BrantjesExtension = {
       .detail-popup-title {
         font-size: 1.1rem;
         font-weight: 700;
-        color: #1E7FCB;
+        color: #51b2df;
         margin: 0 0 2px 0;
         line-height: 1.1;
         flex: 2 1 0;
@@ -505,7 +505,7 @@ export const BrantjesExtension = {
 
       /* Booking Form Layout */
       .booking-form-content h2 {
-        color: #1E7FCB;
+        color: #51b2df;
         text-align: center;
         margin-bottom: 1.5rem;
       }
@@ -534,11 +534,11 @@ export const BrantjesExtension = {
         font-size: 1rem;
       }
       .booking-form input:focus, .booking-form select:focus, .booking-form textarea:focus {
-        outline: 2px solid #1E7FCB;
-        border-color: #1E7FCB;
+        outline: 2px solid #51b2df;
+        border-color: #51b2df;
       }
       .booking-form .submit-btn {
-        background: #1E7FCB;
+        background: #51b2df;
         color: white;
         border: none;
         padding: 1rem;
