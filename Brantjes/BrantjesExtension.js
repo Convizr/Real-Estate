@@ -1796,8 +1796,29 @@ export const BrantjesExtension = {
         if (bookingForm) {
             bookingForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                alert('Bezichtigingsverzoek ingediend!');
-                document.querySelector('.brantjes-modal-backdrop')?.remove(); // Close modal on submit
+                // Collect form values
+                const payload = {
+                  propertyAddress: bookingForm['property-address']?.value,
+                  day: bookingForm['day']?.value,
+                  partOfDay: bookingForm['partofday']?.value,
+                  message: bookingForm['message']?.value,
+                  firstName: bookingForm['first-name']?.value,
+                  lastName: bookingForm['last-name']?.value,
+                  email: bookingForm['email']?.value,
+                  phone: bookingForm['phone']?.value,
+                  advies: bookingForm['advies-ja']?.checked,
+                  nieuwsbrief: bookingForm['nieuwsbrief']?.checked,
+                  privacy: bookingForm['privacy']?.checked
+                };
+                // Send to VoiceFlow
+                if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
+                  window.voiceflow.chat.interact({
+                    type: 'complete',
+                    payload: payload,
+                  });
+                }
+                // Close modal
+                document.querySelector('.brantjes-modal-backdrop')?.remove();
             });
         }
         openModal(bookingContent);
