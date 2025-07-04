@@ -2001,11 +2001,21 @@ export const NearbyMap = {
         };
         const map = new google.maps.Map(mapEl, mapOptions);
 
-        // 5) Home marker (AdvancedMarkerElement)
+        // 5) Home marker (AdvancedMarkerElement) with custom color and icon
+        const homeIcon = document.createElement('div');
+        homeIcon.innerHTML = `
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="18" fill="#1E7FCB"/>
+            <path d="M12 20V16.2222C12 15.5452 12.5452 15 13.2222 15H22.7778C23.4548 15 24 15.5452 24 16.2222V20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 24V18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 20L18 12L26 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        `;
         new google.maps.marker.AdvancedMarkerElement({
           map,
           position: { lat: latitude, lng: longitude },
-          title: 'Your Home'
+          title: 'Your Home',
+          content: homeIcon
         });
 
         // 6) Nearby markers (AdvancedMarkerElement)
