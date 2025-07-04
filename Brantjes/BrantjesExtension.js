@@ -968,6 +968,8 @@ export const BrantjesExtension = {
       .brantjes-booking-form .form-group.checkbox label {
         font-weight: 400;
         margin-bottom: 0;
+        flex: 1;
+        text-align: left;
       }
       .brantjes-booking-form .submit-btn {
         background: #1E7FCB;
@@ -1566,6 +1568,8 @@ export const BrantjesExtension = {
           .brantjes-booking-form .form-group.checkbox label {
             font-weight: 400;
             margin-bottom: 0;
+            flex: 1;
+            text-align: left;
           }
           .brantjes-booking-form .submit-btn {
             background: #1E7FCB;
