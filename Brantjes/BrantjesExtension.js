@@ -2026,29 +2026,34 @@ export const NearbyMap = {
           content: homeIcon
         });
 
-        // 6) Nearby markers (AdvancedMarkerElement) with info window on click
+        // 6) Nearby markers (AdvancedMarkerElement) with info window on click and school icon
         const infoWindow = new google.maps.InfoWindow();
         places.forEach(p => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
+            // Use school icon if the name or address contains 'school' (case-insensitive)
+            let icon = undefined;
+            if ((p.name && /school/i.test(p.name)) || (p.address && /school/i.test(p.address))) {
+              icon = document.createElement('img');
+              icon.src = 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/school-71.png';
+              icon.style.width = '40px';
+              icon.style.height = '40px';
+            }
             const marker = new google.maps.marker.AdvancedMarkerElement({
               map,
               position: { lat: p.lat, lng: p.lng },
-              title: p.name
+              title: p.name,
+              ...(icon ? { content: icon } : {})
             });
             marker.addListener('click', () => {
               infoWindow.setContent(`
-                <div style="width:200px;overflow:visible;">
+                <div style="width:150px;overflow:visible;">
                   <strong>${p.name}</strong><br/>
                   ${p.address ? p.address : ''}
                 </div>
                 <style>
-                  .gm-style-iw, .gm-style-iw-c {
-                    max-width: 200px !important;
-                    width: 200px !important;
-                  }
-                  .gm-style-iw-d {
-                    width: 150px !important;
+                  div[style*='width:150px'] {
                     max-width: 150px !important;
+                    width: 150px !important;
                   }
                 </style>
               `);
