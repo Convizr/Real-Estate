@@ -1698,16 +1698,28 @@ export const BrantjesExtension = {
               </div>
             </div>
             <div class="checkbox-row">
-              <input type="checkbox" id="advies-ja" name="advies" value="ja">
-              <span class="checkbox-label">Brantjes Hypotheken mag mij benaderen voor financieel advies</span>
+              <div class="checkbox-col">
+                <input type="checkbox" id="advies-ja" name="advies" value="ja">
+              </div>
+              <div class="label-col">
+                <label for="advies-ja" class="checkbox-label">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
+              </div>
             </div>
             <div class="checkbox-row">
-              <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
-              <span class="checkbox-label">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</span>
+              <div class="checkbox-col">
+                <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
+              </div>
+              <div class="label-col">
+                <label for="nieuwsbrief" class="checkbox-label">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</label>
+              </div>
             </div>
             <div class="checkbox-row">
-              <input type="checkbox" id="privacy" name="privacy" required>
-              <span class="checkbox-label">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</span>
+              <div class="checkbox-col">
+                <input type="checkbox" id="privacy" name="privacy" required>
+              </div>
+              <div class="label-col">
+                <label for="privacy" class="checkbox-label">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
+              </div>
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
           </form>
@@ -1731,32 +1743,28 @@ export const BrantjesExtension = {
             flex-direction: column;
           }
           .checkbox-row {
-            display: flex !important;
+            display: flex;
             align-items: flex-start;
+            width: 100%;
             gap: 10px;
-            width: 100% !important;
-            background: #ffeedd; /* Remove after debugging */
           }
-          .checkbox-row input[type="checkbox"] {
-            margin-top: 3px;
-            flex-shrink: 0;
+          .checkbox-col {
+            flex: 0 0 auto;
+            padding-top: 3px;
+          }
+          .label-col {
+            flex: 1 1 0%;
+            min-width: 0;
           }
           .checkbox-label {
-            display: block !important;
-            flex: 1 1 0% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
+            display: block;
             font-weight: 400;
             text-align: left;
             word-break: break-word;
             font-size: 15px;
             margin-bottom: 0;
-            white-space: normal !important;
-            overflow-wrap: break-word !important;
-            writing-mode: horizontal-tb !important;
-            text-orientation: mixed !important;
-            transform: none !important;
-            rotate: none !important;
+            white-space: normal;
+            overflow-wrap: break-word;
           }
         `;
 
