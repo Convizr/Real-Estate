@@ -2026,13 +2026,23 @@ export const NearbyMap = {
           content: homeIcon
         });
 
-        // 6) Nearby markers (AdvancedMarkerElement)
+        // 6) Nearby markers (AdvancedMarkerElement) with info window on click
+        const infoWindow = new google.maps.InfoWindow();
         places.forEach(p => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
-            new google.maps.marker.AdvancedMarkerElement({
+            const marker = new google.maps.marker.AdvancedMarkerElement({
               map,
               position: { lat: p.lat, lng: p.lng },
               title: p.name
+            });
+            marker.addListener('click', () => {
+              infoWindow.setContent(`
+                <div style="min-width:180px">
+                  <strong>${p.name}</strong><br/>
+                  ${p.address ? p.address : ''}
+                </div>
+              `);
+              infoWindow.open(map, marker);
             });
           }
         });
