@@ -1970,7 +1970,7 @@ export const NearbyMap = {
 
     // 2) Create container
     const mapEl = document.createElement('div');
-    mapEl.style.width = '100%';
+    mapEl.style.width = '300px';
     mapEl.style.height = '400px';
     element.appendChild(mapEl);
 
