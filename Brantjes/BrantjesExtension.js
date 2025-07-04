@@ -1050,6 +1050,15 @@ export const BrantjesExtension = {
         transform: none !important;
         rotate: none !important;
       }
+
+      .brantjes-booking-form,
+      .brantjes-booking-form * {
+        writing-mode: horizontal-tb !important;
+        text-orientation: mixed !important;
+        transform: none !important;
+        rotate: none !important;
+        direction: ltr !important;
+      }
     `;
     element.appendChild(style);
 
