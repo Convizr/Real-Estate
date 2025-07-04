@@ -1027,6 +1027,10 @@ export const BrantjesExtension = {
         align-items: flex-start;
         width: 100%;
         gap: 10px;
+        margin-bottom: 14px;
+      }
+      .checkbox-row:last-child {
+        margin-bottom: 0;
       }
       .checkbox-col {
         flex: 0 0 24px;
@@ -1726,7 +1730,7 @@ export const BrantjesExtension = {
                 <input type="checkbox" id="privacy" name="privacy" required>
               </div>
               <div class="label-col">
-                <label for="privacy" class="checkbox-label">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
+                <label for="privacy" class="checkbox-label"><span style="color: #E2001A; font-weight: bold; margin-right: 4px;">*</span>Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
               </div>
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
