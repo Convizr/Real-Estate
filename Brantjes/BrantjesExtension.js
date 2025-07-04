@@ -1624,38 +1624,6 @@ export const BrantjesExtension = {
 
         bookingContent.innerHTML += `
           <form class="brantjes-booking-form">
-            <div class="form-group">
-              <label for="property-address">Je plant een bezichtiging voor:</label>
-              <input type="text" id="property-address" name="property-address" value="${address || ''}" readonly>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="day">Voorkeursdag <span class="required">*</span></label>
-                <select id="day" name="day" required>
-                  <option value="">Maak een keuze</option>
-                  <option value="geen">Geen voorkeur</option>
-                  <option value="maandag">Maandag</option>
-                  <option value="dinsdag">Dinsdag</option>
-                  <option value="woensdag">Woensdag</option>
-                  <option value="donderdag">Donderdag</option>
-                  <option value="vrijdag">Vrijdag</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="partofday">Dagdeel <span class="required">*</span></label>
-                <select id="partofday" name="partofday" required>
-                  <option value="">Maak een keuze</option>
-                  <option value="geen">Geen voorkeur</option>
-                  <option value="ochtend">Ochtend</option>
-                  <option value="middag">Middag</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="message">Jouw bericht</label>
-              <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
-            </div>
-            <span class="section-title">Contactgegevens</span>
             <div class="form-row">
               <div class="form-group">
                 <label for="first-name">Voornaam <span class="required">*</span></label>
@@ -1676,6 +1644,10 @@ export const BrantjesExtension = {
                 <input type="tel" id="phone" name="phone" placeholder="Typ je telefoonnummer in" required>
               </div>
             </div>
+            <div class="form-group">
+              <label for="message">Jouw bericht</label>
+              <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
+            </div>
             <div class="checkbox-row">
               <input type="checkbox" id="advies-ja" name="advies" value="ja">
               <label for="advies-ja">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
@@ -1690,6 +1662,42 @@ export const BrantjesExtension = {
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
           </form>
+        `;
+        // Add robust, modern CSS for the new booking form layout
+        style.innerHTML += `
+          .brantjes-booking-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            width: 100%;
+          }
+          .form-row {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+          }
+          .form-group {
+            flex: 1 1 200px;
+            display: flex;
+            flex-direction: column;
+          }
+          .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+          }
+          .checkbox-row input[type="checkbox"] {
+            margin-top: 3px;
+          }
+          .checkbox-row label {
+            flex: 1;
+            font-weight: 400;
+            text-align: left;
+            word-break: break-word;
+            font-size: 15px;
+            margin-bottom: 0;
+          }
         `;
 
         const bookingForm = bookingContent.querySelector('.brantjes-booking-form');
