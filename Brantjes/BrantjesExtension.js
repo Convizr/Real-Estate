@@ -2037,7 +2037,7 @@ export const NearbyMap = {
             });
             marker.addListener('click', () => {
               infoWindow.setContent(`
-                <div style="width:200px;">
+                <div style="width:260px;overflow:visible;">
                   <strong>${p.name}</strong><br/>
                   ${p.address ? p.address : ''}
                 </div>
@@ -2047,8 +2047,6 @@ export const NearbyMap = {
                     max-height: 20px !important;
                     width: 20px !important;
                     height: 20px !important;
-                    top: 8px !important;
-                    right: 8px !important;
                   }
                   .gm-ui-hover-effect > span {
                     font-size: 18px !important;
