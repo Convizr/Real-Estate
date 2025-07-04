@@ -1668,15 +1668,15 @@ export const BrantjesExtension = {
                 <input type="tel" id="phone" name="phone" placeholder="Typ je telefoonnummer in" required>
               </div>
             </div>
-            <div class="form-group checkbox">
+            <div class="checkbox-row">
               <input type="checkbox" id="advies-ja" name="advies" value="ja">
               <label for="advies-ja">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
             </div>
-            <div class="form-group checkbox">
+            <div class="checkbox-row">
               <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
               <label for="nieuwsbrief">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</label>
             </div>
-            <div class="form-group checkbox">
+            <div class="checkbox-row">
               <input type="checkbox" id="privacy" name="privacy" required>
               <label for="privacy">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
             </div>
