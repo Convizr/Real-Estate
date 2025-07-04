@@ -1030,6 +1030,14 @@ export const BrantjesExtension = {
       .checkbox-row input[type="checkbox"] {
         margin-right: 10px;
       }
+      .checkbox-row label {
+        flex: 1;
+        margin-bottom: 0;
+        font-weight: 400;
+        text-align: left;
+        word-break: break-word;
+        font-size: 15px;
+      }
     `;
     element.appendChild(style);
 
