@@ -1045,6 +1045,10 @@ export const BrantjesExtension = {
         margin-bottom: 0;
         white-space: normal !important;
         overflow-wrap: break-word !important;
+        writing-mode: horizontal-tb !important;
+        text-orientation: mixed !important;
+        transform: none !important;
+        rotate: none !important;
       }
     `;
     element.appendChild(style);
