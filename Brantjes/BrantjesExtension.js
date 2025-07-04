@@ -270,6 +270,7 @@ export const BrantjesExtension = {
         opacity: 0;
         transition: opacity 0.3s ease;
         overflow-y: auto;
+        overflow-x: hidden;
       }
       .brantjes-modal-backdrop.visible {
         opacity: 1;
@@ -280,10 +281,11 @@ export const BrantjesExtension = {
         border-radius: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         width: 98%;
-        max-width: 1200px;
+        max-width: 98vw;
         height: auto;
-        max-height: 90vh;
+        max-height: 80vh;
         overflow-y: auto;
+        max-width: 98vw; 
         transform: scale(0.9);
         transition: transform 0.3s ease;
         margin-top: 2rem;
