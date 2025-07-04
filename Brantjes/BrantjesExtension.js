@@ -1690,15 +1690,15 @@ export const BrantjesExtension = {
             </div>
             <div class="checkbox-row">
               <input type="checkbox" id="advies-ja" name="advies" value="ja">
-              <label for="advies-ja">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
+              <span class="checkbox-label">Brantjes Hypotheken mag mij benaderen voor financieel advies</span>
             </div>
             <div class="checkbox-row">
               <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
-              <label for="nieuwsbrief">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</label>
+              <span class="checkbox-label">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</span>
             </div>
             <div class="checkbox-row">
               <input type="checkbox" id="privacy" name="privacy" required>
-              <label for="privacy">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
+              <span class="checkbox-label">Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</span>
             </div>
             <button type="submit" class="submit-btn">Verzend</button>
           </form>
@@ -1722,21 +1722,32 @@ export const BrantjesExtension = {
             flex-direction: column;
           }
           .checkbox-row {
-            display: flex;
+            display: flex !important;
             align-items: flex-start;
             gap: 10px;
             width: 100% !important;
+            background: #ffeedd; /* Remove after debugging */
           }
           .checkbox-row input[type="checkbox"] {
             margin-top: 3px;
+            flex-shrink: 0;
           }
-          .checkbox-row label {
-            flex: 1 1 0%;
+          .checkbox-label {
+            display: block !important;
+            flex: 1 1 0% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
             font-weight: 400;
             text-align: left;
             word-break: break-word;
             font-size: 15px;
             margin-bottom: 0;
+            white-space: normal !important;
+            overflow-wrap: break-word !important;
+            writing-mode: horizontal-tb !important;
+            text-orientation: mixed !important;
+            transform: none !important;
+            rotate: none !important;
           }
         `;
 
