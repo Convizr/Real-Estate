@@ -1023,20 +1023,28 @@ export const BrantjesExtension = {
       }
 
       .checkbox-row {
-        display: flex;
+        display: flex !important;
         align-items: flex-start;
-        margin-bottom: 10px;
+        gap: 10px;
+        width: 100% !important;
+        background: #ffeedd; /* Remove after debugging */
       }
       .checkbox-row input[type="checkbox"] {
-        margin-right: 10px;
+        margin-top: 3px;
+        flex-shrink: 0;
       }
       .checkbox-row label {
-        flex: 1;
-        margin-bottom: 0;
+        display: block !important;
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
         font-weight: 400;
         text-align: left;
         word-break: break-word;
         font-size: 15px;
+        margin-bottom: 0;
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
       }
     `;
     element.appendChild(style);
