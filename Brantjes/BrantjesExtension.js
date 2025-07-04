@@ -1021,6 +1021,15 @@ export const BrantjesExtension = {
       .brantjes-booking-form .form-group.checkbox {
         grid-column: 1 / -1;
       }
+
+      .checkbox-row {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+      .checkbox-row input[type="checkbox"] {
+        margin-right: 10px;
+      }
     `;
     element.appendChild(style);
 
