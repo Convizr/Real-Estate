@@ -265,8 +265,8 @@ export const BrantjesExtension = {
         z-index: 1000;
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
         opacity: 0;
         transition: opacity 0.3s ease;
         overflow-y: auto;
@@ -285,10 +285,7 @@ export const BrantjesExtension = {
         height: auto;
         max-height: 80vh;
         overflow-y: auto;
-        max-width: 98vw; 
-        transform: scale(0.9);
-        transition: transform 0.3s ease;
-        margin-top: 2rem;
+        margin: 0; /* Remove any margin that could affect centering */
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
