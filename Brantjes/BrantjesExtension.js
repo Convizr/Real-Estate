@@ -2037,19 +2037,14 @@ export const NearbyMap = {
             });
             marker.addListener('click', () => {
               infoWindow.setContent(`
-                <div style="width:260px;overflow:visible;">
+                <div style="width:200px;overflow:visible;">
                   <strong>${p.name}</strong><br/>
                   ${p.address ? p.address : ''}
                 </div>
                 <style>
-                  .gm-ui-hover-effect {
-                    max-width: 20px !important;
-                    max-height: 20px !important;
-                    width: 20px !important;
-                    height: 20px !important;
-                  }
-                  .gm-ui-hover-effect > span {
-                    font-size: 18px !important;
+                  .gm-style-iw, .gm-style-iw-c {
+                    max-width: 200px !important;
+                    width: 200px !important;
                   }
                 </style>
               `);
