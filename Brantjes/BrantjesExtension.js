@@ -1818,13 +1818,16 @@ export const BrantjesExtension = {
                   });
                 }
                 // Show confirmation message and close after 5 seconds
-                const modalBackdrop = document.querySelector('.brantjes-modal-backdrop');
-                if (modalBackdrop) {
-                  modalBackdrop.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;width:100%;"><div style="background:#fff;padding:32px 40px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:1.2em;font-weight:500;text-align:center;">Je bezichtigingsverzoek is verzonden!</div></div>';
-                  setTimeout(() => {
-                    modalBackdrop.remove();
-                  }, 5000);
+                let modalBackdrop = document.querySelector('.brantjes-modal-backdrop');
+                if (!modalBackdrop) {
+                  modalBackdrop = document.createElement('div');
+                  modalBackdrop.className = 'brantjes-modal-backdrop visible';
+                  document.body.appendChild(modalBackdrop);
                 }
+                modalBackdrop.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;width:100%;"><div style="background:#fff;padding:32px 40px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:1.2em;font-weight:500;text-align:center;">Je bezichtigingsverzoek is verzonden!</div></div>';
+                setTimeout(() => {
+                  modalBackdrop.remove();
+                }, 5000);
             });
         }
         openModal(bookingContent);
