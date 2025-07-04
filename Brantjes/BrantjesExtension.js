@@ -1023,32 +1023,40 @@ export const BrantjesExtension = {
       }
 
       .checkbox-row {
-        display: flex !important;
+        display: flex;
         align-items: flex-start;
+        width: 100%;
         gap: 10px;
-        width: 100% !important;
-        background: #ffeedd; /* Remove after debugging */
       }
-      .checkbox-row input[type="checkbox"] {
-        margin-top: 3px;
-        flex-shrink: 0;
+      .checkbox-col {
+        flex: 0 0 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding-top: 3px;
       }
-      .checkbox-row label {
-        display: block !important;
-        flex: 1 1 0% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
+      .checkbox-col input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        vertical-align: top;
+        appearance: auto;
+      }
+      .label-col {
+        flex: 1 1 0%;
+        min-width: 0;
+      }
+      .checkbox-label {
+        display: block;
         font-weight: 400;
         text-align: left;
         word-break: break-word;
         font-size: 15px;
         margin-bottom: 0;
-        white-space: normal !important;
-        overflow-wrap: break-word !important;
-        writing-mode: horizontal-tb !important;
-        text-orientation: mixed !important;
-        transform: none !important;
-        rotate: none !important;
+        white-space: normal;
+        overflow-wrap: break-word;
       }
 
       .brantjes-booking-form,
@@ -1749,8 +1757,20 @@ export const BrantjesExtension = {
             gap: 10px;
           }
           .checkbox-col {
-            flex: 0 0 auto;
+            flex: 0 0 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
             padding-top: 3px;
+          }
+          .checkbox-col input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            vertical-align: top;
+            appearance: auto;
           }
           .label-col {
             flex: 1 1 0%;
