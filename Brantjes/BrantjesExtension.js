@@ -1817,8 +1817,14 @@ export const BrantjesExtension = {
                     payload: payload,
                   });
                 }
-                // Close modal
-                document.querySelector('.brantjes-modal-backdrop')?.remove();
+                // Show confirmation message and close after 5 seconds
+                const modalBackdrop = document.querySelector('.brantjes-modal-backdrop');
+                if (modalBackdrop) {
+                  modalBackdrop.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;width:100%;"><div style="background:#fff;padding:32px 40px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:1.2em;font-weight:500;text-align:center;">Je bezichtigingsverzoek is verzonden!</div></div>';
+                  setTimeout(() => {
+                    modalBackdrop.remove();
+                  }, 5000);
+                }
             });
         }
         openModal(bookingContent);
@@ -1947,6 +1953,11 @@ export const BrantjesExtension = {
       card.style.zIndex = '3';
       card.style.width = '219px'; // Active width
       card.style.height = '365px'; // Active height
+
+      // Make the single card clickable to show details
+      card.addEventListener('click', () => {
+        showDetailModal(realSlidesData[0]);
+      });
 
       singleCardContainer.appendChild(card);
       element.appendChild(singleCardContainer);
