@@ -1838,7 +1838,7 @@ export const BrantjesExtension = {
                       modal.remove();
                     }, 350); // match CSS transition duration
                   }
-                }, 5000);
+                }, 3000);
             });
         }
         openModal(bookingContent);
