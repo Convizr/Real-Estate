@@ -1817,17 +1817,21 @@ export const BrantjesExtension = {
                     payload: payload,
                   });
                 }
-                // Remove any existing modal backdrop (form page)
-                const oldModal = document.querySelector('.brantjes-modal-backdrop');
-                if (oldModal) oldModal.remove();
-                // Show confirmation message and close after 5 seconds
-                const modalBackdrop = document.createElement('div');
-                modalBackdrop.className = 'brantjes-modal-backdrop visible';
-                modalBackdrop.style.zIndex = '99999';
-                modalBackdrop.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;width:100%;"><div style="background:#fff;padding:32px 40px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:1.2em;font-weight:500;text-align:center;">Je bezichtigingsverzoek is verzonden!</div></div>';
-                document.body.appendChild(modalBackdrop);
+                // Show green confirmation below the button
+                let confirmMsg = bookingForm.querySelector('.booking-confirm-msg');
+                if (!confirmMsg) {
+                  confirmMsg = document.createElement('div');
+                  confirmMsg.className = 'booking-confirm-msg';
+                  confirmMsg.style.color = '#1EC773';
+                  confirmMsg.style.fontWeight = 'bold';
+                  confirmMsg.style.marginTop = '16px';
+                  confirmMsg.style.textAlign = 'center';
+                  bookingForm.appendChild(confirmMsg);
+                }
+                confirmMsg.textContent = 'Je bezichtigingsverzoek is verzonden!';
+                // Close modal after 5 seconds
                 setTimeout(() => {
-                  modalBackdrop.remove();
+                  document.querySelector('.brantjes-modal-backdrop')?.remove();
                 }, 5000);
             });
         }
