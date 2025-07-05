@@ -1829,9 +1829,15 @@ export const BrantjesExtension = {
                   bookingForm.appendChild(confirmMsg);
                 }
                 confirmMsg.textContent = 'Je bezichtigingsverzoek is verzonden!';
-                // Close modal after 5 seconds
+                // Close modal after 5 seconds with fade-out
                 setTimeout(() => {
-                  document.querySelector('.brantjes-modal-backdrop')?.remove();
+                  const modal = bookingForm.closest('.brantjes-modal-backdrop');
+                  if (modal) {
+                    modal.classList.add('invisible');
+                    setTimeout(() => {
+                      modal.remove();
+                    }, 350); // match CSS transition duration
+                  }
                 }, 5000);
             });
         }
