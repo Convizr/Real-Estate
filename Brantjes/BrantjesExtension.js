@@ -1529,7 +1529,9 @@ export const BrantjesExtension = {
         searchNearbyBtn.onclick = () => {
             // Extract street and house number from property
             const straat = property.adres?.straat || '';
-            const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+            // hoofdnummer is a string in the API, so use it as-is if present, else empty string
+            const huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
+                ? String(property.adres.huisnummer.hoofdnummer) : '';
             
             // Check if Voiceflow API is available
             if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
