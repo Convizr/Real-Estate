@@ -1525,14 +1525,7 @@ export const BrantjesExtension = {
         
         const searchNearbyBtn = document.createElement('button');
         searchNearbyBtn.textContent = 'Zoek in de buurt';
-        searchNearbyBtn.style.background = 'none';
-        searchNearbyBtn.style.color = '#1E7FCB';
-        searchNearbyBtn.style.border = 'none';
-        searchNearbyBtn.style.cursor = 'pointer';
-        searchNearbyBtn.style.fontWeight = 'bold';
-        searchNearbyBtn.style.fontSize = '15px';
-        searchNearbyBtn.style.textDecoration = 'underline';
-        searchNearbyBtn.style.padding = '8px 0';
+        searchNearbyBtn.className = 'detail-popup-header-viewing-btn';
         searchNearbyBtn.onclick = () => {
             // Extract street and house number from property
             const straat = property.adres?.straat || '';
