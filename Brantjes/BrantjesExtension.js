@@ -1543,6 +1543,15 @@ export const BrantjesExtension = {
             } else {
                 console.warn('Voiceflow API not available');
             }
+            
+            // Close the detail modal
+            const modalBackdrop = element.querySelector('.brantjes-modal-backdrop');
+            if (modalBackdrop) {
+                modalBackdrop.classList.remove('visible');
+                setTimeout(() => {
+                    modalBackdrop.remove();
+                }, 300); // Allow transition to finish
+            }
         };
         
         searchNearbyDiv.appendChild(searchNearbyBtn);
