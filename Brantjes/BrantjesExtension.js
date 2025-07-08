@@ -1071,6 +1071,26 @@ export const BrantjesExtension = {
         rotate: none !important;
         direction: ltr !important;
       }
+
+      /* Search Nearby Button - Bigger and centered version of viewing button */
+      .search-nearby-btn {
+        background: #51b2df;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 12px 32px;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(30,127,203,0.08);
+        display: inline-block;
+        margin: 0 auto;
+        min-width: 200px;
+      }
+      .search-nearby-btn:hover {
+        background: #166BB5;
+      }
     `;
     element.appendChild(style);
 
@@ -1525,7 +1545,7 @@ export const BrantjesExtension = {
         
         const searchNearbyBtn = document.createElement('button');
         searchNearbyBtn.textContent = 'Zoek in de buurt';
-        searchNearbyBtn.className = 'detail-popup-header-viewing-btn';
+        searchNearbyBtn.className = 'search-nearby-btn';
         searchNearbyBtn.onclick = () => {
             // Extract street and house number from property
             const straat = property.adres?.straat || '';
