@@ -396,9 +396,11 @@ export const BrantjesExtension = {
         border-radius: 10px;
         overflow: hidden;
         display: flex;
-        align-items: flex-start;
+        /* align-items: flex-start; */
+        align-items: stretch;
         justify-content: center;
         position: relative;
+        align-self: flex-end;
       }
       .detail-popup-main-image img {
         width: 100%;
