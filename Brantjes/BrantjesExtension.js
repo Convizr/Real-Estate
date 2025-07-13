@@ -2275,3 +2275,419 @@ export const NearbyMap = {
     })();
   }
 };
+
+export const ViewingBookingExtension = {
+  name: 'ViewingBooking',
+  type: 'response',
+  match: ({ trace }) =>
+    trace.type === 'ext_viewing_booking' ||
+    (trace.payload && trace.payload.name === 'ext_viewing_booking'),
+  render: ({ trace, element }) => {
+    console.log('Rendering ViewingBookingExtension');
+
+    let payloadObj;
+    if (typeof trace.payload === 'string') {
+      try {
+        payloadObj = JSON.parse(trace.payload);
+      } catch (e) {
+        console.error('Error parsing trace.payload:', e);
+        return;
+      }
+    } else {
+      payloadObj = trace.payload || {};
+    }
+    console.log('Parsed Payload:', payloadObj);
+
+    // Extract pre-filled contact information from payload
+    const preFilledData = {
+      firstName: payloadObj.viewingPropertyFirstName || '',
+      lastName: payloadObj.viewingPropertyLastName || '',
+      email: payloadObj.viewingPropertyEmail || '',
+      phone: payloadObj.viewingPropertyPhone || '',
+      address: payloadObj.viewingPropertyAddress || ''
+    };
+
+    // Create stylesheet
+    const style = document.createElement('style');
+    style.innerHTML = `
+      /* Font-face declarations for Soleto fonts */
+      @font-face {
+        font-family: 'Soleto Trial';
+        src: url('pad/naar/SoletoTrial-Regular.woff2') format('woff2'),
+             url('pad/naar/SoletoTrial-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      @font-face {
+        font-family: 'Soleto';
+        src: url('pad/naar/Soleto-Regular.woff2') format('woff2'),
+             url('pad/naar/Soleto-Regular.woff') format('woff');
+        font-size: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* Apply font family to all elements */
+      .viewing-booking-container,
+      .viewing-booking-container * {
+        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif;
+      }
+
+      .viewing-booking-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      }
+
+      .viewing-booking-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .viewing-booking-header h1 {
+        color: #1E7FCB;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .viewing-booking-header p {
+        color: #666;
+        font-size: 1.1rem;
+        margin: 0;
+      }
+
+      .viewing-booking-form {
+        background: #eaf6fa;
+        border-radius: 10px;
+        padding: 2rem;
+        font-size: 15px;
+        color: #222;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .viewing-booking-form label {
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      .viewing-booking-form input,
+      .viewing-booking-form select,
+      .viewing-booking-form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #c7e0ed;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 15px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+        font-family: inherit;
+        transition: border 0.2s;
+      }
+
+      .viewing-booking-form input:focus,
+      .viewing-booking-form select:focus,
+      .viewing-booking-form textarea:focus {
+        border: 1.5px solid #1E7FCB;
+        outline: none;
+      }
+
+      .viewing-booking-form .form-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .viewing-booking-form .form-row > div {
+        flex: 1 1 200px;
+      }
+
+      .viewing-booking-form .form-group {
+        margin-bottom: 10px;
+      }
+
+      .viewing-booking-form .form-group.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .viewing-booking-form .form-group.checkbox label {
+        font-weight: 400;
+        margin-bottom: 0;
+        flex: 1;
+        text-align: left;
+      }
+
+      .viewing-booking-form .submit-btn {
+        background: #1E7FCB;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 28px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+
+      .viewing-booking-form .submit-btn:hover {
+        background: #166BB5;
+      }
+
+      .viewing-booking-form .section-title {
+        color: #1E7FCB;
+        font-size: 1.3em;
+        font-weight: 700;
+        margin: 18px 0 10px 0;
+        display: block;
+      }
+
+      .viewing-booking-form .required {
+        color: #E2001A;
+        margin-left: 2px;
+        font-weight: 700;
+      }
+
+      .checkbox-row {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .checkbox-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .checkbox-col {
+        flex: 0 0 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding-top: 3px;
+      }
+
+      .checkbox-col input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        vertical-align: top;
+        appearance: auto;
+      }
+
+      .label-col {
+        flex: 1 1 0%;
+        min-width: 0;
+      }
+
+      .checkbox-label {
+        display: block;
+        font-weight: 400;
+        text-align: left;
+        word-break: break-word;
+        font-size: 15px;
+        margin-bottom: 0;
+        white-space: normal;
+        overflow-wrap: break-word;
+      }
+
+      .booking-confirm-msg {
+        color: #1EC773;
+        font-weight: bold;
+        margin-top: 16px;
+        text-align: center;
+        padding: 10px;
+        background: #f0f9f0;
+        border-radius: 5px;
+        border: 1px solid #1EC773;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .viewing-booking-container {
+          padding: 1rem;
+          margin: 0;
+          border-radius: 0;
+        }
+        
+        .viewing-booking-form {
+          padding: 1.5rem;
+        }
+        
+        .viewing-booking-form .form-row {
+          flex-direction: column;
+        }
+        
+        .viewing-booking-form .form-row > div {
+          flex: 1 1 auto;
+        }
+      }
+    `;
+    element.appendChild(style);
+
+    // Create the booking form container
+    const bookingContainer = document.createElement('div');
+    bookingContainer.className = 'viewing-booking-container';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'viewing-booking-header';
+    header.innerHTML = `
+      <h1>Bezichtiging Boeken</h1>
+      <p>Vul het onderstaande formulier in om een bezichtiging aan te vragen</p>
+    `;
+    bookingContainer.appendChild(header);
+
+    // Form
+    const form = document.createElement('form');
+    form.className = 'viewing-booking-form';
+
+    form.innerHTML = `
+      <div class="form-group">
+        <label for="property-address">Je plant een bezichtiging voor:</label>
+        <input type="text" id="property-address" name="property-address" value="${preFilledData.address}" readonly>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="day">Voorkeursdag <span class="required">*</span></label>
+          <select id="day" name="day" required>
+            <option value="">Maak een keuze</option>
+            <option value="geen">Geen voorkeur</option>
+            <option value="maandag">Maandag</option>
+            <option value="dinsdag">Dinsdag</option>
+            <option value="woensdag">Woensdag</option>
+            <option value="donderdag">Donderdag</option>
+            <option value="vrijdag">Vrijdag</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="partofday">Dagdeel <span class="required">*</span></label>
+          <select id="partofday" name="partofday" required>
+            <option value="">Maak een keuze</option>
+            <option value="geen">Geen voorkeur</option>
+            <option value="ochtend">Ochtend</option>
+            <option value="middag">Middag</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="message">Jouw bericht</label>
+        <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
+      </div>
+      
+      <span class="section-title">Contactgegevens</span>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first-name">Voornaam <span class="required">*</span></label>
+          <input type="text" id="first-name" name="first-name" placeholder="Typ je voornaam in" value="${preFilledData.firstName}" required>
+        </div>
+        <div class="form-group">
+          <label for="last-name">Achternaam <span class="required">*</span></label>
+          <input type="text" id="last-name" name="last-name" placeholder="Typ je achternaam in" value="${preFilledData.lastName}" required>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">E-mail <span class="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="Typ je e-mailadres in" value="${preFilledData.email}" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Telefoon <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="Typ je telefoonnummer in" value="${preFilledData.phone}" required>
+        </div>
+      </div>
+      
+      <div class="checkbox-row">
+        <div class="checkbox-col">
+          <input type="checkbox" id="advies-ja" name="advies" value="ja">
+        </div>
+        <div class="label-col">
+          <label for="advies-ja" class="checkbox-label">Brantjes Hypotheken mag mij benaderen voor financieel advies</label>
+        </div>
+      </div>
+      
+      <div class="checkbox-row">
+        <div class="checkbox-col">
+          <input type="checkbox" id="nieuwsbrief" name="nieuwsbrief">
+        </div>
+        <div class="label-col">
+          <label for="nieuwsbrief" class="checkbox-label">Houd mij periodiek op de hoogte van actualiteiten en nieuws van Brantjes Makelaars in de vorm van een nieuwsbrief of mailing.</label>
+        </div>
+      </div>
+      
+      <div class="checkbox-row">
+        <div class="checkbox-col">
+          <input type="checkbox" id="privacy" name="privacy" required>
+        </div>
+        <div class="label-col">
+          <label for="privacy" class="checkbox-label"><span style="color: #E2001A; font-weight: bold; margin-right: 4px;">*</span>Bij het gebruiken van dit formulier ga ik akkoord met het opslaan en verwerken van de door mij opgegeven gegevens zoals beschreven in het privacybeleid.</label>
+        </div>
+      </div>
+      
+      <button type="submit" class="submit-btn">Verzend</button>
+    `;
+
+    // Form submission handler
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Collect form values
+      const payload = {
+        propertyAddress: form['property-address']?.value,
+        day: form['day']?.value,
+        partOfDay: form['partofday']?.value,
+        message: form['message']?.value,
+        firstName: form['first-name']?.value,
+        lastName: form['last-name']?.value,
+        email: form['email']?.value,
+        phone: form['phone']?.value,
+        advies: form['advies-ja']?.checked,
+        nieuwsbrief: form['nieuwsbrief']?.checked,
+        privacy: form['privacy']?.checked
+      };
+      
+      // Send to VoiceFlow
+      if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
+        window.voiceflow.chat.interact({
+          type: 'complete',
+          payload: payload,
+        });
+      }
+      
+      // Show green confirmation below the button
+      let confirmMsg = form.querySelector('.booking-confirm-msg');
+      if (!confirmMsg) {
+        confirmMsg = document.createElement('div');
+        confirmMsg.className = 'booking-confirm-msg';
+        form.appendChild(confirmMsg);
+      }
+      confirmMsg.textContent = 'Je bezichtigingsverzoek is verzonden!';
+      
+      // Disable submit button to prevent double submission
+      const submitBtn = form.querySelector('.submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verzonden';
+    });
+
+    bookingContainer.appendChild(form);
+    element.appendChild(bookingContainer);
+  },
+};
