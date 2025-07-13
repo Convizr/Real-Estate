@@ -792,7 +792,439 @@ export const BrantjesExtension = {
         font-weight: 400;
         margin-bottom: 8px;
         margin-top: 0;
+      }
+      /* Price */
+      .brantjes-card-price {
+        font-size: 15px;
+        color: #fff;
+        margin-bottom: 8px;
+        margin-top: 0;
+      }
+      .brantjes-card-price-numbers {
+        font-weight: bold;
+        font-size: 15px;
+        color: #fff;
+      }
+      .brantjes-card-price-kk {
+        font-weight: 400;
+        font-size: 15px;
+        color: #fff;
         opacity: 0.85;
+      }
+      /* Details pill */
+      .brantjes-card-details-pill {
+        margin: 0 0 10px 0;
+        background: rgba(0,0,0,0.25);
+        border-radius: 3px;
+        box-shadow: none;
+        padding: 3px 12px;
+        font-size: 12px;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 4;
+        border: none;
+        position: static;
+      }
+      .brantjes-card-details-pill svg {
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: normal !important;
+        transition: none !important;
+      }
+      .brantjes-card-details-pill span {
+        font-weight: 400 !important;
+      }
+      /* Overlay content area moves up to make room for pill and button */
+      .brantjes-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 15px 15px 22px 15px;
+        background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.08) 100%);
+        z-index: 2;
+      }
+      /* Ensure viewing button is below the content */
+      .brantjes-viewing-button {
+        position: absolute;
+        bottom: 7px;
+        left: 15px;
+        /* ...existing styles... */
+      }
+      /* All text in overlay white */
+      .brantjes-card-overlay, .brantjes-card-overlay * {
+        color: #fff !important;
+      }
+
+      /* Image hover overlay */
+      .brantjes-img-hover-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.18);
+        opacity: 0;
+        pointer-events: none;
+        border-radius: 8px;
+        z-index: 3;
+        transition: opacity 0.3s;
+      }
+      .brantjes-property-card.act:hover .brantjes-img-hover-overlay {
+        opacity: 1;
+      }
+      /* Adjust overlay stacking */
+      .brantjes-property-card-inner {
+        position: relative;
+        z-index: 1;
+      }
+      /* Responsive adjustments for pill */
+      @media (max-width: 900px) {
+        .brantjes-card-details-pill {
+          bottom: 6px;
+          right: 6px;
+          padding: 2px 8px;
+          font-size: 11px;
+        }
+      }
+      @media (max-width: 600px) {
+        .brantjes-card-details-pill {
+          font-size: 10px;
+        }
+      }
+
+      .brantjes-modal-container,
+      .brantjes-modal-container * {
+        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
+      }
+
+      .detail-popup-title-main {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1E7FCB !important;
+        margin: 0 0 0.2em 0;
+        display: block;
+      }
+
+      .detail-popup-specs-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        margin: 0;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
+
+      .brantjes-booking-form {
+        background: #eaf6fa;
+        border-radius: 10px;
+        padding: 24px 18px 18px 18px;
+        font-size: 15px;
+        color: #222;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .brantjes-booking-form label {
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: block;
+      }
+      .brantjes-booking-form input,
+      .brantjes-booking-form select,
+      .brantjes-booking-form textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #c7e0ed;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 15px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+        font-family: inherit;
+        transition: border 0.2s;
+      }
+      .brantjes-booking-form input:focus,
+      .brantjes-booking-form select:focus,
+      .brantjes-booking-form textarea:focus {
+        border: 1.5px solid #1E7FCB;
+        outline: none;
+      }
+      .brantjes-booking-form .form-row {
+        display: flex;
+        gap: 12px;
+      }
+      .brantjes-booking-form .form-row > div {
+        flex: 1 1 0;
+      }
+      .brantjes-booking-form .form-group {
+        margin-bottom: 10px;
+      }
+      .brantjes-booking-form .form-group.checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .brantjes-booking-form .form-group.checkbox label {
+        font-weight: 400;
+        margin-bottom: 0;
+        flex: 1;
+        text-align: left;
+      }
+      .brantjes-booking-form .submit-btn {
+        background: #1E7FCB;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 28px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+      }
+      .brantjes-booking-form .submit-btn:hover {
+        background: #166BB5;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 900px) {
+        .brantjes-carousel-container {
+          width: 98vw;
+          height: 60vw;
+          min-width: 0;
+          min-height: 0;
+        }
+        .brantjes-property-card {
+          width: 40vw;
+          min-width: 120px;
+          height: 60vw;
+          min-height: 180px;
+        }
+      }
+      @media (max-width: 600px) {
+        .brantjes-carousel-container {
+          width: 100vw;
+          height: 70vw;
+        }
+        .brantjes-property-card {
+          width: 80vw;
+          min-width: 100px;
+          height: 60vw;
+          min-height: 120px;
+        }
+      }
+
+      /* Modern Class-Based Absolute Carousel */
+      .brantjes-carousel-list {
+        position: relative; /* Changed to relative, flexbox for internal centering */
+        width: 100%;
+        height: 100%;
+        margin: 0; /* Reset margin */
+        padding: 0; /* Reset padding */
+        display: flex; /* Use flexbox for the list items */
+        align-items: center; /* Vertically center cards within the list */
+        justify-content: center; /* Horizontally center cards within the list */
+      }
+      .brantjes-carousel-list .brantjes-property-card {
+        list-style-type: none;
+        position: absolute; /* Keep absolute for layering and transformations */
+        /* Removed margin-left and margin-top for centring with transform */
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s, width 0.6s, height 0.6s; /* Smoother transitions */
+        z-index: 1;
+        width: 201px; /* Original size */
+        height: 335px; /* Original size */
+        opacity: 0; /* Default opacity for cards not explicitly positioned/shown by JS */
+        top: 50%; /* Center vertically with transform */
+        left: 50%; /* Center horizontally with transform */
+        transform: translate(-50%, -50%) scale(0.85); /* Default scale for off-screen */
+      }
+      .brantjes-carousel-list .act {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1); /* Active element is centered and full size */
+        z-index: 3;
+        width: 219px; /* Active size */
+        height: 365px; /* Active size */
+      }
+      .brantjes-carousel-list .prev {
+        opacity: .25;
+        z-index: 2; /* Prev/Next are above hide/new-next */
+        transform: translate(calc(-50% - 220px), -50%) scale(.85); /* Adjusted for centering */
+      }
+      .brantjes-carousel-list .next {
+        opacity: .25;
+        z-index: 2; /* Prev/Next are above hide/new-next */
+        transform: translate(calc(-50% + 220px), -50%) scale(.85); /* Adjusted for centering */
+      }
+      .brantjes-carousel-list .hide,
+      .brantjes-carousel-list .new-next {
+        opacity: 0;
+        transition: opacity .5s, transform .5s; /* Faster transition for hiding */
+        z-index: 0;
+        visibility: hidden; /* Added to ensure full invisibility */
+      }
+
+      /* Card energy label styles (restore original) */
+      .energy-label {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        min-width: 36px;
+        height: 32px;
+        background: #1EC773;
+        color: #fff;
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 32px;
+        text-align: center;
+        border-radius: 6px 0 0 6px;
+        z-index: 10;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        padding: 0 14px 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: visible;
+      }
+      .energy-label::after {
+        content: '';
+        position: absolute;
+        right: -12px;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-top: 16px solid transparent;
+        border-bottom: 16px solid transparent;
+        border-left: 12px solid #1EC773;
+      }
+      .energy-label-A { background: #1EC773; }
+      .energy-label-B { background: #8DD800; }
+      .energy-label-C { background: #F7D900; color: #333; }
+      .energy-label-D { background: #F7A600; }
+      .energy-label-E { background: #F76B1C; }
+      .energy-label-F { background: #E2001A; }
+      .energy-label-G { background: #A50021; }
+      .energy-label-A::after { border-left-color: #1EC773; }
+      .energy-label-B::after { border-left-color: #8DD800; }
+      .energy-label-C::after { border-left-color: #F7D900; }
+      .energy-label-D::after { border-left-color: #F7A600; }
+      .energy-label-E::after { border-left-color: #F76B1C; }
+      .energy-label-F::after { border-left-color: #E2001A; }
+      .energy-label-G::after { border-left-color: #A50021; }
+
+      /* Detail page header energy label (independent) */
+      .energy-label-detail {
+        display: inline-flex;
+        align-items: center;
+        height: 26px;
+        padding: 0 12px 0 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        border-radius: 6px 0 0 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+        margin-left: 0.5rem;
+        line-height: 1.1;
+        position: relative;
+        background: #1EC773;
+        overflow: visible;
+      }
+      .energy-label-detail::after {
+        content: '';
+        position: absolute;
+        right: -14px;
+        top: 0;
+        width: 0;
+        height: 0;
+        border-top: 13px solid transparent;
+        border-bottom: 13px solid transparent;
+        border-left: 14px solid #1EC773;
+        border-radius: 0;
+        margin-left: 0;
+        z-index: 2;
+      }
+      .energy-label-detail-A { background: #1EC773; }
+      .energy-label-detail-A::after { border-left-color: #1EC773; }
+      .energy-label-detail-B { background: #8DD800; }
+      .energy-label-detail-B::after { border-left-color: #8DD800; }
+      .energy-label-detail-C { background: #F7D900; color: #333; }
+      .energy-label-detail-C::after { border-left-color: #F7D900; }
+      .energy-label-detail-D { background: #F7A600; }
+      .energy-label-detail-D::after { border-left-color: #F7A600; }
+      .energy-label-detail-E { background: #F76B1C; }
+      .energy-label-detail-E::after { border-left-color: #F76B1C; }
+      .energy-label-detail-F { background: #E2001A; }
+      .energy-label-detail-F::after { border-left-color: #E2001A; }
+      .energy-label-detail-G { background: #A50021; }
+      .energy-label-detail-G::after { border-left-color: #A50021; }
+
+      /* Styling for single card container */
+      .brantjes-single-card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 420px; /* Match carousel container height */
+        width: 100%;
+      }
+
+      /* Larger font sizes for hero (active) card */
+      .brantjes-property-card.act .brantjes-card-info p:first-child {
+        font-size: 20px;
+      }
+      .brantjes-property-card.act .brantjes-card-info p {
+        font-size: 17px;
+      }
+      
+      /* Special hover effect for active (center) card ONLY */
+      .brantjes-property-card.act:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.3);
+        filter: brightness(1.08);
+      }
+      
+      /* Add subtle blue overlay on hover - ONLY for active card */
+      .brantjes-property-card.act::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(30, 127, 203, 0.08);
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 2;
+      }
+      
+      .brantjes-property-card.act:hover::before {
+        opacity: 1;
+      }
+
+      /* Card Title (Street + Number) */
+      .brantjes-card-title {
+        font-weight: bold;
+        font-size: 22px;
+        color: #fff;
+        margin-bottom: 2px;
+        line-height: 1.1;
+      }
+      /* City + Postal */
+      .brantjes-card-city {
+        font-size: 15px;
+        color: #fff;
+        font-weight: 400;
+        margin-bottom: 8px;
+        margin-top: 0;
       }
       /* Price */
       .brantjes-card-price {
