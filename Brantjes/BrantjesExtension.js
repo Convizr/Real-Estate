@@ -4621,12 +4621,7 @@ export const PropertyDetailsExtension = {
     renderPropertyDetails({
       property,
       element,
-      showBookingModal: (prop) => {
-        // Use the same booking modal logic as before
-        // ... (reuse your showBookingModal code here, or call the shared one)
-        // For brevity, you can keep your existing showBookingModal function
-        // Or refactor it to be shared as well
-      },
+      showBookingModal, // Pass the actual function, not a placeholder
       showSearchNearby: true,
       isModal: false
     });
