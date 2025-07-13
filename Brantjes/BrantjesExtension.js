@@ -4347,46 +4347,47 @@ export const PropertyDetailsExtension = {
     imagesRow.appendChild(thumbsCol);
     detailContent.appendChild(imagesRow);
 
-    // --- SPECIFICATIONS ROW ---
+    // --- SPECIFICATIONS ROW (Brantjes style) ---
     const specsRow = document.createElement('div');
     specsRow.className = 'detail-popup-specs-row';
 
+    // Woonoppervlakte
     const woonopp = property.algemeen?.woonoppervlakte;
     if (woonopp) {
       const woonoppSpan = document.createElement('span');
       woonoppSpan.innerHTML = `<strong>${woonopp} m²</strong> woonoppervlakte`;
       specsRow.appendChild(woonoppSpan);
     }
-    
+    // Dot
     const dot1 = document.createElement('span');
     dot1.className = 'detail-popup-dot';
     dot1.textContent = '•';
     specsRow.appendChild(dot1);
-    
+    // Slaapkamers
     const slaapkamers = property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || property.algemeen?.aantalSlaapkamers;
     if (slaapkamers) {
       const slaapSpan = document.createElement('span');
       slaapSpan.innerHTML = `<strong>${slaapkamers}</strong> slaapkamers`;
       specsRow.appendChild(slaapSpan);
     }
-    
+    // Dot
     const dot2 = document.createElement('span');
     dot2.className = 'detail-popup-dot';
     dot2.textContent = '•';
     specsRow.appendChild(dot2);
-    
+    // Bouwjaar
     const bouwjaar = property.algemeen?.bouwjaar;
     if (bouwjaar) {
       const bouwjaarSpan = document.createElement('span');
       bouwjaarSpan.innerHTML = `Bouwjaar <strong>${bouwjaar}</strong>`;
       specsRow.appendChild(bouwjaarSpan);
     }
-    
+    // Dot
     const dot3 = document.createElement('span');
     dot3.className = 'detail-popup-dot';
     dot3.textContent = '•';
     specsRow.appendChild(dot3);
-    
+    // Perceel
     const perceel = property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte;
     if (perceel) {
       const perceelSpan = document.createElement('span');
@@ -4396,7 +4397,7 @@ export const PropertyDetailsExtension = {
 
     detailContent.appendChild(specsRow);
 
-    // --- DESCRIPTION ---
+    // --- DESCRIPTION with markdown and 'toon meer' ---
     const desc = property.teksten?.aanbiedingstekst || '';
     const descDiv = document.createElement('div');
     descDiv.style.margin = '16px 0 0 0';
@@ -4404,14 +4405,200 @@ export const PropertyDetailsExtension = {
     descDiv.style.color = '#333';
     descDiv.style.lineHeight = '1.6';
     descDiv.style.wordBreak = 'break-word';
-    
-    if (window.marked) {
-      descDiv.innerHTML = window.marked.parse(desc);
-    } else {
-      descDiv.textContent = desc;
+    let moreBtn = null;
+    let truncated = false;
+    let descExpanded = false;
+    let shortDesc = desc;
+    if (desc.length > 400) {
+        shortDesc = desc.slice(0, 400).split('\n').slice(0, 3).join('\n') + '...';
+        truncated = true;
     }
-    
+
+    function renderMarkdown(md) {
+      if (window.marked) {
+        descDiv.innerHTML = window.marked.parse(md);
+      } else {
+        descDiv.textContent = md;
+      }
+      if (truncated && moreBtn) {
+        descDiv.appendChild(moreBtn);
+      }
+    }
+
+    if (!window.marked) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+      script.onload = () => {
+        renderMarkdown(truncated ? shortDesc : desc);
+      };
+      document.head.appendChild(script);
+    }
+
+    renderMarkdown(truncated ? shortDesc : desc);
+
+    if (truncated) {
+        moreBtn = document.createElement('button');
+        moreBtn.textContent = 'Toon meer';
+        moreBtn.style.background = 'none';
+        moreBtn.style.color = '#1E7FCB';
+        moreBtn.style.border = 'none';
+        moreBtn.style.cursor = 'pointer';
+        moreBtn.style.fontWeight = 'bold';
+        moreBtn.onclick = () => {
+            if (!descExpanded) {
+                renderMarkdown(desc);
+                moreBtn.textContent = 'Toon minder';
+                descExpanded = true;
+            } else {
+                renderMarkdown(shortDesc);
+                moreBtn.textContent = 'Toon meer';
+                descExpanded = false;
+            }
+        };
+        descDiv.appendChild(moreBtn);
+    }
     detailContent.appendChild(descDiv);
+
+    // --- Compact, expandable specifications table ---
+    const specsSections = [
+      {
+        title: 'Overdracht',
+        rows: [
+          ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
+          ['Status', property.financieel?.overdracht?.status || ''],
+          ['Aanvaarding', property.financieel?.overdracht?.aanvaarding || ''],
+          ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
+        ]
+      },
+      {
+        title: 'Bouw',
+        rows: [
+          ['Type object', property.object?.type?.objecttype || ''],
+          ['Soort', property.algemeen?.woonhuissoort || ''],
+          ['Type', property.algemeen?.woonhuistype || ''],
+          ['Bouwjaar', property.algemeen?.bouwjaar || ''],
+          ['Dak type', property.detail?.buitenruimte?.daktype || ''],
+          ['Isolatievormen', (property.algemeen?.isolatievormen || []).join(', ')],
+        ]
+      },
+      {
+        title: 'Oppervlaktes en inhoud',
+        rows: [
+          ['Perceel', (property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte || '') + ' m²'],
+          ['Woonoppervlakte', (property.algemeen?.woonoppervlakte || '') + ' m²'],
+          ['Inhoud', (property.algemeen?.inhoud || '') + ' m³'],
+          ['Buitenruimtes gebouwgebonden of vrijstaand', (property.detail?.buitenruimte?.oppervlakteGebouwgebondenBuitenruimte || '') + ' m²'],
+        ]
+      },
+      {
+        title: 'Indeling',
+        rows: [
+          ['Aantal kamers', property.algemeen?.aantalKamers || ''],
+          ['Aantal slaapkamers', property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || ''],
+        ]
+      },
+      {
+        title: 'Locatie',
+        rows: [
+          ['Ligging', (property.algemeen?.liggingen || []).join(', ')],
+        ]
+      },
+      {
+        title: 'Tuin',
+        rows: [
+          ['Type', (property.detail?.buitenruimte?.tuintypes || []).join(', ')],
+          ['Staat', property.detail?.buitenruimte?.tuinkwaliteit || ''],
+          ['Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || ''],
+          ['Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee'],
+        ]
+      },
+      {
+        title: 'Uitrusting',
+        rows: [
+          ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', ')],
+          ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', ')],
+        ]
+      },
+    ];
+
+    const specsTable = document.createElement('table');
+    specsTable.style.width = '100%';
+    specsTable.style.marginTop = '10px';
+    specsTable.style.fontSize = '0.85rem';
+    specsTable.style.borderCollapse = 'collapse';
+    specsTable.style.background = 'white';
+    specsTable.style.lineHeight = '1.4';
+
+    specsTable.innerHTML = '';
+    let rowCount = 0;
+    let specsExpanded = false;
+    const maxRows = 6;
+    let totalRows = 0;
+    specsSections.forEach(section => totalRows += section.rows.length + 1);
+
+    function renderSpecsTable(expand) {
+      specsTable.innerHTML = '';
+      let shownRows = 0;
+      for (const section of specsSections) {
+        const th = document.createElement('tr');
+        const thCell = document.createElement('td');
+        thCell.colSpan = 2;
+        thCell.textContent = section.title;
+        thCell.style.fontWeight = 'bold';
+        thCell.style.fontSize = '1.1em';
+        thCell.style.color = '#1E7FCB';
+        thCell.style.padding = '10px 0 4px 0';
+        thCell.style.background = 'white';
+        th.appendChild(thCell);
+        specsTable.appendChild(th);
+        for (const [label, value] of section.rows) {
+          if (!expand && shownRows >= maxRows) return;
+          const tr = document.createElement('tr');
+          const td1 = document.createElement('td');
+          td1.textContent = label;
+          td1.style.fontWeight = 'bold';
+          td1.style.padding = '3px 8px 3px 0';
+          td1.style.color = '#222';
+          td1.style.borderBottom = '1px solid #eee';
+          td1.style.background = 'white';
+          const td2 = document.createElement('td');
+          td2.textContent = value;
+          td2.style.padding = '3px 0 3px 8px';
+          td2.style.color = '#444';
+          td2.style.borderBottom = '1px solid #eee';
+          td2.style.background = 'white';
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          specsTable.appendChild(tr);
+          shownRows++;
+        }
+      }
+    }
+
+    renderSpecsTable(false);
+
+    let specsBtn = null;
+    if (totalRows > maxRows) {
+      specsBtn = document.createElement('button');
+      specsBtn.textContent = 'Toon alles';
+      specsBtn.style.background = 'none';
+      specsBtn.style.color = '#1E7FCB';
+      specsBtn.style.border = 'none';
+      specsBtn.style.cursor = 'pointer';
+      specsBtn.style.fontWeight = 'bold';
+      specsBtn.style.margin = '8px 0 0 0';
+      specsBtn.onclick = () => {
+        specsExpanded = !specsExpanded;
+        renderSpecsTable(specsExpanded);
+        specsBtn.textContent = specsExpanded ? 'Toon minder' : 'Toon alles';
+        if (specsBtn.parentNode !== specsTable.parentNode) {
+          specsTable.parentNode.appendChild(specsBtn);
+        }
+      };
+    }
+
+    detailContent.appendChild(specsTable);
+    if (specsBtn) detailContent.appendChild(specsBtn);
 
     // --- "Zoek in de buurt" button ---
     const searchNearbyDiv = document.createElement('div');
