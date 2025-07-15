@@ -4497,7 +4497,7 @@ export const PropertyDetailsExtension = {
       specsTable.style.marginTop = '10px';
       specsTable.style.fontSize = '0.85rem';
       specsTable.style.borderCollapse = 'collapse';
-      specsTable.style.background = 'white';
+      specsTable.style.background = 'transparent';
       specsTable.style.lineHeight = '1.4';
       specsTable.innerHTML = '';
       let specsExpanded = false;
@@ -4516,7 +4516,7 @@ export const PropertyDetailsExtension = {
           thCell.style.fontSize = '1.1em';
           thCell.style.color = '#1E7FCB';
           thCell.style.padding = '10px 0 4px 0';
-          thCell.style.background = 'white';
+          thCell.style.background = 'transparent';
           th.appendChild(thCell);
           specsTable.appendChild(th);
           for (const [label, value] of section.rows) {
@@ -4528,13 +4528,13 @@ export const PropertyDetailsExtension = {
             td1.style.padding = '3px 8px 3px 0';
             td1.style.color = '#222';
             td1.style.borderBottom = '1px solid #eee';
-            td1.style.background = 'white';
+            td1.style.background = 'transparent';
             const td2 = document.createElement('td');
             td2.textContent = value;
             td2.style.padding = '3px 0 3px 8px';
             td2.style.color = '#444';
             td2.style.borderBottom = '1px solid #eee';
-            td2.style.background = 'white';
+            td2.style.background = 'transparent';
             tr.appendChild(td1);
             tr.appendChild(td2);
             specsTable.appendChild(tr);
