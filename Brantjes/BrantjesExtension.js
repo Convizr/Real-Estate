@@ -3652,6 +3652,48 @@ export const PropertyDetailsExtension = {
         font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
       }
 
+      /* Checkbox alignment for PropertyDetailsExtension booking form */
+      .brantjes-booking-form .checkbox-row {
+        display: flex !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        gap: 10px !important;
+        margin-bottom: 14px !important;
+      }
+      .brantjes-booking-form .checkbox-row:last-child {
+        margin-bottom: 0 !important;
+      }
+      .brantjes-booking-form .checkbox-col {
+        flex: 0 0 24px !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        padding-top: 3px !important;
+      }
+      .brantjes-booking-form .checkbox-col input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        vertical-align: top !important;
+        appearance: auto !important;
+      }
+      .brantjes-booking-form .label-col {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+      }
+      .brantjes-booking-form .checkbox-label {
+        display: block !important;
+        font-weight: 400 !important;
+        text-align: left !important;
+        word-break: break-word !important;
+        font-size: 15px !important;
+        margin-bottom: 0 !important;
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+      }
+
       .property-details-container {
         max-width: 900px;
         margin: 0 auto;
