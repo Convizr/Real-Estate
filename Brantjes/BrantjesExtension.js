@@ -2464,6 +2464,10 @@ export const BrantjesExtension = {
         // Add Brantjes-style form CSS
         const style = document.createElement('style');
         style.innerHTML = `
+          .brantjes-booking-form,
+          .brantjes-booking-form * {
+            font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
+          }
           .brantjes-booking-form {
             background: #eaf6fa;
             border-radius: 10px;
@@ -3633,8 +3637,19 @@ export const PropertyDetailsExtension = {
 
       /* Apply font family to all elements */
       .property-details-container,
-      .property-details-container * {
-        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif;
+      .property-details-container *,
+      .detail-popup-content,
+      .detail-popup-content *,
+      .detail-popup-header,
+      .detail-popup-header *,
+      .detail-popup-images-row,
+      .detail-popup-images-row *,
+      .detail-popup-specs-row,
+      .detail-popup-specs-row *,
+      .search-nearby-btn,
+      .brantjes-modal-container,
+      .brantjes-modal-container * {
+        font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
       }
 
       .property-details-container {
@@ -3989,6 +4004,10 @@ export const PropertyDetailsExtension = {
         // Add Brantjes-style form CSS
         const style = document.createElement('style');
         style.innerHTML = `
+          .brantjes-booking-form,
+          .brantjes-booking-form * {
+            font-family: 'Soleto Trial', 'Soleto', 'Montserrat', 'Roboto', sans-serif !important;
+          }
           .brantjes-booking-form {
             background: #eaf6fa;
             border-radius: 10px;
