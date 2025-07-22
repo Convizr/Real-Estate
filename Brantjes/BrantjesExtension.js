@@ -3869,16 +3869,12 @@ export const ContactFormExtension = {
           <select id="office" name="office" required>
             <option value="">Maak een keuze</option>
             ${preFilledData.office ? `<option value="${preFilledData.office}" selected>${preFilledData.office}</option>` : ''}
-            <option value="Amsterdam">Amsterdam</option>
-            <option value="Rotterdam">Rotterdam</option>
-            <option value="Den Haag">Den Haag</option>
-            <option value="Utrecht">Utrecht</option>
-            <option value="Eindhoven">Eindhoven</option>
-            <option value="Tilburg">Tilburg</option>
-            <option value="Groningen">Groningen</option>
-            <option value="Almere">Almere</option>
-            <option value="Breda">Breda</option>
-            <option value="Nijmegen">Nijmegen</option>
+            <option value="Assendelft">Assendelft</option>
+            <option value="Beverwijk">Beverwijk</option>
+            <option value="Heemskerk">Heemskerk</option>
+            <option value="Velsen">Velsen</option>
+            <option value="Wormerland">Wormerland</option>
+            <option value="Zaandam">Zaandam</option>
           </select>
         </div>
         <div class="form-group">
