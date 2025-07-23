@@ -3650,7 +3650,7 @@ export const ContactFormExtension = {
 
       .contact-form-header p {
         color: #666;
-        font-size: 1.1rem;
+        font-size: 0.8rem;
         margin: 0;
       }
 
