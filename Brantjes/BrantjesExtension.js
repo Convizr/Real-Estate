@@ -7,6 +7,12 @@ export const BrantjesExtension = {
   render: ({ trace, element }) => {
     console.log('Rendering BrantjesExtension');
 
+    // Helper function to format city names to proper case
+    function formatCityName(cityName) {
+      if (!cityName) return '';
+      return cityName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     let payloadObj;
     if (typeof trace.payload === 'string') {
       try {
@@ -2041,7 +2047,7 @@ export const BrantjesExtension = {
         if (hasAddress) {
           const addrSpan = document.createElement('span');
           addrSpan.className = 'detail-popup-header-details';
-          addrSpan.textContent = `${postcode} ${plaats}`.trim();
+          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
           addrSpan.style.fontWeight = 'bold';
           headerRow.appendChild(addrSpan);
         }
@@ -2334,6 +2340,8 @@ export const BrantjesExtension = {
         specsTable.style.borderCollapse = 'collapse';
         specsTable.style.background = 'white';
         specsTable.style.lineHeight = '1.4';
+        specsTable.style.tableLayout = 'fixed';
+        specsTable.style.minWidth = '100%';
 
         // Add compact CSS for the table
         specsTable.innerHTML = '';
@@ -2369,12 +2377,14 @@ export const BrantjesExtension = {
               td1.style.color = '#222';
               td1.style.borderBottom = '1px solid #eee';
               td1.style.background = 'white';
+              td1.style.width = '50%';
               const td2 = document.createElement('td');
               td2.textContent = value;
               td2.style.padding = '3px 0 3px 8px';
               td2.style.color = '#444';
               td2.style.borderBottom = '1px solid #eee';
               td2.style.background = 'white';
+              td2.style.width = '50%';
               tr.appendChild(td1);
               tr.appendChild(td2);
               specsTable.appendChild(tr);
@@ -2785,7 +2795,7 @@ export const BrantjesExtension = {
       const plaats = propertyData.adres?.plaats || '';
       const postcode = propertyData.adres?.postcode || '';
       const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
-      const cityPostal = [postcode, plaats].filter(Boolean).join(' ');
+      const cityPostal = [postcode, formatCityName(plaats)].filter(Boolean).join(' ');
       const price = propertyData.financieel?.overdracht?.koopprijs || 0;
       const area = propertyData.algemeen?.woonoppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
@@ -3972,6 +3982,12 @@ export const PropertyDetailsExtension = {
   render: ({ trace, element }) => {
     console.log('Rendering PropertyDetailsExtension');
 
+    // Helper function to format city names to proper case
+    function formatCityName(cityName) {
+      if (!cityName) return '';
+      return cityName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     let payloadObj;
     if (typeof trace.payload === 'string') {
       try {
@@ -4690,7 +4706,7 @@ export const PropertyDetailsExtension = {
       if (hasAddress) {
         const addrSpan = document.createElement('span');
         addrSpan.className = 'detail-popup-header-details';
-        addrSpan.textContent = `${postcode} ${plaats}`.trim();
+        addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
         addrSpan.style.fontWeight = 'bold';
         headerRow.appendChild(addrSpan);
       }
@@ -4957,6 +4973,8 @@ export const PropertyDetailsExtension = {
       specsTable.style.borderCollapse = 'collapse';
       specsTable.style.background = 'transparent';
       specsTable.style.lineHeight = '1.4';
+      specsTable.style.tableLayout = 'fixed';
+      specsTable.style.minWidth = '100%';
       specsTable.innerHTML = '';
       let specsExpanded = false;
       const maxRows = 6;
@@ -4987,12 +5005,14 @@ export const PropertyDetailsExtension = {
             td1.style.color = '#222';
             td1.style.borderBottom = '1px solid #eee';
             td1.style.background = 'transparent';
+            td1.style.width = '50%';
             const td2 = document.createElement('td');
             td2.textContent = value;
             td2.style.padding = '3px 0 3px 8px';
             td2.style.color = '#444';
             td2.style.borderBottom = '1px solid #eee';
             td2.style.background = 'transparent';
+            td2.style.width = '50%';
             tr.appendChild(td1);
             tr.appendChild(td2);
             specsTable.appendChild(tr);
