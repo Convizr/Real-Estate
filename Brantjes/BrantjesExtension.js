@@ -3643,7 +3643,7 @@ export const ContactFormExtension = {
 
       .contact-form-header h1 {
         color: #1E7FCB;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
       }
