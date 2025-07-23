@@ -2429,11 +2429,12 @@ export const BrantjesExtension = {
         searchNearbyBtn.textContent = 'Zoek in de buurt';
         searchNearbyBtn.className = 'search-nearby-btn';
         searchNearbyBtn.onclick = () => {
-            // Extract street and house number from property
+            // Extract street, house number, and city from property
             const straat = property.adres?.straat || '';
             // hoofdnummer is a string in the API, so use it as-is if present, else empty string
             const huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
                 ? String(property.adres.huisnummer.hoofdnummer) : '';
+            const plaats = property.adres?.plaats || '';
             
             // Check if Voiceflow API is available
             if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
@@ -2441,7 +2442,8 @@ export const BrantjesExtension = {
                     type: 'searchNearby',
                     payload: { 
                         straat: straat,
-                        huisnummer: huisnummer 
+                        huisnummer: huisnummer,
+                        plaats: plaats
                     },
                 });
             } else {
@@ -5057,12 +5059,14 @@ export const PropertyDetailsExtension = {
             const straat = property.adres?.straat || '';
             const huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
                 ? String(property.adres.huisnummer.hoofdnummer) : '';
+            const plaats = property.adres?.plaats || '';
             if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
                 window.voiceflow.chat.interact({
                     type: 'searchNearby',
                     payload: { 
                         straat: straat,
-                        huisnummer: huisnummer 
+                        huisnummer: huisnummer,
+                        plaats: plaats
                     },
                 });
             } else {
