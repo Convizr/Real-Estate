@@ -2334,7 +2334,24 @@ export const BrantjesExtension = {
           max-width: 100% !important;
           width: 100% !important;
           box-sizing: border-box !important;
-          overflow: hidden !important;
+          overflow: visible !important;
+        }
+        
+        /* Adjust image sizes to fit container */
+        .brantjes-modal-container .detail-popup-main-image {
+          width: 280px !important;
+          min-width: 280px !important;
+          max-width: 280px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnails {
+          grid-template-columns: 130px 130px !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnail {
+          width: 130px !important;
+          height: 98px !important;
         }
         
         /* Restore original desktop font sizes */
@@ -5032,7 +5049,24 @@ export const PropertyDetailsExtension = {
           max-width: 100% !important;
           width: 100% !important;
           box-sizing: border-box !important;
-          overflow: hidden !important;
+          overflow: visible !important;
+        }
+        
+        /* Adjust image sizes to fit container for PropertyDetailsExtension */
+        .property-details-container .detail-popup-main-image {
+          width: 280px !important;
+          min-width: 280px !important;
+          max-width: 280px !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnails {
+          grid-template-columns: 130px 130px !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnail {
+          width: 130px !important;
+          height: 98px !important;
         }
         
         /* Restore original desktop font sizes for PropertyDetailsExtension */
