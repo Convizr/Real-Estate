@@ -2159,6 +2159,8 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
         // --- IMAGE DATA ---
         const media = Array.isArray(property.media) ? property.media : [];
+        console.log('Property media:', media); // Debug log
+        
         // Track original indices for counter
         const allImgs = [];
         const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
@@ -2169,6 +2171,9 @@ export const BrantjesExtension = {
                 if (!allImgs.some(img => img.url === f.link)) allImgs.push({ url: f.link, originalIndex: allImgs.length });
             });
         let imageList = [...allImgs];
+        
+        console.log('Processed imageList:', imageList); // Debug log
+        console.log('ImageList length:', imageList.length); // Debug log
 
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
@@ -2318,12 +2323,20 @@ export const BrantjesExtension = {
           mainImgCol.style.maxWidth = 'none';
         }
         const mainImg = document.createElement('img');
-        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+        const mainImgSrc = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+        mainImg.src = mainImgSrc;
         mainImg.alt = 'Hoofdfoto';
         mainImg.style.width = '100%';
         mainImg.style.height = 'auto';
         mainImg.style.display = 'block';
         mainImg.style.borderRadius = '8px';
+        
+        console.log('Main image src:', mainImgSrc); // Debug log
+        console.log('Main image element:', mainImg); // Debug log
+        
+        mainImg.onload = () => console.log('Main image loaded successfully'); // Debug log
+        mainImg.onerror = (e) => console.error('Main image failed to load:', e); // Debug log
+        
         mainImgCol.appendChild(mainImg);
         // Image counter
         let counter;
@@ -2365,9 +2378,11 @@ export const BrantjesExtension = {
           thumbsCol.style.marginTop = '0';
         }
         function renderThumbnails() {
+            console.log('Rendering thumbnails, imageList length:', imageList.length); // Debug log
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
             const totalThumbs = Math.min(8, imageList.length);
+            console.log('Total thumbnails to render:', totalThumbs); // Debug log
             // Determine the start index for visible thumbs (1-4 in imageList)
             let start = 1;
             // If user has clicked a thumbnail, imageList is rotated so [0] is main, [1-4] are visible
@@ -2379,6 +2394,9 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
+                
+                console.log(`Thumbnail ${i} URL:`, thumbUrl); // Debug log
+                console.log(`Thumbnail ${i} element:`, thumbDiv); // Debug log
                 // Position in grid
                 let gridPos = i;
                 if (gridPos <= 4) {
