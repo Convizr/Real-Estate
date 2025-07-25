@@ -355,7 +355,6 @@ export const BrantjesExtension = {
         margin: 0;
         line-height: 1.1;
         margin-right: 1.2rem;
-        margin-left: auto;
         white-space: nowrap;
       }
       .detail-popup-header-energy {
@@ -2326,7 +2325,7 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 0.5rem !important;
+          gap: 0.3rem !important;
         }
         
         /* Fix images row width for desktop */
@@ -2383,6 +2382,11 @@ export const BrantjesExtension = {
           border-bottom: 11px solid transparent !important;
           border-left: 12px solid #FFD700 !important;
           right: -12px !important;
+          content: "" !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-C::after {
+          border-left-color: #FFD700 !important;
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
@@ -4652,7 +4656,6 @@ export const PropertyDetailsExtension = {
         margin: 0;
         line-height: 1.1;
         margin-right: 1.2rem;
-        margin-left: auto;
         white-space: nowrap;
       }
       .detail-popup-header-energy {
@@ -5056,7 +5059,7 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 0.5rem !important;
+          gap: 0.3rem !important;
         }
         
         /* Fix images row width for PropertyDetailsExtension desktop */
@@ -5113,6 +5116,11 @@ export const PropertyDetailsExtension = {
           border-bottom: 11px solid transparent !important;
           border-left: 12px solid #FFD700 !important;
           right: -12px !important;
+          content: "" !important;
+        }
+        
+        .property-details-container .energy-label-detail-C::after {
+          border-left-color: #FFD700 !important;
         }
         
         .property-details-container .detail-popup-header-viewing-btn {
