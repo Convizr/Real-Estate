@@ -568,21 +568,20 @@ export const BrantjesExtension = {
       }
 
       /* Responsive Styles */
-      @media (max-width: 600px) {
+      @media (max-width: 500px) {
         .brantjes-carousel-container {
-          width: 72vw;
-          max-width: 72vw;
+          width: 95vw;
+          max-width: 95vw;
           min-width: 280px;
-          height: 100vw;
-          max-height: 400px;
+          height: 420px;
         }
         .brantjes-property-card {
-          width: 220px;
-          height: 280px;
+          width: 180px;
+          height: 240px;
         }
         .brantjes-property-card.active {
-          width: 220px;
-          height: 280px;
+          width: 180px;
+          height: 240px;
         }
         /* Show navigation buttons for smaller pop-up */
         .brantjes-nav-button {
@@ -593,46 +592,20 @@ export const BrantjesExtension = {
         }
       }
       
-      @media (max-width: 480px) {
-        .brantjes-carousel-container {
-          width: 72vw;
-          max-width: 72vw;
-          min-width: 260px;
-          height: 100vw;
-          max-height: 350px;
-        }
-        .brantjes-property-card {
-          width: 200px;
-          height: 260px;
-        }
-        .brantjes-property-card.active {
-          width: 200px;
-          height: 260px;
-        }
-        /* Show navigation buttons */
-        .brantjes-nav-button {
-          display: flex;
-          width: 32px;
-          height: 32px;
-          font-size: 16px;
-        }
-      }
-      
       @media (max-width: 400px) {
         .brantjes-carousel-container {
-          width: 72vw;
-          max-width: 72vw;
-          min-width: 240px;
-          height: 100vw;
-          max-height: 300px;
+          width: 95vw;
+          max-width: 95vw;
+          min-width: 260px;
+          height: 380px;
         }
         .brantjes-property-card {
-          width: 180px;
-          height: 240px;
+          width: 160px;
+          height: 220px;
         }
         .brantjes-property-card.active {
-          width: 180px;
-          height: 240px;
+          width: 160px;
+          height: 220px;
         }
         /* Show navigation buttons */
         .brantjes-nav-button {
@@ -643,58 +616,81 @@ export const BrantjesExtension = {
         }
       }
       
-      /* Responsive positioning for carousel cards */
-      @media (max-width: 600px) {
-        .brantjes-carousel-list .prev {
-          opacity: .25;
-          transform: translate(calc(-50% - 120px), -50%) scale(.85);
+      @media (max-width: 350px) {
+        .brantjes-carousel-container {
+          width: 95vw;
+          max-width: 95vw;
+          min-width: 240px;
+          height: 350px;
         }
-        .brantjes-carousel-list .next {
-          opacity: .25;
-          transform: translate(calc(-50% + 120px), -50%) scale(.85);
+        .brantjes-property-card {
+          width: 140px;
+          height: 200px;
+        }
+        .brantjes-property-card.active {
+          width: 140px;
+          height: 200px;
+        }
+        /* Show navigation buttons */
+        .brantjes-nav-button {
+          display: flex;
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
         }
       }
       
-      @media (max-width: 480px) {
+      /* Responsive positioning for carousel cards */
+      @media (max-width: 500px) {
         .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 110px), -50%) scale(.85);
+          opacity: .25;
+          transform: translate(calc(-50% - 100px), -50%) scale(.85);
         }
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 110px), -50%) scale(.85);
+          opacity: .25;
+          transform: translate(calc(-50% + 100px), -50%) scale(.85);
         }
       }
       
       @media (max-width: 400px) {
         .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 100px), -50%) scale(.85);
+          transform: translate(calc(-50% - 90px), -50%) scale(.85);
         }
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 100px), -50%) scale(.85);
+          transform: translate(calc(-50% + 90px), -50%) scale(.85);
+        }
+      }
+      
+      @media (max-width: 350px) {
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 80px), -50%) scale(.85);
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 80px), -50%) scale(.85);
         }
       }
       
       /* Landscape orientation adjustments */
       @media (max-width: 600px) and (orientation: landscape) {
         .brantjes-carousel-container {
-          width: 72vw;
-          max-width: 72vw;
-          height: 100vw;
-          max-height: 250px;
+          width: 95vw;
+          max-width: 95vw;
+          height: 280px;
         }
         .brantjes-property-card {
-          width: 180px;
-          height: 220px;
+          width: 160px;
+          height: 200px;
         }
         .brantjes-property-card.active {
-          width: 180px;
-          height: 220px;
+          width: 160px;
+          height: 200px;
         }
         /* Show navigation buttons */
         .brantjes-nav-button {
           display: flex;
-          width: 35px;
-          height: 35px;
-          font-size: 18px;
+          width: 32px;
+          height: 32px;
+          font-size: 16px;
         }
       }
 
