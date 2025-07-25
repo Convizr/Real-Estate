@@ -2121,7 +2121,7 @@ export const BrantjesExtension = {
       }
 
       /* MOBILE RESPONSIVE MODAL STYLES - HIGHEST PRIORITY */
-      @media (max-width: 768px) {
+      @media (max-width: 768px), (max-device-width: 768px), (max-width: 480px) {
         .brantjes-modal-container .detail-popup-main-image {
           width: 100% !important;
           max-width: 100% !important;
@@ -3913,7 +3913,7 @@ export const ViewingBookingExtension = {
       }
 
       /* Responsive adjustments */
-      @media (max-width: 768px) {
+      @media (max-width: 768px), (max-device-width: 768px), (max-width: 480px) {
         .viewing-booking-container {
           padding: 1rem;
           margin: 0;
@@ -4323,7 +4323,7 @@ export const ContactFormExtension = {
       }
 
       /* Responsive adjustments */
-      @media (max-width: 768px) {
+      @media (max-width: 768px), (max-device-width: 768px), (max-width: 480px) {
         .contact-form-container {
           padding: 1rem;
           margin: 0;
@@ -4905,7 +4905,7 @@ export const PropertyDetailsExtension = {
       }
 
       /* MOBILE RESPONSIVE STYLES - PROPERTY DETAILS EXTENSION */
-      @media (max-width: 768px) {
+      @media (max-width: 768px), (max-device-width: 768px), (max-width: 480px) {
         .property-details-container {
           padding: 1rem !important;
           margin: 0 !important;
