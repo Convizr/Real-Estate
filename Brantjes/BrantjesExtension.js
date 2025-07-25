@@ -568,22 +568,20 @@ export const BrantjesExtension = {
       }
 
       /* Responsive Styles */
-      @media (max-width: 500px) {
+      @media (max-width: 600px) {
         .brantjes-carousel-container {
-          width: 95vw;
-          max-width: 95vw;
-          min-width: 280px;
-          height: 400px;
+          width: 70vw;
+          height: 115vw;
         }
         .brantjes-property-card {
-          width: 90vw;
-          max-width: 400px;
-          height: 380px;
+          width: 60vw;
+          max-width: 380px;
+          height: 430px;
         }
         .brantjes-property-card.active {
-          width: 90vw;
-          max-width: 400px;
-          height: 380px;
+          width: 60vw;
+          max-width: 380px;
+          height: 430px;
         }
         /* Show navigation buttons for hero card view */
         .brantjes-nav-button {
@@ -596,18 +594,16 @@ export const BrantjesExtension = {
       
       @media (max-width: 400px) {
         .brantjes-carousel-container {
-          width: 95vw;
-          max-width: 95vw;
-          min-width: 260px;
-          height: 450px;
+          width: 70vw;
+          height: 115vw;
         }
         .brantjes-property-card {
-          width: 90vw;
+          width: 60vw;
           max-width: 380px;
           height: 430px;
         }
         .brantjes-property-card.active {
-          width: 90vw;
+          width: 60vw;
           max-width: 380px;
           height: 430px;
         }
@@ -622,20 +618,18 @@ export const BrantjesExtension = {
       
       @media (max-width: 350px) {
         .brantjes-carousel-container {
-          width: 95vw;
-          max-width: 95vw;
-          min-width: 240px;
-          height: 500px;
+          width: 70vw;
+          height: 115vw;
         }
         .brantjes-property-card {
-          width: 90vw;
+          width: 60vw;
           max-width: 360px;
-          height: 480px;
+          height: 430px;
         }
         .brantjes-property-card.active {
-          width: 90vw;
+          width: 60vw;
           max-width: 360px;
-          height: 480px;
+          height: 430px;
         }
         /* Show navigation buttons */
         .brantjes-nav-button {
@@ -2057,16 +2051,16 @@ export const BrantjesExtension = {
       }
       
       /* MOBILE RESPONSIVE OVERRIDES - HIGHEST PRIORITY */
-      @media (max-width: 500px) {
+      @media (max-width: 600px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 90vw !important;
-          max-width: 400px !important;
-          height: 380px !important;
+          width: 60vw !important;
+          max-width: 380px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .act {
-          width: 90vw !important;
-          max-width: 400px !important;
-          height: 380px !important;
+          width: 60vw !important;
+          max-width: 380px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
@@ -2077,12 +2071,12 @@ export const BrantjesExtension = {
       
       @media (max-width: 400px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 90vw !important;
+          width: 60vw !important;
           max-width: 380px !important;
           height: 430px !important;
         }
         .brantjes-carousel-list .act {
-          width: 90vw !important;
+          width: 60vw !important;
           max-width: 380px !important;
           height: 430px !important;
         }
@@ -2095,14 +2089,14 @@ export const BrantjesExtension = {
       
       @media (max-width: 350px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 90vw !important;
+          width: 60vw !important;
           max-width: 360px !important;
-          height: 480px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .act {
-          width: 90vw !important;
+          width: 60vw !important;
           max-width: 360px !important;
-          height: 480px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
