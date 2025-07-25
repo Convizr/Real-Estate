@@ -2312,15 +2312,19 @@ export const BrantjesExtension = {
         mainImgCol.style.position = 'relative';
         mainImgCol.style.boxSizing = 'border-box';
         mainImgCol.style.display = 'block';
+        mainImgCol.style.minHeight = '200px'; // Ensure minimum height
+        mainImgCol.style.overflow = 'hidden'; // Prevent overflow
         
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
           mainImgCol.style.width = '100%';
           mainImgCol.style.maxWidth = '100%';
           mainImgCol.style.marginBottom = '16px';
+          mainImgCol.style.minHeight = '250px'; // Larger on mobile
         } else {
           mainImgCol.style.width = '60%';
           mainImgCol.style.maxWidth = 'none';
+          mainImgCol.style.minHeight = '300px'; // Larger on desktop
         }
         const mainImg = document.createElement('img');
         const mainImgSrc = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
@@ -2330,6 +2334,9 @@ export const BrantjesExtension = {
         mainImg.style.height = 'auto';
         mainImg.style.display = 'block';
         mainImg.style.borderRadius = '8px';
+        mainImg.style.objectFit = 'cover'; // Ensure image covers container
+        mainImg.style.minHeight = '200px'; // Ensure minimum height
+        mainImg.style.maxHeight = '400px'; // Limit maximum height
         
         console.log('Main image src:', mainImgSrc); // Debug log
         console.log('Main image element:', mainImg); // Debug log
@@ -2365,8 +2372,9 @@ export const BrantjesExtension = {
           thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
           thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
           thumbsCol.style.gap = '8px';
-          thumbsCol.style.height = '100px';
+          thumbsCol.style.height = '120px'; // Increased height
           thumbsCol.style.marginTop = '0';
+          thumbsCol.style.minHeight = '120px'; // Ensure minimum height
         } else {
           thumbsCol.style.width = '40%';
           thumbsCol.style.maxWidth = 'none';
@@ -2376,6 +2384,7 @@ export const BrantjesExtension = {
           thumbsCol.style.gap = '4px';
           thumbsCol.style.height = 'auto';
           thumbsCol.style.marginTop = '0';
+          thumbsCol.style.minHeight = '200px'; // Ensure minimum height
         }
         function renderThumbnails() {
             console.log('Rendering thumbnails, imageList length:', imageList.length); // Debug log
@@ -2394,6 +2403,15 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
+                thumbDiv.style.backgroundSize = 'cover';
+                thumbDiv.style.backgroundPosition = 'center';
+                thumbDiv.style.backgroundRepeat = 'no-repeat';
+                thumbDiv.style.borderRadius = '6px';
+                thumbDiv.style.cursor = 'pointer';
+                thumbDiv.style.minHeight = '50px'; // Ensure minimum height
+                thumbDiv.style.width = '100%';
+                thumbDiv.style.height = '100%';
+                thumbDiv.style.display = 'block';
                 
                 console.log(`Thumbnail ${i} URL:`, thumbUrl); // Debug log
                 console.log(`Thumbnail ${i} element:`, thumbDiv); // Debug log
