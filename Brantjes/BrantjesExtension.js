@@ -2339,9 +2339,9 @@ export const BrantjesExtension = {
         
         /* Adjust image sizes to fit container */
         .brantjes-modal-container .detail-popup-main-image {
-          width: 280px !important;
+          width: 3500px !important;
           min-width: 280px !important;
-          max-width: 280px !important;
+          max-width: 350px !important;
         }
         
         .brantjes-modal-container .detail-popup-thumbnails {
@@ -2398,7 +2398,7 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-specs-row {
           justify-content: flex-start !important;
-          gap: 1rem !important;
+          gap: 0.8rem !important;
           flex-wrap: nowrap !important;
         }
         
