@@ -4576,7 +4576,8 @@ export const PropertyDetailsExtension = {
         .brantjes-modal-container .detail-popup-header-row,
         .detail-popup-header-row {
           flex-wrap: wrap !important;
-          gap: 0.8rem !important;
+          flex-direction: row !important;
+          gap: 1rem !important;
           align-items: flex-start !important;
           width: 100% !important;
           max-width: 100% !important;
@@ -4589,7 +4590,7 @@ export const PropertyDetailsExtension = {
         .brantjes-modal-container .detail-popup-header-details,
         .detail-popup-header-details {
           font-size: 0.9rem !important;
-          margin-right: 0.8rem !important;
+          margin-right: 1rem !important;
           white-space: normal !important;
           flex: 1 !important;
           min-width: 0 !important;
@@ -4602,7 +4603,7 @@ export const PropertyDetailsExtension = {
         .brantjes-modal-container .detail-popup-header-price,
         .detail-popup-header-price {
           font-size: 0.9rem !important;
-          margin-right: 0.8rem !important;
+          margin-right: 1rem !important;
           white-space: normal !important;
           flex-shrink: 0 !important;
           max-width: 100% !important;
@@ -4634,11 +4635,13 @@ export const PropertyDetailsExtension = {
         .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
-          gap: 8px !important;
+          gap: 12px !important;
           width: 100% !important;
           max-width: 100% !important;
           overflow-x: hidden !important;
           box-sizing: border-box !important;
+          flex-wrap: nowrap !important;
+          margin-top: 16px !important;
         }
         
         .brantjes-modal-container .detail-popup-main-image,
@@ -4655,11 +4658,12 @@ export const PropertyDetailsExtension = {
           display: grid !important;
           grid-template-columns: repeat(4, 1fr) !important;
           grid-template-rows: repeat(2, 1fr) !important;
-          gap: 4px !important;
+          gap: 6px !important;
           height: 80px !important;
           position: static !important;
           align-items: stretch !important;
           justify-content: stretch !important;
+          margin-top: 8px !important;
         }
         
         .brantjes-modal-container .detail-popup-thumbnail,
@@ -4705,8 +4709,9 @@ export const PropertyDetailsExtension = {
         
         .detail-popup-header-row {
           flex-direction: column !important;
+          flex-wrap: nowrap !important;
           align-items: flex-start !important;
-          gap: 0.6rem !important;
+          gap: 1rem !important;
           width: 100% !important;
           max-width: 100% !important;
           overflow-x: hidden !important;
@@ -4715,6 +4720,7 @@ export const PropertyDetailsExtension = {
         .detail-popup-header-details,
         .detail-popup-header-price {
           margin-right: 0 !important;
+          margin-bottom: 0.5rem !important;
           white-space: normal !important;
           width: 100% !important;
           max-width: 100% !important;
