@@ -2326,7 +2326,7 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 1.2rem !important;
+          gap: 0.8rem !important;
         }
         
         /* Fix images row width for desktop */
@@ -2363,19 +2363,32 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
         }
         
+        .brantjes-modal-container .energy-label-detail {
+          font-size: 0.7rem !important;
+          height: 22px !important;
+          padding: 0 10px 0 8px !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail::after {
+          border-top: 11px solid transparent !important;
+          border-bottom: 11px solid transparent !important;
+          border-left: 12px solid !important;
+          right: -12px !important;
+        }
+        
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
+          font-size: 9px !important;
+          padding: 0.3em 1em !important;
+          height: 1.8em !important;
         }
         
         .brantjes-modal-container .detail-popup-specs-row {
@@ -5043,7 +5056,7 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 1.2rem !important;
+          gap: 0.8rem !important;
         }
         
         /* Fix images row width for PropertyDetailsExtension desktop */
@@ -5080,19 +5093,32 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
         }
         
+        .property-details-container .energy-label-detail {
+          font-size: 0.7rem !important;
+          height: 22px !important;
+          padding: 0 10px 0 8px !important;
+        }
+        
+        .property-details-container .energy-label-detail::after {
+          border-top: 11px solid transparent !important;
+          border-bottom: 11px solid transparent !important;
+          border-left: 12px solid !important;
+          right: -12px !important;
+        }
+        
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
+          font-size: 9px !important;
+          padding: 0.3em 1em !important;
+          height: 1.8em !important;
         }
         
         .property-details-container .detail-popup-specs-row {
