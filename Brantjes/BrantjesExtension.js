@@ -2263,50 +2263,55 @@ export const BrantjesExtension = {
           min-width: 180px !important;
         }
         
-        /* Mobile-specific header layout */
-        .brantjes-modal-container .detail-popup-header-mobile {
+        /* NEW MOBILE-SPECIFIC LAYOUT CLASSES */
+        .brantjes-modal-container .mobile-header-row {
           display: flex !important;
           flex-direction: column !important;
           gap: 8px !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-row {
+        .brantjes-modal-container .mobile-address-price-row {
           display: flex !important;
+          justify-content: space-between !important;
           align-items: center !important;
-          gap: 8px !important;
+          gap: 12px !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-address-price {
-          display: flex !important;
-          align-items: center !important;
-          gap: 8px !important;
+        .brantjes-modal-container .mobile-address {
+          font-size: 1.1rem !important;
+          font-weight: bold !important;
+          color: #0066cc !important;
           flex: 1 !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-energy {
-          display: flex !important;
-          align-items: center !important;
-          gap: 8px !important;
+        .brantjes-modal-container .mobile-price {
+          font-size: 1rem !important;
+          font-weight: bold !important;
+          flex-shrink: 0 !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-energy .energy-label-detail {
+        .brantjes-modal-container .mobile-postcode {
+          font-size: 0.9rem !important;
+          color: #666 !important;
+        }
+        
+        .brantjes-modal-container .mobile-energy-label {
           font-size: 0.8rem !important;
           height: 18px !important;
           padding: 0 6px 0 4px !important;
+          width: fit-content !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-energy .energy-label-detail::after {
-          border-top: 9px solid transparent !important;
-          border-bottom: 9px solid transparent !important;
-          border-left: 8px solid #FFD700 !important;
-          right: -8px !important;
+        .brantjes-modal-container .mobile-viewing-btn {
+          font-size: 14px !important;
+          padding: 8px 16px !important;
+          height: 40px !important;
+          width: fit-content !important;
+          border-radius: 6px !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-mobile-viewing-btn {
-          font-size: 11px !important;
-          padding: 8px 12px !important;
-          height: 32px !important;
-          min-width: 80px !important;
+        .brantjes-modal-container .mobile-separator-dot {
+          display: none !important;
         }
       }
 
@@ -2611,79 +2616,6 @@ export const BrantjesExtension = {
         viewingBtn.onclick = () => showBookingModal(property);
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
-        
-        // Mobile-specific header layout
-        const headerMobile = document.createElement('div');
-        headerMobile.className = 'detail-popup-header-mobile';
-        
-        // Mobile row 1: Address and Price on same line
-        const mobileRow1 = document.createElement('div');
-        mobileRow1.className = 'detail-popup-header-mobile-row';
-        
-        const addressPriceContainer = document.createElement('div');
-        addressPriceContainer.className = 'detail-popup-header-mobile-address-price';
-        
-        if (hasAddress) {
-          const mobileAddrSpan = document.createElement('span');
-          mobileAddrSpan.className = 'detail-popup-header-details';
-          mobileAddrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-          mobileAddrSpan.style.fontWeight = 'bold';
-          addressPriceContainer.appendChild(mobileAddrSpan);
-        }
-        
-        const mobilePriceDiv = document.createElement('div');
-        mobilePriceDiv.className = 'detail-popup-header-price';
-        mobilePriceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        addressPriceContainer.appendChild(mobilePriceDiv);
-        
-        mobileRow1.appendChild(addressPriceContainer);
-        headerMobile.appendChild(mobileRow1);
-        
-        // Mobile row 2: Energy label and Viewing button
-        const mobileRow2 = document.createElement('div');
-        mobileRow2.className = 'detail-popup-header-mobile-row';
-        
-        const energyContainer = document.createElement('div');
-        energyContainer.className = 'detail-popup-header-mobile-energy';
-        
-        if (hasEnergy) {
-          const mobileEnergyDiv = document.createElement('div');
-          mobileEnergyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse}`;
-          mobileEnergyDiv.textContent = property.algemeen.energieklasse;
-          energyContainer.appendChild(mobileEnergyDiv);
-        }
-        
-        const mobileViewingBtn = document.createElement('button');
-        mobileViewingBtn.className = 'detail-popup-header-mobile-viewing-btn';
-        mobileViewingBtn.textContent = 'Bezichtiging';
-        mobileViewingBtn.onclick = () => showBookingModal(property);
-        energyContainer.appendChild(mobileViewingBtn);
-        
-        mobileRow2.appendChild(energyContainer);
-        headerMobile.appendChild(mobileRow2);
-        
-        // Hide desktop header on mobile, hide mobile header on desktop
-        header.style.display = 'block';
-        headerMobile.style.display = 'none';
-        
-        // Show mobile header on mobile screens
-        if (window.innerWidth <= 768) {
-          header.style.display = 'none';
-          headerMobile.style.display = 'block';
-        }
-        
-        // Listen for window resize
-        window.addEventListener('resize', () => {
-          if (window.innerWidth <= 768) {
-            header.style.display = 'none';
-            headerMobile.style.display = 'block';
-          } else {
-            header.style.display = 'block';
-            headerMobile.style.display = 'none';
-          }
-        });
-        
-        header.appendChild(headerMobile);
         detailContent.appendChild(header);
 
         // --- IMAGES ROW ---
@@ -5138,50 +5070,55 @@ export const PropertyDetailsExtension = {
           min-width: 180px !important;
         }
         
-        /* Mobile-specific header layout for PropertyDetailsExtension */
-        .property-details-container .detail-popup-header-mobile {
+        /* NEW MOBILE-SPECIFIC LAYOUT CLASSES FOR PROPERTY DETAILS */
+        .property-details-container .mobile-header-row {
           display: flex !important;
           flex-direction: column !important;
           gap: 8px !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-row {
+        .property-details-container .mobile-address-price-row {
           display: flex !important;
+          justify-content: space-between !important;
           align-items: center !important;
-          gap: 8px !important;
+          gap: 12px !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-address-price {
-          display: flex !important;
-          align-items: center !important;
-          gap: 8px !important;
+        .property-details-container .mobile-address {
+          font-size: 1.1rem !important;
+          font-weight: bold !important;
+          color: #0066cc !important;
           flex: 1 !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-energy {
-          display: flex !important;
-          align-items: center !important;
-          gap: 8px !important;
+        .property-details-container .mobile-price {
+          font-size: 1rem !important;
+          font-weight: bold !important;
+          flex-shrink: 0 !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-energy .energy-label-detail {
+        .property-details-container .mobile-postcode {
+          font-size: 0.9rem !important;
+          color: #666 !important;
+        }
+        
+        .property-details-container .mobile-energy-label {
           font-size: 0.8rem !important;
           height: 18px !important;
           padding: 0 6px 0 4px !important;
+          width: fit-content !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-energy .energy-label-detail::after {
-          border-top: 9px solid transparent !important;
-          border-bottom: 9px solid transparent !important;
-          border-left: 8px solid #FFD700 !important;
-          right: -8px !important;
+        .property-details-container .mobile-viewing-btn {
+          font-size: 14px !important;
+          padding: 8px 16px !important;
+          height: 40px !important;
+          width: fit-content !important;
+          border-radius: 6px !important;
         }
         
-        .property-details-container .detail-popup-header-mobile-viewing-btn {
-          font-size: 11px !important;
-          padding: 8px 12px !important;
-          height: 32px !important;
-          min-width: 80px !important;
+        .property-details-container .mobile-separator-dot {
+          display: none !important;
         }
       }
 
@@ -5693,79 +5630,6 @@ export const PropertyDetailsExtension = {
       viewingBtn.onclick = () => showBookingModal(property);
       headerRow.appendChild(viewingBtn);
       header.appendChild(headerRow);
-      
-      // Mobile-specific header layout for PropertyDetailsExtension
-      const headerMobile = document.createElement('div');
-      headerMobile.className = 'detail-popup-header-mobile';
-      
-      // Mobile row 1: Address and Price on same line
-      const mobileRow1 = document.createElement('div');
-      mobileRow1.className = 'detail-popup-header-mobile-row';
-      
-      const addressPriceContainer = document.createElement('div');
-      addressPriceContainer.className = 'detail-popup-header-mobile-address-price';
-      
-      if (hasAddress) {
-        const mobileAddrSpan = document.createElement('span');
-        mobileAddrSpan.className = 'detail-popup-header-details';
-        mobileAddrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-        mobileAddrSpan.style.fontWeight = 'bold';
-        addressPriceContainer.appendChild(mobileAddrSpan);
-      }
-      
-      const mobilePriceDiv = document.createElement('div');
-      mobilePriceDiv.className = 'detail-popup-header-price';
-      mobilePriceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-      addressPriceContainer.appendChild(mobilePriceDiv);
-      
-      mobileRow1.appendChild(addressPriceContainer);
-      headerMobile.appendChild(mobileRow1);
-      
-      // Mobile row 2: Energy label and Viewing button
-      const mobileRow2 = document.createElement('div');
-      mobileRow2.className = 'detail-popup-header-mobile-row';
-      
-      const energyContainer = document.createElement('div');
-      energyContainer.className = 'detail-popup-header-mobile-energy';
-      
-      if (hasEnergy) {
-        const mobileEnergyDiv = document.createElement('div');
-        mobileEnergyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse}`;
-        mobileEnergyDiv.textContent = property.algemeen.energieklasse;
-        energyContainer.appendChild(mobileEnergyDiv);
-      }
-      
-      const mobileViewingBtn = document.createElement('button');
-      mobileViewingBtn.className = 'detail-popup-header-mobile-viewing-btn';
-      mobileViewingBtn.textContent = 'Bezichtiging';
-      mobileViewingBtn.onclick = () => showBookingModal(property);
-      energyContainer.appendChild(mobileViewingBtn);
-      
-      mobileRow2.appendChild(energyContainer);
-      headerMobile.appendChild(mobileRow2);
-      
-      // Hide desktop header on mobile, hide mobile header on desktop
-      header.style.display = 'block';
-      headerMobile.style.display = 'none';
-      
-      // Show mobile header on mobile screens
-      if (window.innerWidth <= 768) {
-        header.style.display = 'none';
-        headerMobile.style.display = 'block';
-      }
-      
-      // Listen for window resize
-      window.addEventListener('resize', () => {
-        if (window.innerWidth <= 768) {
-          header.style.display = 'none';
-          headerMobile.style.display = 'block';
-        } else {
-          header.style.display = 'block';
-          headerMobile.style.display = 'none';
-        }
-      });
-      
-      header.appendChild(headerMobile);
       detailContent.appendChild(header);
 
       // --- IMAGES ROW ---
