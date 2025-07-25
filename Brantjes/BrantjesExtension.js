@@ -2204,6 +2204,12 @@ export const BrantjesExtension = {
         headerRow.style.maxWidth = '100%';
         headerRow.style.overflowX = 'hidden';
         headerRow.style.boxSizing = 'border-box';
+        
+        // Check if we're on mobile and adjust accordingly
+        if (window.innerWidth <= 768) {
+          headerRow.style.flexDirection = 'column';
+          headerRow.style.alignItems = 'flex-start';
+        }
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
@@ -2274,23 +2280,38 @@ export const BrantjesExtension = {
         imagesRow.className = 'detail-popup-images-row';
         
         // Add responsive inline styles for images
-        imagesRow.style.flexDirection = 'column';
-        imagesRow.style.alignItems = 'center';
-        imagesRow.style.gap = '12px';
         imagesRow.style.width = '100%';
         imagesRow.style.maxWidth = '100%';
         imagesRow.style.overflowX = 'hidden';
         imagesRow.style.boxSizing = 'border-box';
         imagesRow.style.marginTop = '16px';
+        
+        // Check if we're on mobile and adjust accordingly
+        if (window.innerWidth <= 768) {
+          imagesRow.style.flexDirection = 'column';
+          imagesRow.style.alignItems = 'center';
+          imagesRow.style.gap = '12px';
+        } else {
+          imagesRow.style.flexDirection = 'row';
+          imagesRow.style.alignItems = 'flex-start';
+          imagesRow.style.gap = '16px';
+        }
         // Main image
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
         
         // Add responsive inline styles for main image
-        mainImgCol.style.width = '100%';
-        mainImgCol.style.maxWidth = '100%';
         mainImgCol.style.position = 'relative';
         mainImgCol.style.boxSizing = 'border-box';
+        
+        // Check if we're on mobile and adjust accordingly
+        if (window.innerWidth <= 768) {
+          mainImgCol.style.width = '100%';
+          mainImgCol.style.maxWidth = '320px';
+        } else {
+          mainImgCol.style.width = '60%';
+          mainImgCol.style.maxWidth = 'none';
+        }
         const mainImg = document.createElement('img');
         mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
@@ -2309,18 +2330,31 @@ export const BrantjesExtension = {
         thumbsCol.className = 'detail-popup-thumbnails';
         
         // Add responsive inline styles for thumbnails
-        thumbsCol.style.width = '100%';
-        thumbsCol.style.maxWidth = '100%';
-        thumbsCol.style.display = 'grid';
-        thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
-        thumbsCol.style.gap = '6px';
-        thumbsCol.style.height = '80px';
         thumbsCol.style.position = 'static';
         thumbsCol.style.alignItems = 'stretch';
         thumbsCol.style.justifyContent = 'stretch';
-        thumbsCol.style.marginTop = '8px';
         thumbsCol.style.boxSizing = 'border-box';
+        
+        // Check if we're on mobile and adjust accordingly
+        if (window.innerWidth <= 768) {
+          thumbsCol.style.width = '100%';
+          thumbsCol.style.maxWidth = '100%';
+          thumbsCol.style.display = 'grid';
+          thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
+          thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
+          thumbsCol.style.gap = '6px';
+          thumbsCol.style.height = '80px';
+          thumbsCol.style.marginTop = '8px';
+        } else {
+          thumbsCol.style.width = '40%';
+          thumbsCol.style.maxWidth = 'none';
+          thumbsCol.style.display = 'grid';
+          thumbsCol.style.gridTemplateColumns = 'repeat(2, 1fr)';
+          thumbsCol.style.gridTemplateRows = 'repeat(4, 1fr)';
+          thumbsCol.style.gap = '4px';
+          thumbsCol.style.height = 'auto';
+          thumbsCol.style.marginTop = '0';
+        }
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
@@ -2368,6 +2402,18 @@ export const BrantjesExtension = {
         // --- SPECIFICATIONS ROW (Brantjes style) ---
         const specsRow = document.createElement('div');
         specsRow.className = 'detail-popup-specs-row';
+        
+        // Add responsive inline styles for specifications
+        specsRow.style.width = '100%';
+        specsRow.style.maxWidth = '100%';
+        specsRow.style.overflowX = 'hidden';
+        specsRow.style.boxSizing = 'border-box';
+        specsRow.style.padding = '0';
+        specsRow.style.margin = '16px 0 0 0';
+        specsRow.style.flexWrap = 'wrap';
+        specsRow.style.gap = '8px';
+        specsRow.style.display = 'flex';
+        specsRow.style.alignItems = 'center';
 
         // Woonoppervlakte
         const woonopp = property.algemeen?.woonoppervlakte;
@@ -2418,6 +2464,14 @@ export const BrantjesExtension = {
         // --- RIGHT: Info ---
         const infoCol = document.createElement('div');
         infoCol.className = 'detail-popup-info';
+        
+        // Add responsive inline styles for info section
+        infoCol.style.width = '100%';
+        infoCol.style.maxWidth = '100%';
+        infoCol.style.overflowX = 'hidden';
+        infoCol.style.boxSizing = 'border-box';
+        infoCol.style.padding = '0';
+        infoCol.style.margin = '0';
 
         // --- Description with 'toon meer' ---
         const desc = property.teksten?.aanbiedingstekst || '';
