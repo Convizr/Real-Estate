@@ -109,7 +109,9 @@ export const BrantjesExtension = {
         position: relative;
         width: 100%;
         max-width: 650px; /* Max width */
+        min-width: 300px; /* Minimum width to prevent collapse */
         height: 420px; /* Fixed height for carousel area */
+        min-height: 300px; /* Minimum height to prevent collapse */
         margin: auto;
         overflow: hidden;
         padding: 0;
@@ -3347,9 +3349,13 @@ export const BrantjesExtension = {
     carouselContainer.className = 'brantjes-carousel-container';
     carouselContainer.style.border = '2px solid red'; // Debug: Make container visible
     carouselContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.1)'; // Debug: Add background
+    carouselContainer.style.minWidth = '300px'; // Ensure minimum width
+    carouselContainer.style.minHeight = '300px'; // Ensure minimum height
 
     const list = document.createElement('ul');
     list.className = 'brantjes-carousel-list';
+    list.style.minWidth = '300px'; // Ensure minimum width
+    list.style.minHeight = '300px'; // Ensure minimum height
     carouselContainer.appendChild(list);
 
     // Populate all unique property cards in the list initially
@@ -3431,20 +3437,24 @@ export const BrantjesExtension = {
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
                 card.style.width = activeWidth; // Responsive active width
                 card.style.height = activeHeight; // Responsive active height
-                console.log(`✅ Card ${index} set as ACTIVE`);
+                card.style.border = '2px solid green'; // Debug: Make active card visible
+                console.log(`✅ Card ${index} set as ACTIVE - Width: ${activeWidth}, Height: ${activeHeight}`);
             } else if (index === nextIndex) { // Next card
                 card.classList.add('next');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.85)`;
-                console.log(`➡️ Card ${index} set as NEXT`);
+                card.style.border = '2px solid blue'; // Debug: Make next card visible
+                console.log(`➡️ Card ${index} set as NEXT - Offset: ${offsetDistance}`);
             } else if (index === prevIndex) { // Previous card
                 card.classList.add('prev');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.85)`;
-                console.log(`⬅️ Card ${index} set as PREV`);
+                card.style.border = '2px solid orange'; // Debug: Make prev card visible
+                console.log(`⬅️ Card ${index} set as PREV - Offset: ${offsetDistance}`);
             } else {
+                card.style.border = '1px solid gray'; // Debug: Make hidden cards slightly visible
                 console.log(`❌ Card ${index} set as HIDDEN`);
             }
             // All other cards will retain the default hidden/scaled state
