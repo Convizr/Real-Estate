@@ -4554,46 +4554,101 @@ export const PropertyDetailsExtension = {
           border-radius: 0;
         }
         
+        /* Force all detail popup content to stay within bounds */
+        .brantjes-modal-container .detail-popup-content,
+        .detail-popup-content {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header,
+        .detail-popup-header {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-row,
         .detail-popup-header-row {
           flex-wrap: wrap !important;
           gap: 0.8rem !important;
           align-items: flex-start !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
         
+        .brantjes-modal-container .detail-popup-header-details,
         .detail-popup-header-details {
           font-size: 0.9rem !important;
           margin-right: 0.8rem !important;
           white-space: normal !important;
           flex: 1 !important;
           min-width: 0 !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
+          word-break: break-word !important;
         }
         
+        .brantjes-modal-container .detail-popup-header-price,
         .detail-popup-header-price {
           font-size: 0.9rem !important;
           margin-right: 0.8rem !important;
           white-space: normal !important;
           flex-shrink: 0 !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
+          word-break: break-word !important;
         }
         
+        .brantjes-modal-container .detail-popup-header-viewing-btn,
         .detail-popup-header-viewing-btn {
           font-size: 10px !important;
           padding: 0.4em 1.2em !important;
           height: 2em !important;
           flex-shrink: 0 !important;
+          white-space: nowrap !important;
         }
         
+        .brantjes-modal-container .detail-popup-dot,
+        .detail-popup-dot {
+          flex-shrink: 0 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-energy,
+        .detail-popup-header-energy {
+          flex-shrink: 0 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-images-row,
         .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
           gap: 8px !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
         }
         
+        .brantjes-modal-container .detail-popup-main-image,
         .detail-popup-main-image {
           width: 100% !important;
           max-width: 320px !important;
           position: relative !important;
         }
         
+        .brantjes-modal-container .detail-popup-thumbnails,
         .detail-popup-thumbnails {
           width: 100% !important;
           max-width: 320px !important;
@@ -4607,6 +4662,7 @@ export const PropertyDetailsExtension = {
           justify-content: stretch !important;
         }
         
+        .brantjes-modal-container .detail-popup-thumbnail,
         .detail-popup-thumbnail {
           width: 100% !important;
           height: 100% !important;
@@ -4621,10 +4677,12 @@ export const PropertyDetailsExtension = {
           box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
         }
         
+        .brantjes-modal-container .detail-popup-thumbnail:hover,
         .detail-popup-thumbnail:hover {
           opacity: 0.8 !important;
         }
         
+        .brantjes-modal-container .detail-popup-thumbnail.fade-in,
         .detail-popup-thumbnail.fade-in {
           position: static !important;
           pointer-events: auto !important;
@@ -4640,21 +4698,35 @@ export const PropertyDetailsExtension = {
           max-height: 90vh !important;
         }
         
+        .detail-popup-content {
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        
         .detail-popup-header-row {
           flex-direction: column !important;
           align-items: flex-start !important;
           gap: 0.6rem !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
         }
         
         .detail-popup-header-details,
         .detail-popup-header-price {
           margin-right: 0 !important;
           white-space: normal !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
         }
         
         .detail-popup-header-viewing-btn {
           align-self: stretch !important;
           justify-content: center !important;
+          width: 100% !important;
+          max-width: 100% !important;
         }
         
         .detail-popup-thumbnails {
@@ -4671,15 +4743,26 @@ export const PropertyDetailsExtension = {
           max-width: 98vw !important;
         }
         
+        .detail-popup-content {
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        
         .detail-popup-header-details,
         .detail-popup-header-price {
           font-size: 0.85rem !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
         }
         
         .detail-popup-header-viewing-btn {
           font-size: 9px !important;
           padding: 0.3em 1em !important;
           height: 1.8em !important;
+          width: 100% !important;
+          max-width: 100% !important;
         }
         
         .detail-popup-thumbnails {
