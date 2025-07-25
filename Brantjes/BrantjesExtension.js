@@ -2262,57 +2262,6 @@ export const BrantjesExtension = {
           padding: 10px 24px !important;
           min-width: 180px !important;
         }
-        
-        /* NEW MOBILE-SPECIFIC LAYOUT CLASSES */
-        .brantjes-modal-container .mobile-header-row {
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 8px !important;
-        }
-        
-        .brantjes-modal-container .mobile-address-price-row {
-          display: flex !important;
-          justify-content: space-between !important;
-          align-items: center !important;
-          gap: 12px !important;
-        }
-        
-        .brantjes-modal-container .mobile-address {
-          font-size: 1.1rem !important;
-          font-weight: bold !important;
-          color: #0066cc !important;
-          flex: 1 !important;
-        }
-        
-        .brantjes-modal-container .mobile-price {
-          font-size: 1rem !important;
-          font-weight: bold !important;
-          flex-shrink: 0 !important;
-        }
-        
-        .brantjes-modal-container .mobile-postcode {
-          font-size: 0.9rem !important;
-          color: #666 !important;
-        }
-        
-        .brantjes-modal-container .mobile-energy-label {
-          font-size: 0.8rem !important;
-          height: 18px !important;
-          padding: 0 6px 0 4px !important;
-          width: fit-content !important;
-        }
-        
-        .brantjes-modal-container .mobile-viewing-btn {
-          font-size: 14px !important;
-          padding: 8px 16px !important;
-          height: 40px !important;
-          width: fit-content !important;
-          border-radius: 6px !important;
-        }
-        
-        .brantjes-modal-container .mobile-separator-dot {
-          display: none !important;
-        }
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
@@ -5068,57 +5017,6 @@ export const PropertyDetailsExtension = {
           font-size: 14px !important;
           padding: 10px 24px !important;
           min-width: 180px !important;
-        }
-        
-        /* NEW MOBILE-SPECIFIC LAYOUT CLASSES FOR PROPERTY DETAILS */
-        .property-details-container .mobile-header-row {
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 8px !important;
-        }
-        
-        .property-details-container .mobile-address-price-row {
-          display: flex !important;
-          justify-content: space-between !important;
-          align-items: center !important;
-          gap: 12px !important;
-        }
-        
-        .property-details-container .mobile-address {
-          font-size: 1.1rem !important;
-          font-weight: bold !important;
-          color: #0066cc !important;
-          flex: 1 !important;
-        }
-        
-        .property-details-container .mobile-price {
-          font-size: 1rem !important;
-          font-weight: bold !important;
-          flex-shrink: 0 !important;
-        }
-        
-        .property-details-container .mobile-postcode {
-          font-size: 0.9rem !important;
-          color: #666 !important;
-        }
-        
-        .property-details-container .mobile-energy-label {
-          font-size: 0.8rem !important;
-          height: 18px !important;
-          padding: 0 6px 0 4px !important;
-          width: fit-content !important;
-        }
-        
-        .property-details-container .mobile-viewing-btn {
-          font-size: 14px !important;
-          padding: 8px 16px !important;
-          height: 40px !important;
-          width: fit-content !important;
-          border-radius: 6px !important;
-        }
-        
-        .property-details-container .mobile-separator-dot {
-          display: none !important;
         }
       }
 
