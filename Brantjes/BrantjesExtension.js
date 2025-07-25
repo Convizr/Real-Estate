@@ -78,7 +78,8 @@ export const BrantjesExtension = {
 
       .brantjes-carousel-container {
         position: relative;
-        width: 650px; /* Max width */
+        width: 100%;
+        max-width: 650px; /* Max width */
         height: 420px; /* Fixed height for carousel area */
         margin: auto;
         overflow: hidden;
@@ -565,31 +566,36 @@ export const BrantjesExtension = {
         background: #166BB5;
       }
 
-      /* Responsive Styles */
+      /* Responsive Styles - Updated */
       @media (max-width: 900px) {
         .brantjes-carousel-container {
-          width: 98vw;
-          height: 60vw;
-          min-width: 0;
-          min-height: 0;
+          width: 95%;
+          max-width: 600px;
+          height: 380px;
         }
         .brantjes-property-card {
-          width: 40vw;
-          min-width: 120px;
-          height: 60vw;
-          min-height: 180px;
+          width: 180px;
+          height: 300px;
+        }
+        .brantjes-property-card.active {
+          width: 200px;
+          height: 330px;
         }
       }
       @media (max-width: 600px) {
         .brantjes-carousel-container {
-          width: 100vw;
-          height: 70vw;
+          width: 100%;
+          max-width: none;
+          height: 350px;
+          padding: 0 10px;
         }
         .brantjes-property-card {
-          width: 80vw;
-          min-width: 100px;
-          height: 60vw;
-          min-height: 120px;
+          width: 160px;
+          height: 270px;
+        }
+        .brantjes-property-card.active {
+          width: 180px;
+          height: 300px;
         }
       }
 
@@ -1969,6 +1975,398 @@ export const BrantjesExtension = {
       .search-nearby-btn:hover {
         background: #166BB5;
       }
+
+      /* ===== RESPONSIVE DESIGN ===== */
+      
+      /* Tablet Styles (768px - 1024px) */
+      @media (max-width: 1024px) {
+        .brantjes-carousel-container {
+          width: 95%;
+          max-width: 600px;
+          height: 380px;
+        }
+        
+        .brantjes-property-card {
+          width: 180px;
+          height: 300px;
+        }
+        
+        .brantjes-property-card.active {
+          width: 200px;
+          height: 330px;
+        }
+        
+        .detail-popup-content {
+          gap: 20px;
+        }
+        
+        .detail-popup-images-row {
+          gap: 8px;
+        }
+        
+        .detail-popup-main-image {
+          width: 280px;
+          height: 210px;
+          min-width: 280px;
+          max-width: 280px;
+          max-height: 210px;
+        }
+        
+        .detail-popup-thumbnails {
+          grid-template-columns: 130px 130px;
+          grid-template-rows: 100px 100px;
+          gap: 8px;
+          height: 210px;
+        }
+        
+        .detail-popup-thumbnail {
+          width: 130px;
+          height: 100px;
+        }
+        
+        .detail-popup-header-row {
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        
+        .detail-popup-header-price {
+          font-size: 0.95rem;
+        }
+        
+        .detail-popup-header-viewing-btn {
+          font-size: 10px;
+          padding: 0.4em 1.2em;
+        }
+      }
+      
+      /* Mobile Styles (480px - 767px) */
+      @media (max-width: 767px) {
+        .brantjes-carousel-container {
+          width: 100%;
+          max-width: none;
+          height: 350px;
+          padding: 0 10px;
+        }
+        
+        .brantjes-property-card {
+          width: 160px;
+          height: 270px;
+        }
+        
+        .brantjes-property-card.active {
+          width: 180px;
+          height: 300px;
+        }
+        
+        .brantjes-card-overlay {
+          padding: 12px 12px 18px 12px;
+        }
+        
+        .brantjes-card-info p {
+          font-size: 11px;
+        }
+        
+        .brantjes-card-info p:first-child {
+          font-size: 11px;
+        }
+        
+        .energy-label {
+          top: 10px;
+          left: 10px;
+          min-width: 32px;
+          height: 28px;
+          font-size: 18px;
+          line-height: 28px;
+          padding: 0 12px 0 8px;
+        }
+        
+        .energy-label::after {
+          right: -10px;
+          border-top: 14px solid transparent;
+          border-bottom: 14px solid transparent;
+          border-left: 10px solid;
+        }
+        
+        /* Modal adjustments for mobile */
+        .brantjes-modal-container {
+          width: 95%;
+          max-width: none;
+          max-height: 90vh;
+          margin: 20px auto;
+          padding: 20px;
+        }
+        
+        .detail-popup-content {
+          gap: 16px;
+        }
+        
+        .detail-popup-header {
+          gap: 0.3rem;
+        }
+        
+        .detail-popup-title-main {
+          font-size: 1.3rem;
+        }
+        
+        .detail-popup-header-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.8rem;
+          margin-top: 0.5rem;
+        }
+        
+        .detail-popup-header-details {
+          margin-right: 0;
+          white-space: normal;
+        }
+        
+        .detail-popup-header-price {
+          margin-right: 0;
+          margin-left: 0;
+          white-space: normal;
+          font-size: 0.9rem;
+        }
+        
+        .detail-popup-header-viewing-btn {
+          align-self: flex-start;
+          margin-left: 0;
+          font-size: 11px;
+          padding: 0.5em 1.5em;
+        }
+        
+        .detail-popup-images-row {
+          flex-direction: column;
+          gap: 12px;
+          align-items: center;
+        }
+        
+        .detail-popup-main-image {
+          width: 100%;
+          max-width: 320px;
+          height: 240px;
+          min-width: auto;
+          max-height: 240px;
+        }
+        
+        .detail-popup-thumbnails {
+          width: 100%;
+          max-width: 320px;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 80px 80px;
+          gap: 8px;
+          height: auto;
+          justify-content: center;
+        }
+        
+        .detail-popup-thumbnail {
+          width: 100%;
+          height: 80px;
+        }
+        
+        .detail-popup-specs-row {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          font-size: 0.85rem;
+        }
+        
+        .detail-popup-dot {
+          margin: 0 0.3rem;
+        }
+        
+        /* Contact form mobile adjustments */
+        .contact-form-container {
+          padding: 1rem;
+          margin: 0;
+          border-radius: 0;
+        }
+        
+        .contact-form {
+          padding: 1.5rem;
+        }
+        
+        .contact-form .form-row {
+          flex-direction: column;
+        }
+        
+        .contact-form .form-row > div {
+          flex: 1 1 auto;
+        }
+        
+        .contact-form-header h1 {
+          font-size: 1.3rem;
+        }
+        
+        .contact-form-header p {
+          font-size: 0.75rem;
+        }
+      }
+      
+      /* Small Mobile Styles (320px - 479px) */
+      @media (max-width: 479px) {
+        .brantjes-carousel-container {
+          height: 320px;
+          padding: 0 5px;
+        }
+        
+        .brantjes-property-card {
+          width: 140px;
+          height: 240px;
+        }
+        
+        .brantjes-property-card.active {
+          width: 160px;
+          height: 270px;
+        }
+        
+        .brantjes-card-overlay {
+          padding: 10px 10px 15px 10px;
+        }
+        
+        .brantjes-card-info p {
+          font-size: 10px;
+        }
+        
+        .brantjes-card-info p:first-child {
+          font-size: 10px;
+        }
+        
+        .energy-label {
+          top: 8px;
+          left: 8px;
+          min-width: 28px;
+          height: 24px;
+          font-size: 16px;
+          line-height: 24px;
+          padding: 0 10px 0 6px;
+        }
+        
+        .energy-label::after {
+          right: -8px;
+          border-top: 12px solid transparent;
+          border-bottom: 12px solid transparent;
+          border-left: 8px solid;
+        }
+        
+        /* Modal adjustments for small mobile */
+        .brantjes-modal-container {
+          width: 98%;
+          margin: 10px auto;
+          padding: 15px;
+        }
+        
+        .detail-popup-title-main {
+          font-size: 1.1rem;
+        }
+        
+        .detail-popup-header-row {
+          gap: 0.6rem;
+        }
+        
+        .detail-popup-header-price {
+          font-size: 0.85rem;
+        }
+        
+        .detail-popup-header-viewing-btn {
+          font-size: 10px;
+          padding: 0.4em 1.2em;
+        }
+        
+        .detail-popup-main-image {
+          height: 200px;
+          max-height: 200px;
+        }
+        
+        .detail-popup-thumbnails {
+          grid-template-rows: 70px 70px;
+          gap: 6px;
+        }
+        
+        .detail-popup-thumbnail {
+          height: 70px;
+        }
+        
+        .detail-popup-specs-row {
+          font-size: 0.8rem;
+          gap: 0.4rem;
+        }
+        
+        .detail-popup-dot {
+          margin: 0 0.2rem;
+        }
+        
+        /* Contact form small mobile adjustments */
+        .contact-form-container {
+          padding: 0.5rem;
+        }
+        
+        .contact-form {
+          padding: 1rem;
+        }
+        
+        .contact-form-header h1 {
+          font-size: 1.2rem;
+        }
+        
+        .contact-form-header p {
+          font-size: 0.7rem;
+        }
+        
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+          font-size: 14px;
+          padding: 8px 10px;
+        }
+        
+        .contact-form .submit-btn {
+          font-size: 14px;
+          padding: 8px 20px;
+        }
+      }
+      
+      /* Landscape Mobile Styles */
+      @media (max-width: 767px) and (orientation: landscape) {
+        .brantjes-carousel-container {
+          height: 280px;
+        }
+        
+        .brantjes-property-card {
+          width: 150px;
+          height: 250px;
+        }
+        
+        .brantjes-property-card.active {
+          width: 170px;
+          height: 280px;
+        }
+        
+        .detail-popup-images-row {
+          flex-direction: row;
+          align-items: flex-end;
+        }
+        
+        .detail-popup-main-image {
+          width: 200px;
+          height: 150px;
+          min-width: 200px;
+          max-width: 200px;
+          max-height: 150px;
+        }
+        
+        .detail-popup-thumbnails {
+          width: auto;
+          max-width: none;
+          grid-template-columns: 100px 100px;
+          grid-template-rows: 70px 70px;
+          gap: 6px;
+          height: 150px;
+        }
+        
+        .detail-popup-thumbnail {
+          width: 100px;
+          height: 70px;
+        }
+      }
     `;
     element.appendChild(style);
 
@@ -3072,9 +3470,34 @@ export const NearbyMap = {
 
     // 2) Create container
     const mapEl = document.createElement('div');
-    mapEl.style.width = '300px';
+    mapEl.style.width = '100%';
+    mapEl.style.maxWidth = '600px';
     mapEl.style.height = '400px';
+    mapEl.style.margin = '0 auto';
+    mapEl.style.borderRadius = '12px';
+    mapEl.style.overflow = 'hidden';
     element.appendChild(mapEl);
+    
+    // Add responsive styles
+    const mapStyle = document.createElement('style');
+    mapStyle.innerHTML = `
+      @media (max-width: 768px) {
+        div[style*="max-width: 600px"] {
+          max-width: 100% !important;
+          height: 350px !important;
+          margin: 10px auto !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        div[style*="max-width: 600px"] {
+          max-width: 100% !important;
+          height: 300px !important;
+          margin: 5px auto !important;
+        }
+      }
+    `;
+    element.appendChild(mapStyle);
 
     // 3) Load Google Maps JS
     function loadScript(src) {

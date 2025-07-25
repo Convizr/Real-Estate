@@ -10,7 +10,8 @@ export const RenteVergelijkerExtension = {
     const widgetContainer = document.createElement("div");
     widgetContainer.style.cssText = `
       display:inline-block!important;
-      width:300px!important;
+      width:100%!important;
+      max-width:300px!important;
       font-family:Inter,Arial,sans-serif;
       font-size:15px;
       background:#fff;border-radius:16px;
@@ -144,6 +145,55 @@ export const RenteVergelijkerExtension = {
       .bank-country {
         color: #888;
         font-size: 0.75em;
+      }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        div, input, select, button, label, span {
+          font-size: 14px !important;
+        }
+        
+        .pill {
+          font-size: 0.9em;
+          padding: 6px 8px;
+        }
+        
+        .recommended-badge {
+          font-size: 11px !important;
+          padding: 1px 6px;
+        }
+        
+        .bank-name {
+          font-size: 0.85em;
+        }
+        
+        .bank-country {
+          font-size: 0.7em;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        div, input, select, button, label, span {
+          font-size: 13px !important;
+        }
+        
+        .pill {
+          font-size: 0.85em;
+          padding: 5px 6px;
+        }
+        
+        .recommended-badge {
+          font-size: 10px !important;
+          padding: 1px 4px;
+        }
+        
+        .bank-name {
+          font-size: 0.8em;
+        }
+        
+        .bank-country {
+          font-size: 0.65em;
+        }
       }
     `;
     shadow.appendChild(style);
