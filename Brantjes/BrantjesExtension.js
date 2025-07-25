@@ -2111,6 +2111,14 @@ export const BrantjesExtension = {
           width: 70vw !important;
           height: 115vw !important;
         }
+        /* Faster transitions for mobile */
+        .brantjes-carousel-list .brantjes-property-card {
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s, width 0.3s, height 0.3s !important;
+        }
+        .brantjes-carousel-list .hide,
+        .brantjes-carousel-list .new-next {
+          transition: opacity 0.2s, transform 0.2s !important;
+        }
       }
     `;
     element.appendChild(style);
