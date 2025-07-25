@@ -2262,6 +2262,34 @@ export const BrantjesExtension = {
           padding: 10px 24px !important;
           min-width: 180px !important;
         }
+        
+        /* Mobile-specific booking modal styling */
+        .brantjes-modal-container .booking-modal h2 {
+          font-size: 1.2rem !important;
+          line-height: 1.3 !important;
+        }
+        
+        .brantjes-modal-container .booking-modal h3 {
+          font-size: 1rem !important;
+          line-height: 1.3 !important;
+        }
+        
+        .brantjes-modal-container .booking-modal input,
+        .brantjes-modal-container .booking-modal select,
+        .brantjes-modal-container .booking-modal textarea {
+          font-size: 14px !important;
+          padding: 8px 12px !important;
+        }
+        
+        .brantjes-modal-container .booking-modal label {
+          font-size: 14px !important;
+          margin-bottom: 4px !important;
+        }
+        
+        .brantjes-modal-container .booking-modal .checkbox-label {
+          font-size: 12px !important;
+          line-height: 1.4 !important;
+        }
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
@@ -5017,6 +5045,34 @@ export const PropertyDetailsExtension = {
           font-size: 14px !important;
           padding: 10px 24px !important;
           min-width: 180px !important;
+        }
+        
+        /* Mobile-specific booking modal styling for PropertyDetailsExtension */
+        .property-details-container .booking-modal h2 {
+          font-size: 1.2rem !important;
+          line-height: 1.3 !important;
+        }
+        
+        .property-details-container .booking-modal h3 {
+          font-size: 1rem !important;
+          line-height: 1.3 !important;
+        }
+        
+        .property-details-container .booking-modal input,
+        .property-details-container .booking-modal select,
+        .property-details-container .booking-modal textarea {
+          font-size: 14px !important;
+          padding: 8px 12px !important;
+        }
+        
+        .property-details-container .booking-modal label {
+          font-size: 14px !important;
+          margin-bottom: 4px !important;
+        }
+        
+        .property-details-container .booking-modal .checkbox-label {
+          font-size: 12px !important;
+          line-height: 1.4 !important;
         }
       }
 
