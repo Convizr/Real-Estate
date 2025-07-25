@@ -2208,7 +2208,8 @@ export const BrantjesExtension = {
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
           headerRow.style.flexDirection = 'column';
-          headerRow.style.alignItems = 'flex-start';
+          headerRow.style.alignItems = 'stretch';
+          headerRow.style.gap = '12px';
         }
 
         // Address (postal code + city)
@@ -2285,12 +2286,14 @@ export const BrantjesExtension = {
         imagesRow.style.overflowX = 'hidden';
         imagesRow.style.boxSizing = 'border-box';
         imagesRow.style.marginTop = '16px';
+        imagesRow.style.display = 'flex';
         
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
           imagesRow.style.flexDirection = 'column';
           imagesRow.style.alignItems = 'center';
-          imagesRow.style.gap = '12px';
+          imagesRow.style.gap = '16px';
+          imagesRow.style.marginTop = '24px';
         } else {
           imagesRow.style.flexDirection = 'row';
           imagesRow.style.alignItems = 'flex-start';
@@ -2303,11 +2306,13 @@ export const BrantjesExtension = {
         // Add responsive inline styles for main image
         mainImgCol.style.position = 'relative';
         mainImgCol.style.boxSizing = 'border-box';
+        mainImgCol.style.display = 'block';
         
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
           mainImgCol.style.width = '100%';
-          mainImgCol.style.maxWidth = '320px';
+          mainImgCol.style.maxWidth = '100%';
+          mainImgCol.style.marginBottom = '16px';
         } else {
           mainImgCol.style.width = '60%';
           mainImgCol.style.maxWidth = 'none';
@@ -2315,6 +2320,10 @@ export const BrantjesExtension = {
         const mainImg = document.createElement('img');
         mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
+        mainImg.style.width = '100%';
+        mainImg.style.height = 'auto';
+        mainImg.style.display = 'block';
+        mainImg.style.borderRadius = '8px';
         mainImgCol.appendChild(mainImg);
         // Image counter
         let counter;
@@ -2342,9 +2351,9 @@ export const BrantjesExtension = {
           thumbsCol.style.display = 'grid';
           thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
           thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
-          thumbsCol.style.gap = '6px';
-          thumbsCol.style.height = '80px';
-          thumbsCol.style.marginTop = '8px';
+          thumbsCol.style.gap = '8px';
+          thumbsCol.style.height = '100px';
+          thumbsCol.style.marginTop = '0';
         } else {
           thumbsCol.style.width = '40%';
           thumbsCol.style.maxWidth = 'none';
@@ -2409,53 +2418,77 @@ export const BrantjesExtension = {
         specsRow.style.overflowX = 'hidden';
         specsRow.style.boxSizing = 'border-box';
         specsRow.style.padding = '0';
-        specsRow.style.margin = '16px 0 0 0';
+        specsRow.style.margin = '24px 0 0 0';
         specsRow.style.flexWrap = 'wrap';
-        specsRow.style.gap = '8px';
+        specsRow.style.gap = '12px';
         specsRow.style.display = 'flex';
         specsRow.style.alignItems = 'center';
+        specsRow.style.justifyContent = 'flex-start';
+        
+        // Check if we're on mobile and adjust accordingly
+        if (window.innerWidth <= 768) {
+          specsRow.style.justifyContent = 'center';
+          specsRow.style.gap = '16px';
+        }
 
         // Woonoppervlakte
         const woonopp = property.algemeen?.woonoppervlakte;
         if (woonopp) {
           const woonoppSpan = document.createElement('span');
           woonoppSpan.innerHTML = `<strong>${woonopp} m²</strong> woonoppervlakte`;
+          woonoppSpan.style.fontSize = '14px';
+          woonoppSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(woonoppSpan);
         }
         // Dot
         const dot1 = document.createElement('span');
         dot1.className = 'detail-popup-dot';
         dot1.textContent = '•';
+        dot1.style.fontSize = '16px';
+        dot1.style.color = '#666';
+        dot1.style.margin = '0 4px';
         specsRow.appendChild(dot1);
         // Slaapkamers
         const slaapkamers = property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || property.algemeen?.aantalSlaapkamers;
         if (slaapkamers) {
           const slaapSpan = document.createElement('span');
           slaapSpan.innerHTML = `<strong>${slaapkamers}</strong> slaapkamers`;
+          slaapSpan.style.fontSize = '14px';
+          slaapSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(slaapSpan);
         }
         // Dot
         const dot2 = document.createElement('span');
         dot2.className = 'detail-popup-dot';
         dot2.textContent = '•';
+        dot2.style.fontSize = '16px';
+        dot2.style.color = '#666';
+        dot2.style.margin = '0 4px';
         specsRow.appendChild(dot2);
         // Bouwjaar
         const bouwjaar = property.algemeen?.bouwjaar;
         if (bouwjaar) {
           const bouwjaarSpan = document.createElement('span');
           bouwjaarSpan.innerHTML = `Bouwjaar <strong>${bouwjaar}</strong>`;
+          bouwjaarSpan.style.fontSize = '14px';
+          bouwjaarSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(bouwjaarSpan);
         }
         // Dot
         const dot3 = document.createElement('span');
         dot3.className = 'detail-popup-dot';
         dot3.textContent = '•';
+        dot3.style.fontSize = '16px';
+        dot3.style.color = '#666';
+        dot3.style.margin = '0 4px';
         specsRow.appendChild(dot3);
         // Perceel
         const perceel = property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte;
         if (perceel) {
           const perceelSpan = document.createElement('span');
           perceelSpan.innerHTML = `<strong>${perceel} m²</strong> perceel`;
+          perceelSpan.style.fontSize = '14px';
+          perceelSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(perceelSpan);
         }
 
