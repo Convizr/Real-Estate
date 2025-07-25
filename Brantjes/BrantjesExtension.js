@@ -2329,9 +2329,17 @@ export const BrantjesExtension = {
           gap: 1.2rem !important;
         }
         
+        /* Fix images row width for desktop */
+        .brantjes-modal-container .detail-popup-images-row {
+          max-width: 100% !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
+        }
+        
         /* Restore original desktop font sizes */
         .brantjes-modal-container .detail-popup-title-main {
-          font-size: 1.8rem !important;
+          font-size: 1.2rem !important;
           line-height: 1.1 !important;
         }
         
@@ -5017,6 +5025,14 @@ export const PropertyDetailsExtension = {
           flex-direction: row !important;
           align-items: center !important;
           gap: 1.2rem !important;
+        }
+        
+        /* Fix images row width for PropertyDetailsExtension desktop */
+        .property-details-container .detail-popup-images-row {
+          max-width: 100% !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+          overflow: hidden !important;
         }
         
         /* Restore original desktop font sizes for PropertyDetailsExtension */
