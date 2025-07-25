@@ -2346,12 +2346,14 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-thumbnails {
           grid-template-columns: 130px 130px !important;
+          grid-template-rows: 115px 115px !important;
           gap: 8px !important;
+          height: 240px !important;
         }
         
         .brantjes-modal-container .detail-popup-thumbnail {
           width: 130px !important;
-          height: 98px !important;
+          height: 115px !important;
         }
         
         /* Restore original desktop font sizes */
@@ -5061,12 +5063,14 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .detail-popup-thumbnails {
           grid-template-columns: 130px 130px !important;
+          grid-template-rows: 115px 115px !important;
           gap: 8px !important;
+          height: 240px !important;
         }
         
         .property-details-container .detail-popup-thumbnail {
           width: 130px !important;
-          height: 98px !important;
+          height: 115px !important;
         }
         
         /* Restore original desktop font sizes for PropertyDetailsExtension */
