@@ -2417,11 +2417,13 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
           text-align: left !important;
           width: 100% !important;
+          max-width: 80% !important;
         }
         
         .brantjes-modal-container table {
           text-align: left !important;
           width: 100% !important;
+          max-width: 80% !important;
         }
         
         .brantjes-modal-container table td {
@@ -5169,11 +5171,13 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
           text-align: left !important;
           width: 100% !important;
+          max-width: 80% !important;
         }
         
         .property-details-container table {
           text-align: left !important;
           width: 100% !important;
+          max-width: 80% !important;
         }
         
         .property-details-container table td {
