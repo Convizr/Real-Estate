@@ -2202,12 +2202,38 @@ export const BrantjesExtension = {
           word-wrap: break-word !important;
         }
         
+        .brantjes-modal-container .detail-popup-header-row {
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 0.5rem !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail {
+          font-size: 0.8rem !important;
+          height: 20px !important;
+          padding: 0 8px 0 6px !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail::after {
+          border-top: 10px solid transparent !important;
+          border-bottom: 10px solid transparent !important;
+          border-left: 10px solid #FFD700 !important;
+          right: -10px !important;
+        }
+        
+        /* Remove separator dots in mobile */
+        .brantjes-modal-container .detail-popup-header-row .dot-separator {
+          display: none !important;
+        }
+        
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 13px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
+          font-size: 14px !important;
+          padding: 0.6em 1em !important;
+          height: 2.5em !important;
           flex-shrink: 0 !important;
           white-space: nowrap !important;
+          min-width: 120px !important;
         }
         
         /* Mobile-specific specs row styling */
@@ -4940,9 +4966,10 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-row {
-          flex-direction: column !important;
-          align-items: stretch !important;
-          gap: 12px !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 0.5rem !important;
         }
         
         /* Mobile-specific header styling for PropertyDetailsExtension */
@@ -4965,12 +4992,31 @@ export const PropertyDetailsExtension = {
           word-wrap: break-word !important;
         }
         
+        .property-details-container .energy-label-detail {
+          font-size: 0.8rem !important;
+          height: 20px !important;
+          padding: 0 8px 0 6px !important;
+        }
+        
+        .property-details-container .energy-label-detail::after {
+          border-top: 10px solid transparent !important;
+          border-bottom: 10px solid transparent !important;
+          border-left: 10px solid #FFD700 !important;
+          right: -10px !important;
+        }
+        
+        /* Remove separator dots in mobile */
+        .property-details-container .detail-popup-header-row .dot-separator {
+          display: none !important;
+        }
+        
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
+          font-size: 14px !important;
+          padding: 0.6em 1em !important;
+          height: 2.5em !important;
           flex-shrink: 0 !important;
           white-space: nowrap !important;
+          min-width: 120px !important;
         }
         
         /* Mobile-specific specs row styling for PropertyDetailsExtension */
