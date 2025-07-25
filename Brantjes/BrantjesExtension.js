@@ -2361,19 +2361,19 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 1.08rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 1.08rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 11px !important;
-          padding: 0.5em 1.5em !important;
-          height: 2.2em !important;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
         }
         
         .brantjes-modal-container .detail-popup-specs-row {
@@ -5071,24 +5071,24 @@ export const PropertyDetailsExtension = {
         
         /* Restore original desktop font sizes for PropertyDetailsExtension */
         .property-details-container .detail-popup-title-main {
-          font-size: 1.8rem !important;
+          font-size: 1.2rem !important;
           line-height: 1.1 !important;
         }
         
         .property-details-container .detail-popup-header-details {
-          font-size: 1.08rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 1.08rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 11px !important;
-          padding: 0.5em 1.5em !important;
-          height: 2.2em !important;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
         }
         
         .property-details-container .detail-popup-specs-row {
