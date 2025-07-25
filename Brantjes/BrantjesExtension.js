@@ -2267,10 +2267,10 @@ export const BrantjesExtension = {
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
       @media (min-width: 769px) {
         .brantjes-modal-container .detail-popup-main-image {
-          width: 320px !important;
+          width: 350px !important;
           height: 240px !important;
           min-width: 320px !important;
-          max-width: 320px !important;
+          max-width: 350px !important;
           max-height: 240px !important;
           margin-bottom: 0 !important;
           display: flex !important;
@@ -2398,12 +2398,12 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-specs-row {
           justify-content: flex-start !important;
-          gap: 0.5rem !important;
+          gap: 1rem !important;
           flex-wrap: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 0.8rem !important;
+          font-size: 0.85rem !important;
           white-space: nowrap !important;
         }
         
