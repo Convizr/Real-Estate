@@ -2120,6 +2120,69 @@ export const BrantjesExtension = {
           transition: opacity 0.2s, transform 0.2s !important;
         }
       }
+
+      /* MOBILE RESPONSIVE MODAL STYLES - HIGHEST PRIORITY */
+      @media (max-width: 768px) {
+        .brantjes-modal-container .detail-popup-main-image {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: auto !important;
+          height: auto !important;
+          max-height: none !important;
+          margin-bottom: 16px !important;
+          display: block !important;
+          position: relative !important;
+          align-self: stretch !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-main-image img {
+          width: 100% !important;
+          height: auto !important;
+          max-height: 300px !important;
+          object-fit: cover !important;
+          display: block !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnails {
+          width: 100% !important;
+          max-width: 100% !important;
+          display: grid !important;
+          grid-template-columns: repeat(4, 1fr) !important;
+          grid-template-rows: repeat(2, 1fr) !important;
+          gap: 8px !important;
+          height: 120px !important;
+          margin-top: 0 !important;
+          position: static !important;
+          align-items: stretch !important;
+          justify-content: stretch !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnail {
+          width: 100% !important;
+          height: 100% !important;
+          position: static !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          border-radius: 6px !important;
+          cursor: pointer !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-images-row {
+          flex-direction: column !important;
+          align-items: center !important;
+          gap: 16px !important;
+          margin-top: 24px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-row {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+      }
     `;
     element.appendChild(style);
 
@@ -2159,7 +2222,6 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
         // --- IMAGE DATA ---
         const media = Array.isArray(property.media) ? property.media : [];
-        console.log('Property media:', media); // Debug log
         
         // Track original indices for counter
         const allImgs = [];
@@ -2171,9 +2233,6 @@ export const BrantjesExtension = {
                 if (!allImgs.some(img => img.url === f.link)) allImgs.push({ url: f.link, originalIndex: allImgs.length });
             });
         let imageList = [...allImgs];
-        
-        console.log('Processed imageList:', imageList); // Debug log
-        console.log('ImageList length:', imageList.length); // Debug log
 
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
@@ -2337,11 +2396,7 @@ export const BrantjesExtension = {
         mainImg.style.setProperty('display', 'block', 'important');
         mainImg.style.setProperty('border-radius', '8px', 'important');
         
-        console.log('Main image src:', mainImgSrc); // Debug log
-        console.log('Main image element:', mainImg); // Debug log
-        
-        mainImg.onload = () => console.log('Main image loaded successfully'); // Debug log
-        mainImg.onerror = (e) => console.error('Main image failed to load:', e); // Debug log
+
         
         mainImgCol.appendChild(mainImg);
         // Image counter
@@ -2390,11 +2445,9 @@ export const BrantjesExtension = {
           thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
         }
         function renderThumbnails() {
-            console.log('Rendering thumbnails, imageList length:', imageList.length); // Debug log
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
             const totalThumbs = Math.min(8, imageList.length);
-            console.log('Total thumbnails to render:', totalThumbs); // Debug log
             // Determine the start index for visible thumbs (1-4 in imageList)
             let start = 1;
             // If user has clicked a thumbnail, imageList is rotated so [0] is main, [1-4] are visible
@@ -2415,8 +2468,7 @@ export const BrantjesExtension = {
                 thumbDiv.style.setProperty('opacity', '1', 'important');
                 thumbDiv.style.setProperty('pointer-events', 'auto', 'important');
                 
-                console.log(`Thumbnail ${i} URL:`, thumbUrl); // Debug log
-                console.log(`Thumbnail ${i} element:`, thumbDiv); // Debug log
+
                 // Position in grid
                 let gridPos = i;
                 if (gridPos <= 4) {
