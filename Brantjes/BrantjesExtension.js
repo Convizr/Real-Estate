@@ -602,13 +602,20 @@ export const BrantjesExtension = {
           max-width: 600px;
           height: 380px;
         }
-        .brantjes-property-card {
-          width: 180px;
-          height: 300px;
+        .brantjes-carousel-list .brantjes-property-card {
+          width: 180px !important;
+          height: 300px !important;
         }
-        .brantjes-property-card.active {
-          width: 200px;
-          height: 330px;
+        .brantjes-carousel-list .act {
+          width: 200px !important;
+          height: 330px !important;
+        }
+        .brantjes-carousel-list .prev,
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% - 190px), -50%) scale(0.85) !important;
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 190px), -50%) scale(0.85) !important;
         }
       }
       @media (max-width: 600px) {
@@ -618,13 +625,20 @@ export const BrantjesExtension = {
           height: 350px;
           padding: 0 10px;
         }
-        .brantjes-property-card {
-          width: 160px;
-          height: 270px;
+        .brantjes-carousel-list .brantjes-property-card {
+          width: 160px !important;
+          height: 270px !important;
         }
-        .brantjes-property-card.active {
-          width: 180px;
-          height: 300px;
+        .brantjes-carousel-list .act {
+          width: 180px !important;
+          height: 300px !important;
+        }
+        .brantjes-carousel-list .prev,
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% - 170px), -50%) scale(0.85) !important;
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 170px), -50%) scale(0.85) !important;
         }
       }
 
@@ -3304,8 +3318,19 @@ export const BrantjesExtension = {
       card.style.transform = 'none'; // Clear any transforms
       card.style.opacity = '1';
       card.style.zIndex = '3';
-      card.style.width = '219px'; // Active width
-      card.style.height = '365px'; // Active height
+      
+      // Responsive sizing for single card
+      const screenWidth = window.innerWidth;
+      if (screenWidth <= 600) {
+        card.style.width = '180px';
+        card.style.height = '300px';
+      } else if (screenWidth <= 900) {
+        card.style.width = '200px';
+        card.style.height = '330px';
+      } else {
+        card.style.width = '219px';
+        card.style.height = '365px';
+      }
 
       // Make the single card clickable to show details
       card.addEventListener('click', () => {
@@ -3338,6 +3363,32 @@ export const BrantjesExtension = {
         const nextIndex = (currentPropertyIndex + 1) % totalSlides;
         const prevIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
 
+        // Get responsive dimensions based on screen size
+        const screenWidth = window.innerWidth;
+        let defaultWidth, defaultHeight, activeWidth, activeHeight, offsetDistance;
+        
+        if (screenWidth <= 600) {
+            // Mobile
+            defaultWidth = '160px';
+            defaultHeight = '270px';
+            activeWidth = '180px';
+            activeHeight = '300px';
+            offsetDistance = '170px';
+        } else if (screenWidth <= 900) {
+            // Tablet
+            defaultWidth = '180px';
+            defaultHeight = '300px';
+            activeWidth = '200px';
+            activeHeight = '330px';
+            offsetDistance = '190px';
+        } else {
+            // Desktop
+            defaultWidth = '201px';
+            defaultHeight = '335px';
+            activeWidth = '219px';
+            activeHeight = '365px';
+            offsetDistance = '220px';
+        }
 
         cards.forEach((card, index) => {
             // Reset all potential carousel classes and default styles
@@ -3345,26 +3396,26 @@ export const BrantjesExtension = {
             card.style.opacity = '0'; // Default to hidden
             card.style.zIndex = '1'; // Default z-index
             card.style.transform = `translate(-50%, -50%) scale(0.85)`; // Default scale and centering adjustment
-            card.style.width = '201px'; // Default width
-            card.style.height = '335px'; // Default height
+            card.style.width = defaultWidth; // Responsive default width
+            card.style.height = defaultHeight; // Responsive default height
 
             if (index === currentPropertyIndex) { // Active card
                 card.classList.add('act');
                 card.style.opacity = '1';
                 card.style.zIndex = '3';
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
-                card.style.width = '219px'; // Active width
-                card.style.height = '365px'; // Active height
+                card.style.width = activeWidth; // Responsive active width
+                card.style.height = activeHeight; // Responsive active height
             } else if (index === nextIndex) { // Next card
                 card.classList.add('next');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% + 220px), -50%) scale(0.85)`;
+                card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.85)`;
             } else if (index === prevIndex) { // Previous card
                 card.classList.add('prev');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% - 220px), -50%) scale(0.85)`;
+                card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.85)`;
             }
             // All other cards will retain the default hidden/scaled state
         });
@@ -3382,6 +3433,12 @@ export const BrantjesExtension = {
 
     // Call initial update
     updateCardClassesAndTransforms();
+    
+    // Add resize listener for responsive updates
+    const resizeHandler = () => {
+        updateCardClassesAndTransforms();
+    };
+    window.addEventListener('resize', resizeHandler);
 
     // Click handler for cards
     list.addEventListener('click', event => {
