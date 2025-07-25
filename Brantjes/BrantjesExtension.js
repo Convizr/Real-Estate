@@ -2183,6 +2183,71 @@ export const BrantjesExtension = {
           gap: 12px !important;
         }
       }
+
+      /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
+      @media (min-width: 769px) {
+        .brantjes-modal-container .detail-popup-main-image {
+          width: 320px !important;
+          height: 240px !important;
+          min-width: 320px !important;
+          max-width: 320px !important;
+          max-height: 240px !important;
+          margin-bottom: 0 !important;
+          display: flex !important;
+          position: relative !important;
+          align-self: flex-end !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-main-image img {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          display: block !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnails {
+          display: grid !important;
+          grid-template-columns: 150px 150px !important;
+          grid-template-rows: 115px 115px !important;
+          gap: 10px !important;
+          align-items: end !important;
+          height: 240px !important;
+          justify-content: flex-start !important;
+          position: relative !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnail {
+          width: 150px !important;
+          height: 115px !important;
+          position: absolute !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          background-size: cover !important;
+          background-position: center !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-thumbnail.fade-in {
+          opacity: 1 !important;
+          position: static !important;
+          pointer-events: auto !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-images-row {
+          flex-direction: row !important;
+          align-items: flex-end !important;
+          gap: 10px !important;
+          margin-top: 16px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-row {
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 1.2rem !important;
+        }
+      }
     `;
     element.appendChild(style);
 
