@@ -576,16 +576,21 @@ export const BrantjesExtension = {
           height: 400px;
         }
         .brantjes-property-card {
-          width: 280px;
-          height: 360px;
+          width: 90vw;
+          max-width: 400px;
+          height: 380px;
         }
         .brantjes-property-card.active {
-          width: 280px;
-          height: 360px;
+          width: 90vw;
+          max-width: 400px;
+          height: 380px;
         }
-        /* Hide navigation buttons for single card view */
+        /* Show navigation buttons for hero card view */
         .brantjes-nav-button {
-          display: none;
+          display: flex;
+          width: 45px;
+          height: 45px;
+          font-size: 20px;
         }
       }
       
@@ -594,19 +599,24 @@ export const BrantjesExtension = {
           width: 95vw;
           max-width: 95vw;
           min-width: 260px;
-          height: 380px;
+          height: 450px;
         }
         .brantjes-property-card {
-          width: 260px;
-          height: 340px;
+          width: 90vw;
+          max-width: 380px;
+          height: 430px;
         }
         .brantjes-property-card.active {
-          width: 260px;
-          height: 340px;
+          width: 90vw;
+          max-width: 380px;
+          height: 430px;
         }
-        /* Hide navigation buttons for single card view */
+        /* Show navigation buttons */
         .brantjes-nav-button {
-          display: none;
+          display: flex;
+          width: 50px;
+          height: 50px;
+          font-size: 22px;
         }
       }
       
@@ -615,19 +625,24 @@ export const BrantjesExtension = {
           width: 95vw;
           max-width: 95vw;
           min-width: 240px;
-          height: 360px;
+          height: 500px;
         }
         .brantjes-property-card {
-          width: 240px;
-          height: 320px;
+          width: 90vw;
+          max-width: 360px;
+          height: 480px;
         }
         .brantjes-property-card.active {
-          width: 240px;
-          height: 320px;
+          width: 90vw;
+          max-width: 360px;
+          height: 480px;
         }
-        /* Hide navigation buttons for single card view */
+        /* Show navigation buttons */
         .brantjes-nav-button {
-          display: none;
+          display: flex;
+          width: 55px;
+          height: 55px;
+          font-size: 24px;
         }
       }
       
@@ -635,8 +650,8 @@ export const BrantjesExtension = {
       @media (max-width: 500px) {
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          opacity: 0 !important;
-          visibility: hidden !important;
+          opacity: 0;
+          visibility: hidden;
         }
       }
       
@@ -2044,12 +2059,14 @@ export const BrantjesExtension = {
       /* MOBILE RESPONSIVE OVERRIDES - HIGHEST PRIORITY */
       @media (max-width: 500px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 280px !important;
-          height: 360px !important;
+          width: 90vw !important;
+          max-width: 400px !important;
+          height: 380px !important;
         }
         .brantjes-carousel-list .act {
-          width: 280px !important;
-          height: 360px !important;
+          width: 90vw !important;
+          max-width: 400px !important;
+          height: 380px !important;
         }
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
@@ -2060,12 +2077,14 @@ export const BrantjesExtension = {
       
       @media (max-width: 400px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 260px !important;
-          height: 340px !important;
+          width: 90vw !important;
+          max-width: 380px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .act {
-          width: 260px !important;
-          height: 340px !important;
+          width: 90vw !important;
+          max-width: 380px !important;
+          height: 430px !important;
         }
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
@@ -2076,12 +2095,14 @@ export const BrantjesExtension = {
       
       @media (max-width: 350px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 240px !important;
-          height: 320px !important;
+          width: 90vw !important;
+          max-width: 360px !important;
+          height: 480px !important;
         }
         .brantjes-carousel-list .act {
-          width: 240px !important;
-          height: 320px !important;
+          width: 90vw !important;
+          max-width: 360px !important;
+          height: 480px !important;
         }
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
