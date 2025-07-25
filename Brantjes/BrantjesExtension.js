@@ -2202,38 +2202,12 @@ export const BrantjesExtension = {
           word-wrap: break-word !important;
         }
         
-        .brantjes-modal-container .detail-popup-header-row {
-          flex-direction: row !important;
-          align-items: center !important;
-          justify-content: space-between !important;
-          gap: 0.5rem !important;
-        }
-        
-        .brantjes-modal-container .energy-label-detail {
-          font-size: 0.8rem !important;
-          height: 20px !important;
-          padding: 0 8px 0 6px !important;
-        }
-        
-        .brantjes-modal-container .energy-label-detail::after {
-          border-top: 10px solid transparent !important;
-          border-bottom: 10px solid transparent !important;
-          border-left: 10px solid #FFD700 !important;
-          right: -10px !important;
-        }
-        
-        /* Remove separator dots in mobile */
-        .brantjes-modal-container .detail-popup-header-row .dot-separator {
-          display: none !important;
-        }
-        
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 14px !important;
-          padding: 0.6em 1em !important;
-          height: 2.5em !important;
+          font-size: 13px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
           flex-shrink: 0 !important;
           white-space: nowrap !important;
-          min-width: 120px !important;
         }
         
         /* Mobile-specific specs row styling */
@@ -2287,6 +2261,52 @@ export const BrantjesExtension = {
           font-size: 14px !important;
           padding: 10px 24px !important;
           min-width: 180px !important;
+        }
+        
+        /* Mobile-specific header layout */
+        .brantjes-modal-container .detail-popup-header-mobile {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-row {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-address-price {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+          flex: 1 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-energy {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-energy .energy-label-detail {
+          font-size: 0.8rem !important;
+          height: 18px !important;
+          padding: 0 6px 0 4px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-energy .energy-label-detail::after {
+          border-top: 9px solid transparent !important;
+          border-bottom: 9px solid transparent !important;
+          border-left: 8px solid #FFD700 !important;
+          right: -8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-mobile-viewing-btn {
+          font-size: 11px !important;
+          padding: 8px 12px !important;
+          height: 32px !important;
+          min-width: 80px !important;
         }
       }
 
@@ -2543,119 +2563,127 @@ export const BrantjesExtension = {
         titleMain.textContent = streetAddress || 'Onbekend adres';
         header.appendChild(titleMain);
 
-        // Check if mobile
-        const isMobile = window.innerWidth <= 768;
-        
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
 
-        if (isMobile) {
-          // Mobile layout: Address and price on one line, energy label below
-          const topRow = document.createElement('div');
-          topRow.style.display = 'flex';
-          topRow.style.justifyContent = 'space-between';
-          topRow.style.alignItems = 'center';
-          topRow.style.width = '100%';
-          
-          // Address (postal code + city)
-          const plaats = property.adres?.plaats || '';
-          const postcode = property.adres?.postcode || '';
-          let hasAddress = Boolean(postcode || plaats);
-          if (hasAddress) {
-            const addrSpan = document.createElement('span');
-            addrSpan.className = 'detail-popup-header-details';
-            addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-            addrSpan.style.fontWeight = 'bold';
-            topRow.appendChild(addrSpan);
-          }
-          
-          // Price
-          const price = property.financieel?.overdracht?.koopprijs || 0;
-          const priceDiv = document.createElement('div');
-          priceDiv.className = 'detail-popup-header-price';
-          priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-          topRow.appendChild(priceDiv);
-          
-          headerRow.appendChild(topRow);
-          
-          // Energy label row (if exists)
-          let hasEnergy = Boolean(property.algemeen?.energieklasse);
-          if (hasEnergy) {
-            const energyRow = document.createElement('div');
-            energyRow.style.display = 'flex';
-            energyRow.style.alignItems = 'center';
-            energyRow.style.gap = '0.5rem';
-            energyRow.style.marginTop = '0.5rem';
-            
-            const energyDiv = document.createElement('div');
-            energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-            energyDiv.textContent = property.algemeen.energieklasse;
-            energyRow.appendChild(energyDiv);
-            
-            headerRow.appendChild(energyRow);
-          }
-          
-          // Viewing button row
-          const buttonRow = document.createElement('div');
-          buttonRow.style.display = 'flex';
-          buttonRow.style.justifyContent = 'center';
-          buttonRow.style.marginTop = '0.5rem';
-          
-          const viewingBtn = document.createElement('button');
-          viewingBtn.className = 'detail-popup-header-viewing-btn';
-          viewingBtn.textContent = 'Bezichtiging';
-          viewingBtn.onclick = () => showBookingModal(property);
-          buttonRow.appendChild(viewingBtn);
-          
-          headerRow.appendChild(buttonRow);
-        } else {
-          // Desktop layout: original structure
-          // Address (postal code + city)
-          const plaats = property.adres?.plaats || '';
-          const postcode = property.adres?.postcode || '';
-          let hasAddress = Boolean(postcode || plaats);
-          let hasEnergy = Boolean(property.algemeen?.energieklasse);
-          if (hasAddress) {
-            const addrSpan = document.createElement('span');
-            addrSpan.className = 'detail-popup-header-details';
-            addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-            addrSpan.style.fontWeight = 'bold';
-            headerRow.appendChild(addrSpan);
-          }
-          // Dot separator only if both address and energy label
-          if (hasAddress && hasEnergy) {
-            const dot = document.createElement('span');
-            dot.className = 'detail-popup-dot';
-            dot.textContent = '•';
-            headerRow.appendChild(dot);
-          }
-          // Energy label
-          if (hasEnergy) {
-            const energyDiv = document.createElement('div');
-            energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-            energyDiv.textContent = property.algemeen.energieklasse;
-            headerRow.appendChild(energyDiv);
-            // Dot after energy label
-            const dot2 = document.createElement('span');
-            dot2.className = 'detail-popup-dot';
-            dot2.textContent = '•';
-            headerRow.appendChild(dot2);
-          }
-          // Price
-          const price = property.financieel?.overdracht?.koopprijs || 0;
-          const priceDiv = document.createElement('div');
-          priceDiv.className = 'detail-popup-header-price';
-          priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-          headerRow.appendChild(priceDiv);
-          // Viewing button
-          const viewingBtn = document.createElement('button');
-          viewingBtn.className = 'detail-popup-header-viewing-btn';
-          viewingBtn.textContent = 'Bezichtiging';
-          viewingBtn.onclick = () => showBookingModal(property);
-          headerRow.appendChild(viewingBtn);
+        // Address (postal code + city)
+        const plaats = property.adres?.plaats || '';
+        const postcode = property.adres?.postcode || '';
+        let hasAddress = Boolean(postcode || plaats);
+        let hasEnergy = Boolean(property.algemeen?.energieklasse);
+        if (hasAddress) {
+          const addrSpan = document.createElement('span');
+          addrSpan.className = 'detail-popup-header-details';
+          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+          addrSpan.style.fontWeight = 'bold';
+          headerRow.appendChild(addrSpan);
         }
+        // Dot separator only if both address and energy label
+        if (hasAddress && hasEnergy) {
+          const dot = document.createElement('span');
+          dot.className = 'detail-popup-dot';
+          dot.textContent = '•';
+          headerRow.appendChild(dot);
+        }
+        // Energy label
+        if (hasEnergy) {
+          const energyDiv = document.createElement('div');
+          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.textContent = property.algemeen.energieklasse;
+          headerRow.appendChild(energyDiv);
+          // Dot after energy label
+          const dot2 = document.createElement('span');
+          dot2.className = 'detail-popup-dot';
+          dot2.textContent = '•';
+          headerRow.appendChild(dot2);
+        }
+        // Price
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'detail-popup-header-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        headerRow.appendChild(priceDiv);
+        // Viewing button
+        const viewingBtn = document.createElement('button');
+        viewingBtn.className = 'detail-popup-header-viewing-btn';
+        viewingBtn.textContent = 'Bezichtiging';
+        viewingBtn.onclick = () => showBookingModal(property);
+        headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
+        
+        // Mobile-specific header layout
+        const headerMobile = document.createElement('div');
+        headerMobile.className = 'detail-popup-header-mobile';
+        
+        // Mobile row 1: Address and Price on same line
+        const mobileRow1 = document.createElement('div');
+        mobileRow1.className = 'detail-popup-header-mobile-row';
+        
+        const addressPriceContainer = document.createElement('div');
+        addressPriceContainer.className = 'detail-popup-header-mobile-address-price';
+        
+        if (hasAddress) {
+          const mobileAddrSpan = document.createElement('span');
+          mobileAddrSpan.className = 'detail-popup-header-details';
+          mobileAddrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+          mobileAddrSpan.style.fontWeight = 'bold';
+          addressPriceContainer.appendChild(mobileAddrSpan);
+        }
+        
+        const mobilePriceDiv = document.createElement('div');
+        mobilePriceDiv.className = 'detail-popup-header-price';
+        mobilePriceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        addressPriceContainer.appendChild(mobilePriceDiv);
+        
+        mobileRow1.appendChild(addressPriceContainer);
+        headerMobile.appendChild(mobileRow1);
+        
+        // Mobile row 2: Energy label and Viewing button
+        const mobileRow2 = document.createElement('div');
+        mobileRow2.className = 'detail-popup-header-mobile-row';
+        
+        const energyContainer = document.createElement('div');
+        energyContainer.className = 'detail-popup-header-mobile-energy';
+        
+        if (hasEnergy) {
+          const mobileEnergyDiv = document.createElement('div');
+          mobileEnergyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse}`;
+          mobileEnergyDiv.textContent = property.algemeen.energieklasse;
+          energyContainer.appendChild(mobileEnergyDiv);
+        }
+        
+        const mobileViewingBtn = document.createElement('button');
+        mobileViewingBtn.className = 'detail-popup-header-mobile-viewing-btn';
+        mobileViewingBtn.textContent = 'Bezichtiging';
+        mobileViewingBtn.onclick = () => showBookingModal(property);
+        energyContainer.appendChild(mobileViewingBtn);
+        
+        mobileRow2.appendChild(energyContainer);
+        headerMobile.appendChild(mobileRow2);
+        
+        // Hide desktop header on mobile, hide mobile header on desktop
+        header.style.display = 'block';
+        headerMobile.style.display = 'none';
+        
+        // Show mobile header on mobile screens
+        if (window.innerWidth <= 768) {
+          header.style.display = 'none';
+          headerMobile.style.display = 'block';
+        }
+        
+        // Listen for window resize
+        window.addEventListener('resize', () => {
+          if (window.innerWidth <= 768) {
+            header.style.display = 'none';
+            headerMobile.style.display = 'block';
+          } else {
+            header.style.display = 'block';
+            headerMobile.style.display = 'none';
+          }
+        });
+        
+        header.appendChild(headerMobile);
         detailContent.appendChild(header);
 
         // --- IMAGES ROW ---
@@ -5031,10 +5059,9 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-row {
-          flex-direction: row !important;
-          align-items: center !important;
-          justify-content: space-between !important;
-          gap: 0.5rem !important;
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
         }
         
         /* Mobile-specific header styling for PropertyDetailsExtension */
@@ -5057,31 +5084,12 @@ export const PropertyDetailsExtension = {
           word-wrap: break-word !important;
         }
         
-        .property-details-container .energy-label-detail {
-          font-size: 0.8rem !important;
-          height: 20px !important;
-          padding: 0 8px 0 6px !important;
-        }
-        
-        .property-details-container .energy-label-detail::after {
-          border-top: 10px solid transparent !important;
-          border-bottom: 10px solid transparent !important;
-          border-left: 10px solid #FFD700 !important;
-          right: -10px !important;
-        }
-        
-        /* Remove separator dots in mobile */
-        .property-details-container .detail-popup-header-row .dot-separator {
-          display: none !important;
-        }
-        
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 14px !important;
-          padding: 0.6em 1em !important;
-          height: 2.5em !important;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
           flex-shrink: 0 !important;
           white-space: nowrap !important;
-          min-width: 120px !important;
         }
         
         /* Mobile-specific specs row styling for PropertyDetailsExtension */
@@ -5128,6 +5136,52 @@ export const PropertyDetailsExtension = {
           font-size: 14px !important;
           padding: 10px 24px !important;
           min-width: 180px !important;
+        }
+        
+        /* Mobile-specific header layout for PropertyDetailsExtension */
+        .property-details-container .detail-popup-header-mobile {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-row {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-address-price {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+          flex: 1 !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-energy {
+          display: flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-energy .energy-label-detail {
+          font-size: 0.8rem !important;
+          height: 18px !important;
+          padding: 0 6px 0 4px !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-energy .energy-label-detail::after {
+          border-top: 9px solid transparent !important;
+          border-bottom: 9px solid transparent !important;
+          border-left: 8px solid #FFD700 !important;
+          right: -8px !important;
+        }
+        
+        .property-details-container .detail-popup-header-mobile-viewing-btn {
+          font-size: 11px !important;
+          padding: 8px 12px !important;
+          height: 32px !important;
+          min-width: 80px !important;
         }
       }
 
@@ -5599,112 +5653,119 @@ export const PropertyDetailsExtension = {
       titleMain.textContent = streetAddress || 'Onbekend adres';
       header.appendChild(titleMain);
 
-      // Check if mobile
-      const isMobile = window.innerWidth <= 768;
-      
       const headerRow = document.createElement('div');
       headerRow.className = 'detail-popup-header-row';
-      
-      if (isMobile) {
-        // Mobile layout: Address and price on one line, energy label below
-        const topRow = document.createElement('div');
-        topRow.style.display = 'flex';
-        topRow.style.justifyContent = 'space-between';
-        topRow.style.alignItems = 'center';
-        topRow.style.width = '100%';
-        
-        // Address (postal code + city)
-        const plaats = property.adres?.plaats || '';
-        const postcode = property.adres?.postcode || '';
-        let hasAddress = Boolean(postcode || plaats);
-        if (hasAddress) {
-          const addrSpan = document.createElement('span');
-          addrSpan.className = 'detail-popup-header-details';
-          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-          addrSpan.style.fontWeight = 'bold';
-          topRow.appendChild(addrSpan);
-        }
-        
-        // Price
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-        topRow.appendChild(priceDiv);
-        
-        headerRow.appendChild(topRow);
-        
-        // Energy label row (if exists)
-        let hasEnergy = Boolean(property.algemeen?.energieklasse);
-        if (hasEnergy) {
-          const energyRow = document.createElement('div');
-          energyRow.style.display = 'flex';
-          energyRow.style.alignItems = 'center';
-          energyRow.style.gap = '0.5rem';
-          energyRow.style.marginTop = '0.5rem';
-          
-          const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-          energyDiv.textContent = property.algemeen.energieklasse;
-          energyRow.appendChild(energyDiv);
-          
-          headerRow.appendChild(energyRow);
-        }
-        
-        // Viewing button row
-        const buttonRow = document.createElement('div');
-        buttonRow.style.display = 'flex';
-        buttonRow.style.justifyContent = 'center';
-        buttonRow.style.marginTop = '0.5rem';
-        
-        const viewingBtn = document.createElement('button');
-        viewingBtn.className = 'detail-popup-header-viewing-btn';
-        viewingBtn.textContent = 'Bezichtiging';
-        viewingBtn.onclick = () => showBookingModal(property);
-        buttonRow.appendChild(viewingBtn);
-        
-        headerRow.appendChild(buttonRow);
-      } else {
-        // Desktop layout: original structure
-        const plaats = property.adres?.plaats || '';
-        const postcode = property.adres?.postcode || '';
-        let hasAddress = Boolean(postcode || plaats);
-        let hasEnergy = Boolean(property.algemeen?.energieklasse);
-        if (hasAddress) {
-          const addrSpan = document.createElement('span');
-          addrSpan.className = 'detail-popup-header-details';
-          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-          addrSpan.style.fontWeight = 'bold';
-          headerRow.appendChild(addrSpan);
-        }
-        if (hasAddress && hasEnergy) {
-          const dot = document.createElement('span');
-          dot.className = 'detail-popup-dot';
-          dot.textContent = '•';
-          headerRow.appendChild(dot);
-        }
-        if (hasEnergy) {
-          const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-          energyDiv.textContent = property.algemeen.energieklasse;
-          headerRow.appendChild(energyDiv);
-          const dot2 = document.createElement('span');
-          dot2.className = 'detail-popup-dot';
-          dot2.textContent = '•';
-          headerRow.appendChild(dot2);
-        }
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-        headerRow.appendChild(priceDiv);
-        const viewingBtn = document.createElement('button');
-        viewingBtn.className = 'detail-popup-header-viewing-btn';
-        viewingBtn.textContent = 'Bezichtiging';
-        viewingBtn.onclick = () => showBookingModal(property);
-        headerRow.appendChild(viewingBtn);
+      const plaats = property.adres?.plaats || '';
+      const postcode = property.adres?.postcode || '';
+      let hasAddress = Boolean(postcode || plaats);
+      let hasEnergy = Boolean(property.algemeen?.energieklasse);
+      if (hasAddress) {
+        const addrSpan = document.createElement('span');
+        addrSpan.className = 'detail-popup-header-details';
+        addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+        addrSpan.style.fontWeight = 'bold';
+        headerRow.appendChild(addrSpan);
       }
+      if (hasAddress && hasEnergy) {
+        const dot = document.createElement('span');
+        dot.className = 'detail-popup-dot';
+        dot.textContent = '•';
+        headerRow.appendChild(dot);
+      }
+      if (hasEnergy) {
+        const energyDiv = document.createElement('div');
+        energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+        energyDiv.textContent = property.algemeen.energieklasse;
+        headerRow.appendChild(energyDiv);
+        const dot2 = document.createElement('span');
+        dot2.className = 'detail-popup-dot';
+        dot2.textContent = '•';
+        headerRow.appendChild(dot2);
+      }
+      const price = property.financieel?.overdracht?.koopprijs || 0;
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'detail-popup-header-price';
+      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+      headerRow.appendChild(priceDiv);
+      const viewingBtn = document.createElement('button');
+      viewingBtn.className = 'detail-popup-header-viewing-btn';
+      viewingBtn.textContent = 'Bezichtiging';
+      viewingBtn.onclick = () => showBookingModal(property);
+      headerRow.appendChild(viewingBtn);
       header.appendChild(headerRow);
+      
+      // Mobile-specific header layout for PropertyDetailsExtension
+      const headerMobile = document.createElement('div');
+      headerMobile.className = 'detail-popup-header-mobile';
+      
+      // Mobile row 1: Address and Price on same line
+      const mobileRow1 = document.createElement('div');
+      mobileRow1.className = 'detail-popup-header-mobile-row';
+      
+      const addressPriceContainer = document.createElement('div');
+      addressPriceContainer.className = 'detail-popup-header-mobile-address-price';
+      
+      if (hasAddress) {
+        const mobileAddrSpan = document.createElement('span');
+        mobileAddrSpan.className = 'detail-popup-header-details';
+        mobileAddrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+        mobileAddrSpan.style.fontWeight = 'bold';
+        addressPriceContainer.appendChild(mobileAddrSpan);
+      }
+      
+      const mobilePriceDiv = document.createElement('div');
+      mobilePriceDiv.className = 'detail-popup-header-price';
+      mobilePriceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+      addressPriceContainer.appendChild(mobilePriceDiv);
+      
+      mobileRow1.appendChild(addressPriceContainer);
+      headerMobile.appendChild(mobileRow1);
+      
+      // Mobile row 2: Energy label and Viewing button
+      const mobileRow2 = document.createElement('div');
+      mobileRow2.className = 'detail-popup-header-mobile-row';
+      
+      const energyContainer = document.createElement('div');
+      energyContainer.className = 'detail-popup-header-mobile-energy';
+      
+      if (hasEnergy) {
+        const mobileEnergyDiv = document.createElement('div');
+        mobileEnergyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse}`;
+        mobileEnergyDiv.textContent = property.algemeen.energieklasse;
+        energyContainer.appendChild(mobileEnergyDiv);
+      }
+      
+      const mobileViewingBtn = document.createElement('button');
+      mobileViewingBtn.className = 'detail-popup-header-mobile-viewing-btn';
+      mobileViewingBtn.textContent = 'Bezichtiging';
+      mobileViewingBtn.onclick = () => showBookingModal(property);
+      energyContainer.appendChild(mobileViewingBtn);
+      
+      mobileRow2.appendChild(energyContainer);
+      headerMobile.appendChild(mobileRow2);
+      
+      // Hide desktop header on mobile, hide mobile header on desktop
+      header.style.display = 'block';
+      headerMobile.style.display = 'none';
+      
+      // Show mobile header on mobile screens
+      if (window.innerWidth <= 768) {
+        header.style.display = 'none';
+        headerMobile.style.display = 'block';
+      }
+      
+      // Listen for window resize
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+          header.style.display = 'none';
+          headerMobile.style.display = 'block';
+        } else {
+          header.style.display = 'block';
+          headerMobile.style.display = 'none';
+        }
+      });
+      
+      header.appendChild(headerMobile);
       detailContent.appendChild(header);
 
       // --- IMAGES ROW ---
