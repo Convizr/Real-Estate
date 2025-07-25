@@ -2326,7 +2326,7 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 0.8rem !important;
+          gap: 0.5rem !important;
         }
         
         /* Fix images row width for desktop */
@@ -2368,7 +2368,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 0.8rem !important;
+          font-size: 0.75rem !important;
           white-space: nowrap !important;
         }
         
@@ -2381,14 +2381,14 @@ export const BrantjesExtension = {
         .brantjes-modal-container .energy-label-detail::after {
           border-top: 11px solid transparent !important;
           border-bottom: 11px solid transparent !important;
-          border-left: 12px solid !important;
+          border-left: 12px solid #FFD700 !important;
           right: -12px !important;
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 9px !important;
-          padding: 0.3em 1em !important;
-          height: 1.8em !important;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
         }
         
         .brantjes-modal-container .detail-popup-specs-row {
@@ -5056,7 +5056,7 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          gap: 0.8rem !important;
+          gap: 0.5rem !important;
         }
         
         /* Fix images row width for PropertyDetailsExtension desktop */
@@ -5098,7 +5098,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 0.8rem !important;
+          font-size: 0.75rem !important;
           white-space: nowrap !important;
         }
         
@@ -5111,14 +5111,14 @@ export const PropertyDetailsExtension = {
         .property-details-container .energy-label-detail::after {
           border-top: 11px solid transparent !important;
           border-bottom: 11px solid transparent !important;
-          border-left: 12px solid !important;
+          border-left: 12px solid #FFD700 !important;
           right: -12px !important;
         }
         
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 9px !important;
-          padding: 0.3em 1em !important;
-          height: 1.8em !important;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
         }
         
         .property-details-container .detail-popup-specs-row {
