@@ -2070,6 +2070,58 @@ export const BrantjesExtension = {
       .search-nearby-btn:hover {
         background: #166BB5;
       }
+      
+      /* MOBILE RESPONSIVE OVERRIDES - HIGHEST PRIORITY */
+      @media (max-width: 500px) {
+        .brantjes-carousel-list .brantjes-property-card {
+          width: 280px !important;
+          height: 380px !important;
+        }
+        .brantjes-carousel-list .act {
+          width: 280px !important;
+          height: 380px !important;
+        }
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 150px), -50%) scale(.85) !important;
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 150px), -50%) scale(.85) !important;
+        }
+      }
+      
+      @media (max-width: 400px) {
+        .brantjes-carousel-list .brantjes-property-card {
+          width: 260px !important;
+          height: 350px !important;
+        }
+        .brantjes-carousel-list .act {
+          width: 260px !important;
+          height: 350px !important;
+        }
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 140px), -50%) scale(.85) !important;
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 140px), -50%) scale(.85) !important;
+        }
+      }
+      
+      @media (max-width: 350px) {
+        .brantjes-carousel-list .brantjes-property-card {
+          width: 240px !important;
+          height: 320px !important;
+        }
+        .brantjes-carousel-list .act {
+          width: 240px !important;
+          height: 320px !important;
+        }
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 130px), -50%) scale(.85) !important;
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 130px), -50%) scale(.85) !important;
+        }
+      }
     `;
     element.appendChild(style);
 
