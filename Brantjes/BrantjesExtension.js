@@ -3349,13 +3349,32 @@ export const BrantjesExtension = {
     carouselContainer.className = 'brantjes-carousel-container';
     carouselContainer.style.border = '2px solid red'; // Debug: Make container visible
     carouselContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.1)'; // Debug: Add background
-    carouselContainer.style.minWidth = '300px'; // Ensure minimum width
-    carouselContainer.style.minHeight = '300px'; // Ensure minimum height
+    // Responsive minimum dimensions based on screen size
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 1024) { // Desktop
+      carouselContainer.style.minWidth = '900px'; // Show 3 cards on desktop
+      carouselContainer.style.minHeight = '500px';
+    } else if (screenWidth > 768) { // Tablet
+      carouselContainer.style.minWidth = '600px'; // Show 2 cards on tablet
+      carouselContainer.style.minHeight = '400px';
+    } else { // Mobile
+      carouselContainer.style.minWidth = '300px'; // Show 1 card on mobile
+      carouselContainer.style.minHeight = '300px';
+    }
 
     const list = document.createElement('ul');
     list.className = 'brantjes-carousel-list';
-    list.style.minWidth = '300px'; // Ensure minimum width
-    list.style.minHeight = '300px'; // Ensure minimum height
+    // Responsive minimum dimensions for list based on screen size
+    if (screenWidth > 1024) { // Desktop
+      list.style.minWidth = '900px'; // Show 3 cards on desktop
+      list.style.minHeight = '500px';
+    } else if (screenWidth > 768) { // Tablet
+      list.style.minWidth = '600px'; // Show 2 cards on tablet
+      list.style.minHeight = '400px';
+    } else { // Mobile
+      list.style.minWidth = '300px'; // Show 1 card on mobile
+      list.style.minHeight = '300px';
+    }
     carouselContainer.appendChild(list);
 
     // Populate all unique property cards in the list initially
@@ -3397,6 +3416,7 @@ export const BrantjesExtension = {
         // Get responsive dimensions based on screen size
         const screenWidth = window.innerWidth;
         let defaultWidth, defaultHeight, activeWidth, activeHeight, offsetDistance;
+        let cardsToShow = 1; // Default: show 1 card
         
         if (screenWidth <= 600) {
             // Mobile
@@ -3405,6 +3425,7 @@ export const BrantjesExtension = {
             activeWidth = '180px';
             activeHeight = '300px';
             offsetDistance = '170px';
+            cardsToShow = 1; // Show 1 card on mobile
         } else if (screenWidth <= 900) {
             // Tablet
             defaultWidth = '180px';
@@ -3412,6 +3433,7 @@ export const BrantjesExtension = {
             activeWidth = '200px';
             activeHeight = '330px';
             offsetDistance = '190px';
+            cardsToShow = 2; // Show 2 cards on tablet
         } else {
             // Desktop
             defaultWidth = '201px';
@@ -3419,40 +3441,59 @@ export const BrantjesExtension = {
             activeWidth = '219px';
             activeHeight = '365px';
             offsetDistance = '220px';
+            cardsToShow = 3; // Show 3 cards on desktop
         }
 
         cards.forEach((card, index) => {
             // Reset all potential carousel classes and default styles
-            card.classList.remove('prev', 'act', 'next');
+            card.classList.remove('prev', 'act', 'next', 'prev2', 'next2');
             card.style.opacity = '0'; // Default to hidden
             card.style.zIndex = '1'; // Default z-index
             card.style.transform = `translate(-50%, -50%) scale(0.85)`; // Default scale and centering adjustment
             card.style.width = defaultWidth; // Responsive default width
             card.style.height = defaultHeight; // Responsive default height
 
-            if (index === currentPropertyIndex) { // Active card
+            // Calculate which cards should be visible based on screen size
+            const nextIndex2 = (currentPropertyIndex + 2) % totalSlides;
+            const prevIndex2 = (currentPropertyIndex - 2 + totalSlides) % totalSlides;
+            
+            if (index === currentPropertyIndex) { // Active card (always visible)
                 card.classList.add('act');
                 card.style.opacity = '1';
                 card.style.zIndex = '3';
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
-                card.style.width = activeWidth; // Responsive active width
-                card.style.height = activeHeight; // Responsive active height
+                card.style.width = activeWidth;
+                card.style.height = activeHeight;
                 card.style.border = '2px solid green'; // Debug: Make active card visible
                 console.log(`✅ Card ${index} set as ACTIVE - Width: ${activeWidth}, Height: ${activeHeight}`);
-            } else if (index === nextIndex) { // Next card
+            } else if (index === nextIndex && cardsToShow >= 2) { // Next card (visible on tablet+)
                 card.classList.add('next');
-                card.style.opacity = '0.25';
+                card.style.opacity = '0.8';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.85)`;
+                card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.9)`;
                 card.style.border = '2px solid blue'; // Debug: Make next card visible
                 console.log(`➡️ Card ${index} set as NEXT - Offset: ${offsetDistance}`);
-            } else if (index === prevIndex) { // Previous card
+            } else if (index === prevIndex && cardsToShow >= 2) { // Previous card (visible on tablet+)
                 card.classList.add('prev');
-                card.style.opacity = '0.25';
+                card.style.opacity = '0.8';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.85)`;
+                card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.9)`;
                 card.style.border = '2px solid orange'; // Debug: Make prev card visible
                 console.log(`⬅️ Card ${index} set as PREV - Offset: ${offsetDistance}`);
+            } else if (index === nextIndex2 && cardsToShow >= 3) { // Second next card (visible on desktop only)
+                card.classList.add('next2');
+                card.style.opacity = '0.6';
+                card.style.zIndex = '1';
+                card.style.transform = `translate(calc(-50% + ${offsetDistance * 2}), -50%) scale(0.8)`;
+                card.style.border = '2px solid purple'; // Debug: Make second next card visible
+                console.log(`➡️➡️ Card ${index} set as NEXT2 - Offset: ${offsetDistance * 2}`);
+            } else if (index === prevIndex2 && cardsToShow >= 3) { // Second previous card (visible on desktop only)
+                card.classList.add('prev2');
+                card.style.opacity = '0.6';
+                card.style.zIndex = '1';
+                card.style.transform = `translate(calc(-50% - ${offsetDistance * 2}), -50%) scale(0.8)`;
+                card.style.border = '2px solid pink'; // Debug: Make second prev card visible
+                console.log(`⬅️⬅️ Card ${index} set as PREV2 - Offset: ${offsetDistance * 2}`);
             } else {
                 card.style.border = '1px solid gray'; // Debug: Make hidden cards slightly visible
                 console.log(`❌ Card ${index} set as HIDDEN`);
@@ -3494,6 +3535,25 @@ export const BrantjesExtension = {
     
     // Add resize listener for responsive updates
     const resizeHandler = () => {
+        // Update container dimensions on resize
+        const screenWidth = window.innerWidth;
+        if (screenWidth > 1024) { // Desktop
+            carouselContainer.style.minWidth = '900px';
+            carouselContainer.style.minHeight = '500px';
+            list.style.minWidth = '900px';
+            list.style.minHeight = '500px';
+        } else if (screenWidth > 768) { // Tablet
+            carouselContainer.style.minWidth = '600px';
+            carouselContainer.style.minHeight = '400px';
+            list.style.minWidth = '600px';
+            list.style.minHeight = '400px';
+        } else { // Mobile
+            carouselContainer.style.minWidth = '300px';
+            carouselContainer.style.minHeight = '300px';
+            list.style.minWidth = '300px';
+            list.style.minHeight = '300px';
+        }
+        
         updateCardClassesAndTransforms();
     };
     window.addEventListener('resize', resizeHandler);
