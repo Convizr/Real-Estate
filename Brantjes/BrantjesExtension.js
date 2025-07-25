@@ -573,100 +573,70 @@ export const BrantjesExtension = {
           width: 95vw;
           max-width: 95vw;
           min-width: 280px;
-          height: 280px;
+          height: 400px;
         }
         .brantjes-property-card {
-          width: 160px;
-          height: 220px;
+          width: 280px;
+          height: 360px;
         }
         .brantjes-property-card.active {
-          width: 160px;
-          height: 220px;
+          width: 280px;
+          height: 360px;
         }
-        /* Show navigation buttons for smaller pop-up */
+        /* Hide navigation buttons for single card view */
         .brantjes-nav-button {
-          display: flex;
-          width: 35px;
-          height: 35px;
-          font-size: 18px;
+          display: none;
         }
       }
       
       @media (max-width: 400px) {
         .brantjes-carousel-container {
-          width: 35vvw;
-          max-width: 100vw;
+          width: 95vw;
+          max-width: 95vw;
           min-width: 260px;
-          height: 260px;
+          height: 380px;
         }
         .brantjes-property-card {
-          width: 140px;
-          height: 200px;
+          width: 260px;
+          height: 340px;
         }
         .brantjes-property-card.active {
-          width: 140px;
-          height: 200px;
+          width: 260px;
+          height: 340px;
         }
-        /* Show navigation buttons */
+        /* Hide navigation buttons for single card view */
         .brantjes-nav-button {
-          display: flex;
-          width: 30px;
-          height: 30px;
-          font-size: 16px;
+          display: none;
         }
       }
       
       @media (max-width: 350px) {
         .brantjes-carousel-container {
-          width: 35vw;
-          max-width: 100vw;
+          width: 95vw;
+          max-width: 95vw;
           min-width: 240px;
-          height: 240px;
+          height: 360px;
         }
         .brantjes-property-card {
-          width: 120px;
-          height: 180px;
+          width: 240px;
+          height: 320px;
         }
         .brantjes-property-card.active {
-          width: 120px;
-          height: 180px;
+          width: 240px;
+          height: 320px;
         }
-        /* Show navigation buttons */
+        /* Hide navigation buttons for single card view */
         .brantjes-nav-button {
-          display: flex;
-          width: 28px;
-          height: 28px;
-          font-size: 14px;
+          display: none;
         }
       }
       
       /* Responsive positioning for carousel cards */
       @media (max-width: 500px) {
-        .brantjes-carousel-list .prev {
-          opacity: .25;
-          transform: translate(calc(-50% - 90px), -50%) scale(.85);
-        }
+        .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          opacity: .25;
-          transform: translate(calc(-50% + 90px), -50%) scale(.85);
-        }
-      }
-      
-      @media (max-width: 400px) {
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 80px), -50%) scale(.85);
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 80px), -50%) scale(.85);
-        }
-      }
-      
-      @media (max-width: 350px) {
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 70px), -50%) scale(.85);
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 70px), -50%) scale(.85);
+          opacity: 0 !important;
+          visibility: hidden !important;
         }
       }
       
@@ -2074,52 +2044,49 @@ export const BrantjesExtension = {
       /* MOBILE RESPONSIVE OVERRIDES - HIGHEST PRIORITY */
       @media (max-width: 500px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 160px !important;
-          height: 220px !important;
+          width: 280px !important;
+          height: 360px !important;
         }
         .brantjes-carousel-list .act {
-          width: 160px !important;
-          height: 220px !important;
+          width: 280px !important;
+          height: 360px !important;
         }
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 90px), -50%) scale(.85) !important;
-        }
+        .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 90px), -50%) scale(.85) !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
         }
       }
       
       @media (max-width: 400px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 140px !important;
-          height: 200px !important;
+          width: 260px !important;
+          height: 340px !important;
         }
         .brantjes-carousel-list .act {
-          width: 140px !important;
-          height: 200px !important;
+          width: 260px !important;
+          height: 340px !important;
         }
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 80px), -50%) scale(.85) !important;
-        }
+        .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 80px), -50%) scale(.85) !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
         }
       }
       
       @media (max-width: 350px) {
         .brantjes-carousel-list .brantjes-property-card {
-          width: 120px !important;
-          height: 180px !important;
+          width: 240px !important;
+          height: 320px !important;
         }
         .brantjes-carousel-list .act {
-          width: 120px !important;
-          height: 180px !important;
+          width: 240px !important;
+          height: 320px !important;
         }
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 70px), -50%) scale(.85) !important;
-        }
+        .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 70px), -50%) scale(.85) !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
         }
       }
     `;
