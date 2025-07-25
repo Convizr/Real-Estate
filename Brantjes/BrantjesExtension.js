@@ -2328,6 +2328,62 @@ export const BrantjesExtension = {
           align-items: center !important;
           gap: 1.2rem !important;
         }
+        
+        /* Restore original desktop font sizes */
+        .brantjes-modal-container .detail-popup-title-main {
+          font-size: 1.8rem !important;
+          line-height: 1.1 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-details {
+          font-size: 1.08rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-price {
+          font-size: 1.08rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-viewing-btn {
+          font-size: 11px !important;
+          padding: 0.5em 1.5em !important;
+          height: 2.2em !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-specs-row {
+          justify-content: flex-start !important;
+          gap: 0.5rem !important;
+          flex-wrap: nowrap !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-specs-row span {
+          font-size: 0.8rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-content {
+          gap: 24px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          font-size: 15px !important;
+          line-height: 1.6 !important;
+        }
+        
+        .brantjes-modal-container table {
+          font-size: 0.85rem !important;
+        }
+        
+        .brantjes-modal-container table td {
+          padding: 3px 8px !important;
+        }
+        
+        .brantjes-modal-container .search-nearby-btn {
+          font-size: 16px !important;
+          padding: 12px 32px !important;
+          min-width: 200px !important;
+        }
       }
     `;
     element.appendChild(style);
@@ -4961,6 +5017,62 @@ export const PropertyDetailsExtension = {
           flex-direction: row !important;
           align-items: center !important;
           gap: 1.2rem !important;
+        }
+        
+        /* Restore original desktop font sizes for PropertyDetailsExtension */
+        .property-details-container .detail-popup-title-main {
+          font-size: 1.8rem !important;
+          line-height: 1.1 !important;
+        }
+        
+        .property-details-container .detail-popup-header-details {
+          font-size: 1.08rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .property-details-container .detail-popup-header-price {
+          font-size: 1.08rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .property-details-container .detail-popup-header-viewing-btn {
+          font-size: 11px !important;
+          padding: 0.5em 1.5em !important;
+          height: 2.2em !important;
+        }
+        
+        .property-details-container .detail-popup-specs-row {
+          justify-content: flex-start !important;
+          gap: 0.5rem !important;
+          flex-wrap: nowrap !important;
+        }
+        
+        .property-details-container .detail-popup-specs-row span {
+          font-size: 0.8rem !important;
+          white-space: nowrap !important;
+        }
+        
+        .property-details-container .detail-popup-content {
+          gap: 24px !important;
+        }
+        
+        .property-details-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          font-size: 15px !important;
+          line-height: 1.6 !important;
+        }
+        
+        .property-details-container table {
+          font-size: 0.85rem !important;
+        }
+        
+        .property-details-container table td {
+          padding: 3px 8px !important;
+        }
+        
+        .property-details-container .search-nearby-btn {
+          font-size: 16px !important;
+          padding: 12px 32px !important;
+          min-width: 200px !important;
         }
       }
     `;
