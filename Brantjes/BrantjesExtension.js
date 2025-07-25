@@ -2184,7 +2184,7 @@ export const BrantjesExtension = {
         
         /* Mobile-specific header styling */
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           white-space: normal !important;
           flex: 1 !important;
           min-width: 0 !important;
@@ -2194,7 +2194,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           white-space: normal !important;
           flex-shrink: 0 !important;
           max-width: 100% !important;
@@ -2203,7 +2203,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
+          font-size: 13px !important;
           padding: 0.4em 1.2em !important;
           height: 2em !important;
           flex-shrink: 0 !important;
@@ -2372,7 +2372,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .energy-label-detail {
-          font-size: 0.7rem !important;
+          font-size: 1rem !important;
           height: 22px !important;
           padding: 0 10px 0 8px !important;
         }
@@ -4948,7 +4948,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           white-space: normal !important;
           flex-shrink: 0 !important;
           max-width: 100% !important;
@@ -5119,7 +5119,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .energy-label-detail {
-          font-size: 0.7rem !important;
+          font-size: 1rem !important;
           height: 22px !important;
           padding: 0 10px 0 8px !important;
         }
