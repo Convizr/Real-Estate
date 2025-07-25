@@ -2183,7 +2183,7 @@ export const BrantjesExtension = {
           gap: 12px !important;
         }
         
-        /* Mobile header adjustments */
+        /* Mobile-specific header styling */
         .brantjes-modal-container .detail-popup-header-details {
           font-size: 0.9rem !important;
           white-space: normal !important;
@@ -2211,7 +2211,7 @@ export const BrantjesExtension = {
           white-space: nowrap !important;
         }
         
-        /* Mobile specs row adjustments */
+        /* Mobile-specific specs row styling */
         .brantjes-modal-container .detail-popup-specs-row {
           justify-content: center !important;
           gap: 16px !important;
@@ -2223,18 +2223,45 @@ export const BrantjesExtension = {
           white-space: nowrap !important;
         }
         
-        /* Mobile modal container adjustments */
-        .brantjes-modal-container {
-          padding: 1.5rem !important;
-          max-width: 95vw !important;
-          max-height: 85vh !important;
+        /* Mobile-specific title styling */
+        .brantjes-modal-container .detail-popup-title-main {
+          font-size: 1.4rem !important;
+          line-height: 1.2 !important;
+          word-break: break-word !important;
         }
         
-        /* Mobile title adjustments */
-        .brantjes-modal-container .detail-popup-title-main {
-          font-size: 1.5rem !important;
-          line-height: 1.2 !important;
-          margin-bottom: 0.5rem !important;
+        /* Mobile-specific modal container adjustments */
+        .brantjes-modal-container {
+          padding: 1rem !important;
+          max-width: 95vw !important;
+          max-height: 90vh !important;
+        }
+        
+        /* Mobile-specific content spacing */
+        .brantjes-modal-container .detail-popup-content {
+          gap: 16px !important;
+        }
+        
+        /* Mobile-specific description styling */
+        .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          font-size: 14px !important;
+          line-height: 1.5 !important;
+        }
+        
+        /* Mobile-specific table styling */
+        .brantjes-modal-container table {
+          font-size: 0.8rem !important;
+        }
+        
+        .brantjes-modal-container table td {
+          padding: 2px 4px !important;
+        }
+        
+        /* Mobile-specific button styling */
+        .brantjes-modal-container .search-nearby-btn {
+          font-size: 14px !important;
+          padding: 10px 24px !important;
+          min-width: 180px !important;
         }
       }
 
@@ -2355,15 +2382,6 @@ export const BrantjesExtension = {
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
-        
-        // Add responsive inline styles
-        detailContent.style.width = '100%';
-        detailContent.style.maxWidth = '100%';
-        detailContent.style.overflowX = 'hidden';
-        detailContent.style.boxSizing = 'border-box';
-        
-        // Check if we're on mobile and apply responsive styles
-        const isMobile = window.innerWidth <= 768;
 
         // --- HEADER SECTION (Brantjes style) ---
         const header = document.createElement('div');
@@ -2380,22 +2398,6 @@ export const BrantjesExtension = {
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
-        
-        // Add responsive inline styles for header row
-        headerRow.style.flexWrap = 'wrap';
-        headerRow.style.gap = '1rem';
-        headerRow.style.alignItems = 'flex-start';
-        headerRow.style.width = '100%';
-        headerRow.style.maxWidth = '100%';
-        headerRow.style.overflowX = 'hidden';
-        headerRow.style.boxSizing = 'border-box';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (isMobile) {
-          headerRow.style.flexDirection = 'column';
-          headerRow.style.alignItems = 'stretch';
-          headerRow.style.gap = '12px';
-        }
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
@@ -2407,13 +2409,6 @@ export const BrantjesExtension = {
           addrSpan.className = 'detail-popup-header-details';
           addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
           addrSpan.style.fontWeight = 'bold';
-          addrSpan.style.fontSize = '0.9rem';
-          addrSpan.style.whiteSpace = 'normal';
-          addrSpan.style.flex = '1';
-          addrSpan.style.minWidth = '0';
-          addrSpan.style.maxWidth = '100%';
-          addrSpan.style.overflowWrap = 'break-word';
-          addrSpan.style.wordWrap = 'break-word';
           headerRow.appendChild(addrSpan);
         }
         // Dot separator only if both address and energy label
@@ -2440,23 +2435,12 @@ export const BrantjesExtension = {
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
         priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        priceDiv.style.fontSize = '0.9rem';
-        priceDiv.style.whiteSpace = 'normal';
-        priceDiv.style.flexShrink = '0';
-        priceDiv.style.maxWidth = '100%';
-        priceDiv.style.overflowWrap = 'break-word';
-        priceDiv.style.wordWrap = 'break-word';
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
         viewingBtn.textContent = 'Bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
-        viewingBtn.style.fontSize = '10px';
-        viewingBtn.style.padding = '0.4em 1.2em';
-        viewingBtn.style.height = '2em';
-        viewingBtn.style.flexShrink = '0';
-        viewingBtn.style.whiteSpace = 'nowrap';
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
@@ -2464,57 +2448,12 @@ export const BrantjesExtension = {
         // --- IMAGES ROW ---
         const imagesRow = document.createElement('div');
         imagesRow.className = 'detail-popup-images-row';
-        
-        // Add responsive inline styles for images
-        imagesRow.style.width = '100%';
-        imagesRow.style.maxWidth = '100%';
-        imagesRow.style.overflowX = 'hidden';
-        imagesRow.style.boxSizing = 'border-box';
-        imagesRow.style.marginTop = '16px';
-        imagesRow.style.display = 'flex';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (isMobile) {
-          imagesRow.style.flexDirection = 'column';
-          imagesRow.style.alignItems = 'center';
-          imagesRow.style.gap = '16px';
-          imagesRow.style.marginTop = '24px';
-        } else {
-          imagesRow.style.flexDirection = 'row';
-          imagesRow.style.alignItems = 'flex-start';
-          imagesRow.style.gap = '16px';
-        }
         // Main image
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
-        
-        // Add responsive inline styles for main image
-        mainImgCol.style.setProperty('position', 'relative', 'important');
-        mainImgCol.style.setProperty('box-sizing', 'border-box', 'important');
-        mainImgCol.style.setProperty('display', 'block', 'important');
-        
-        // Check if we're on mobile and adjust accordingly
-        if (isMobile) {
-          mainImgCol.style.setProperty('width', '100%', 'important');
-          mainImgCol.style.setProperty('max-width', '100%', 'important');
-          mainImgCol.style.setProperty('margin-bottom', '16px', 'important');
-          mainImgCol.style.setProperty('min-width', 'auto', 'important');
-          mainImgCol.style.setProperty('height', 'auto', 'important');
-          mainImgCol.style.setProperty('max-height', 'none', 'important');
-        } else {
-          mainImgCol.style.setProperty('width', '60%', 'important');
-          mainImgCol.style.setProperty('max-width', 'none', 'important');
-          mainImgCol.style.setProperty('min-width', 'auto', 'important');
-          mainImgCol.style.setProperty('height', 'auto', 'important');
-          mainImgCol.style.setProperty('max-height', 'none', 'important');
-        }
         const mainImg = document.createElement('img');
         mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
-        mainImg.style.setProperty('width', '100%', 'important');
-        mainImg.style.setProperty('height', 'auto', 'important');
-        mainImg.style.setProperty('display', 'block', 'important');
-        mainImg.style.setProperty('border-radius', '8px', 'important');
         mainImgCol.appendChild(mainImg);
         // Image counter
         let counter;
@@ -2528,39 +2467,6 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        
-        // Add responsive inline styles for thumbnails
-        thumbsCol.style.position = 'static';
-        thumbsCol.style.alignItems = 'stretch';
-        thumbsCol.style.justifyContent = 'stretch';
-        thumbsCol.style.boxSizing = 'border-box';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (isMobile) {
-          thumbsCol.style.setProperty('width', '100%', 'important');
-          thumbsCol.style.setProperty('max-width', '100%', 'important');
-          thumbsCol.style.setProperty('display', 'grid', 'important');
-          thumbsCol.style.setProperty('grid-template-columns', 'repeat(4, 1fr)', 'important');
-          thumbsCol.style.setProperty('grid-template-rows', 'repeat(2, 1fr)', 'important');
-          thumbsCol.style.setProperty('gap', '8px', 'important');
-          thumbsCol.style.setProperty('height', '100px', 'important');
-          thumbsCol.style.setProperty('margin-top', '0', 'important');
-          thumbsCol.style.setProperty('position', 'static', 'important');
-          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
-          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
-        } else {
-          thumbsCol.style.setProperty('width', '40%', 'important');
-          thumbsCol.style.setProperty('max-width', 'none', 'important');
-          thumbsCol.style.setProperty('display', 'grid', 'important');
-          thumbsCol.style.setProperty('grid-template-columns', 'repeat(2, 1fr)', 'important');
-          thumbsCol.style.setProperty('grid-template-rows', 'repeat(4, 1fr)', 'important');
-          thumbsCol.style.setProperty('gap', '4px', 'important');
-          thumbsCol.style.setProperty('height', 'auto', 'important');
-          thumbsCol.style.setProperty('margin-top', '0', 'important');
-          thumbsCol.style.setProperty('position', 'static', 'important');
-          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
-          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
-        }
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
@@ -2576,15 +2482,6 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                thumbDiv.style.setProperty('background-size', 'cover', 'important');
-                thumbDiv.style.setProperty('background-position', 'center', 'important');
-                thumbDiv.style.setProperty('background-repeat', 'no-repeat', 'important');
-                thumbDiv.style.setProperty('border-radius', '6px', 'important');
-                thumbDiv.style.setProperty('cursor', 'pointer', 'important');
-                thumbDiv.style.setProperty('position', 'static', 'important');
-                thumbDiv.style.setProperty('opacity', '1', 'important');
-                thumbDiv.style.setProperty('pointer-events', 'auto', 'important');
-                
                 // Position in grid
                 let gridPos = i;
                 if (gridPos <= 4) {
@@ -2617,84 +2514,48 @@ export const BrantjesExtension = {
         // --- SPECIFICATIONS ROW (Brantjes style) ---
         const specsRow = document.createElement('div');
         specsRow.className = 'detail-popup-specs-row';
-        
-        // Add responsive inline styles for specifications
-        specsRow.style.width = '100%';
-        specsRow.style.maxWidth = '100%';
-        specsRow.style.overflowX = 'hidden';
-        specsRow.style.boxSizing = 'border-box';
-        specsRow.style.padding = '0';
-        specsRow.style.margin = '24px 0 0 0';
-        specsRow.style.flexWrap = 'wrap';
-        specsRow.style.gap = '12px';
-        specsRow.style.display = 'flex';
-        specsRow.style.alignItems = 'center';
-        specsRow.style.justifyContent = 'flex-start';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (isMobile) {
-          specsRow.style.justifyContent = 'center';
-          specsRow.style.gap = '16px';
-        }
 
         // Woonoppervlakte
         const woonopp = property.algemeen?.woonoppervlakte;
         if (woonopp) {
           const woonoppSpan = document.createElement('span');
           woonoppSpan.innerHTML = `<strong>${woonopp} m²</strong> woonoppervlakte`;
-          woonoppSpan.style.fontSize = '14px';
-          woonoppSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(woonoppSpan);
         }
         // Dot
         const dot1 = document.createElement('span');
         dot1.className = 'detail-popup-dot';
         dot1.textContent = '•';
-        dot1.style.fontSize = '16px';
-        dot1.style.color = '#666';
-        dot1.style.margin = '0 4px';
         specsRow.appendChild(dot1);
         // Slaapkamers
         const slaapkamers = property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || property.algemeen?.aantalSlaapkamers;
         if (slaapkamers) {
           const slaapSpan = document.createElement('span');
           slaapSpan.innerHTML = `<strong>${slaapkamers}</strong> slaapkamers`;
-          slaapSpan.style.fontSize = '14px';
-          slaapSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(slaapSpan);
         }
         // Dot
         const dot2 = document.createElement('span');
         dot2.className = 'detail-popup-dot';
         dot2.textContent = '•';
-        dot2.style.fontSize = '16px';
-        dot2.style.color = '#666';
-        dot2.style.margin = '0 4px';
         specsRow.appendChild(dot2);
         // Bouwjaar
         const bouwjaar = property.algemeen?.bouwjaar;
         if (bouwjaar) {
           const bouwjaarSpan = document.createElement('span');
           bouwjaarSpan.innerHTML = `Bouwjaar <strong>${bouwjaar}</strong>`;
-          bouwjaarSpan.style.fontSize = '14px';
-          bouwjaarSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(bouwjaarSpan);
         }
         // Dot
         const dot3 = document.createElement('span');
         dot3.className = 'detail-popup-dot';
         dot3.textContent = '•';
-        dot3.style.fontSize = '16px';
-        dot3.style.color = '#666';
-        dot3.style.margin = '0 4px';
         specsRow.appendChild(dot3);
         // Perceel
         const perceel = property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte;
         if (perceel) {
           const perceelSpan = document.createElement('span');
           perceelSpan.innerHTML = `<strong>${perceel} m²</strong> perceel`;
-          perceelSpan.style.fontSize = '14px';
-          perceelSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(perceelSpan);
         }
 
@@ -4894,27 +4755,212 @@ export const PropertyDetailsExtension = {
         text-align: center;
       }
 
-      /* Responsive adjustments */
+      /* MOBILE RESPONSIVE STYLES - PROPERTY DETAILS EXTENSION */
       @media (max-width: 768px) {
         .property-details-container {
-          padding: 1rem;
-          margin: 0;
-          border-radius: 0;
+          padding: 1rem !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          max-width: 100% !important;
         }
         
-        .detail-popup-images-row {
-          flex-direction: column;
-          align-items: center;
+        .property-details-container .detail-popup-main-image {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: auto !important;
+          height: auto !important;
+          max-height: none !important;
+          margin-bottom: 16px !important;
+          display: block !important;
+          position: relative !important;
+          align-self: stretch !important;
         }
         
-        .detail-popup-main-image {
-          width: 100%;
-          max-width: 320px;
+        .property-details-container .detail-popup-main-image img {
+          width: 100% !important;
+          height: auto !important;
+          max-height: 300px !important;
+          object-fit: cover !important;
+          display: block !important;
         }
         
-        .detail-popup-thumbnails {
-          width: 100%;
-          max-width: 320px;
+        .property-details-container .detail-popup-thumbnails {
+          width: 100% !important;
+          max-width: 100% !important;
+          display: grid !important;
+          grid-template-columns: repeat(4, 1fr) !important;
+          grid-template-rows: repeat(2, 1fr) !important;
+          gap: 8px !important;
+          height: 120px !important;
+          margin-top: 0 !important;
+          position: static !important;
+          align-items: stretch !important;
+          justify-content: stretch !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnail {
+          width: 100% !important;
+          height: 100% !important;
+          position: static !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          border-radius: 6px !important;
+          cursor: pointer !important;
+        }
+        
+        .property-details-container .detail-popup-images-row {
+          flex-direction: column !important;
+          align-items: center !important;
+          gap: 16px !important;
+          margin-top: 24px !important;
+        }
+        
+        .property-details-container .detail-popup-header-row {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+        
+        /* Mobile-specific header styling for PropertyDetailsExtension */
+        .property-details-container .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          white-space: normal !important;
+          flex: 1 !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
+        }
+        
+        .property-details-container .detail-popup-header-price {
+          font-size: 0.9rem !important;
+          white-space: normal !important;
+          flex-shrink: 0 !important;
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
+        }
+        
+        .property-details-container .detail-popup-header-viewing-btn {
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
+          flex-shrink: 0 !important;
+          white-space: nowrap !important;
+        }
+        
+        /* Mobile-specific specs row styling for PropertyDetailsExtension */
+        .property-details-container .detail-popup-specs-row {
+          justify-content: center !important;
+          gap: 16px !important;
+          flex-wrap: wrap !important;
+        }
+        
+        .property-details-container .detail-popup-specs-row span {
+          font-size: 14px !important;
+          white-space: nowrap !important;
+        }
+        
+        /* Mobile-specific title styling for PropertyDetailsExtension */
+        .property-details-container .detail-popup-title-main {
+          font-size: 1.4rem !important;
+          line-height: 1.2 !important;
+          word-break: break-word !important;
+        }
+        
+        /* Mobile-specific content spacing for PropertyDetailsExtension */
+        .property-details-container .detail-popup-content {
+          gap: 16px !important;
+        }
+        
+        /* Mobile-specific description styling for PropertyDetailsExtension */
+        .property-details-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          font-size: 14px !important;
+          line-height: 1.5 !important;
+        }
+        
+        /* Mobile-specific table styling for PropertyDetailsExtension */
+        .property-details-container table {
+          font-size: 0.8rem !important;
+        }
+        
+        .property-details-container table td {
+          padding: 2px 4px !important;
+        }
+        
+        /* Mobile-specific button styling for PropertyDetailsExtension */
+        .property-details-container .search-nearby-btn {
+          font-size: 14px !important;
+          padding: 10px 24px !important;
+          min-width: 180px !important;
+        }
+      }
+
+      /* DESKTOP STYLES - PROPERTY DETAILS EXTENSION */
+      @media (min-width: 769px) {
+        .property-details-container .detail-popup-main-image {
+          width: 320px !important;
+          height: 240px !important;
+          min-width: 320px !important;
+          max-width: 320px !important;
+          max-height: 240px !important;
+          margin-bottom: 0 !important;
+          display: flex !important;
+          position: relative !important;
+          align-self: flex-end !important;
+        }
+        
+        .property-details-container .detail-popup-main-image img {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          display: block !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnails {
+          display: grid !important;
+          grid-template-columns: 150px 150px !important;
+          grid-template-rows: 115px 115px !important;
+          gap: 10px !important;
+          align-items: end !important;
+          height: 240px !important;
+          justify-content: flex-start !important;
+          position: relative !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnail {
+          width: 150px !important;
+          height: 115px !important;
+          position: absolute !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          background-size: cover !important;
+          background-position: center !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        }
+        
+        .property-details-container .detail-popup-thumbnail.fade-in {
+          opacity: 1 !important;
+          position: static !important;
+          pointer-events: auto !important;
+        }
+        
+        .property-details-container .detail-popup-images-row {
+          flex-direction: row !important;
+          align-items: flex-end !important;
+          gap: 10px !important;
+          margin-top: 16px !important;
+        }
+        
+        .property-details-container .detail-popup-header-row {
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 1.2rem !important;
         }
       }
     `;
