@@ -2199,30 +2199,44 @@ export const BrantjesExtension = {
       @media (min-width: 769px) {
         .detail-popup-header-row {
           flex-wrap: wrap !important;
-          gap: 0.8rem !important;
+          gap: 1.2rem !important;
         }
-        .detail-popup-header-details {
-          font-size: 0.85rem !important;
-          white-space: nowrap !important;
-          margin-right: 0.8rem !important;
-        }
+        .detail-popup-header-details,
         .detail-popup-header-price {
-          font-size: 0.85rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
-          margin-right: 0.8rem !important;
+          margin-right: 1.2rem !important;
         }
         .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
-          padding: 0.4em 1em !important;
-          height: 1.8em !important;
+          font-size: 1rem !important;
+          padding: 0.7em 2em !important;
+          height: 2.4em !important;
           white-space: nowrap !important;
         }
         .detail-popup-dot {
-          margin: 0 0.3rem !important;
-          font-size: 1rem !important;
+          margin: 0 0.5rem !important;
+          font-size: 1.2em !important;
         }
         .detail-popup-title-main {
-          font-size: 1.6rem !important;
+          font-size: 1.5rem !important;
+        }
+        /* Specifications table adjustments for desktop */
+        .detail-popup-info table {
+          width: 100% !important;
+          font-size: 0.95rem !important;
+        }
+        .detail-popup-info table td {
+          font-size: 0.95rem !important;
+          padding: 6px 8px !important;
+        }
+        /* Thumbnails adjustments for desktop */
+        .detail-popup-thumbnails {
+          width: 320px !important;
+          max-width: 320px !important;
+        }
+        .detail-popup-thumbnail {
+          width: 150px !important;
+          height: 115px !important;
         }
       }
     `;
@@ -4729,30 +4743,44 @@ export const PropertyDetailsExtension = {
       @media (min-width: 769px) {
         .detail-popup-header-row {
           flex-wrap: wrap !important;
-          gap: 0.8rem !important;
+          gap: 1.2rem !important;
         }
-        .detail-popup-header-details {
-          font-size: 0.85rem !important;
-          white-space: nowrap !important;
-          margin-right: 0.8rem !important;
-        }
+        .detail-popup-header-details,
         .detail-popup-header-price {
-          font-size: 0.85rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
-          margin-right: 0.8rem !important;
+          margin-right: 1.2rem !important;
         }
         .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
-          padding: 0.4em 1em !important;
-          height: 1.8em !important;
+          font-size: 1rem !important;
+          padding: 0.7em 2em !important;
+          height: 2.4em !important;
           white-space: nowrap !important;
         }
         .detail-popup-dot {
-          margin: 0 0.3rem !important;
-          font-size: 1rem !important;
+          margin: 0 0.5rem !important;
+          font-size: 1.2em !important;
         }
         .detail-popup-title-main {
-          font-size: 1.6rem !important;
+          font-size: 1.5rem !important;
+        }
+        /* Specifications table adjustments for desktop */
+        .detail-popup-info table {
+          width: 100% !important;
+          font-size: 0.95rem !important;
+        }
+        .detail-popup-info table td {
+          font-size: 0.95rem !important;
+          padding: 6px 8px !important;
+        }
+        /* Thumbnails adjustments for desktop */
+        .detail-popup-thumbnails {
+          width: 320px !important;
+          max-width: 320px !important;
+        }
+        .detail-popup-thumbnail {
+          width: 150px !important;
+          height: 115px !important;
         }
       }
     `;
