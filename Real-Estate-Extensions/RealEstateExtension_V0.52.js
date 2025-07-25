@@ -111,62 +111,15 @@ const config = {
       // --- Wrapper for consistent sub–view width (600px) ---
       const wrapper = document.createElement('div');
       wrapper.style.maxWidth = config.containerWidth;
-      wrapper.style.width = '100%';
       wrapper.style.margin = '20px auto';
       wrapper.style.fontFamily = config.fontFamily;
-      wrapper.style.padding = '0 20px';
-      wrapper.style.boxSizing = 'border-box';
     
       // Main container used within the wrapper.
       const container = document.createElement('div');
-      container.style.width = '100%';
-      container.style.maxWidth = config.containerWidth;
+      container.style.width = config.containerWidth;
       container.style.boxSizing = 'border-box';
       wrapper.appendChild(container);
       element.appendChild(wrapper);
-      
-      // Responsive function to update styles based on screen size
-      function updateResponsiveStyles() {
-        const screenWidth = window.innerWidth;
-        
-        if (screenWidth <= 768) {
-          // Mobile styles
-          wrapper.style.padding = '0 10px';
-          wrapper.style.margin = '10px auto';
-          
-          // Update grid columns for mobile
-          if (container.style.display === 'grid') {
-            container.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            container.style.gap = '10px';
-          }
-        } else if (screenWidth <= 1024) {
-          // Tablet styles
-          wrapper.style.padding = '0 15px';
-          wrapper.style.margin = '15px auto';
-          
-          // Update grid columns for tablet
-          if (container.style.display === 'grid') {
-            container.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            container.style.gap = '12px';
-          }
-        } else {
-          // Desktop styles
-          wrapper.style.padding = '0 20px';
-          wrapper.style.margin = '20px auto';
-          
-          // Update grid columns for desktop
-          if (container.style.display === 'grid') {
-            container.style.gridTemplateColumns = `repeat(${config.gridColumns}, 1fr)`;
-            container.style.gap = '15px';
-          }
-        }
-      }
-      
-      // Initial responsive setup
-      updateResponsiveStyles();
-      
-      // Listen for window resize events
-      window.addEventListener('resize', updateResponsiveStyles);
     
       // Utility: simple hover effect.
       function addHoverEffect(btn, normalBg, hoverBg) {
@@ -184,9 +137,6 @@ const config = {
         container.style.gap = '15px';
         container.style.justifyContent = 'center';
         container.style.alignItems = 'center';
-        
-        // Update responsive styles after setting grid display
-        updateResponsiveStyles();
     
         properties.forEach((property) => {
           const propertyCard = document.createElement('div');
@@ -238,25 +188,11 @@ const config = {
         imageRow.style.alignItems = 'stretch';
         imageRow.style.marginBottom = '15px';
         imageRow.style.height = '300px';
-        
-        // Make image row responsive
-        const screenWidth = window.innerWidth;
-        if (screenWidth <= 768) {
-          imageRow.style.flexDirection = 'column';
-          imageRow.style.height = 'auto';
-          imageRow.style.gap = '10px';
-        }
     
         const mainImageContainer = document.createElement('div');
         mainImageContainer.style.flex = '2';
         mainImageContainer.style.maxWidth = '60%';
         mainImageContainer.style.height = '100%';
-        
-        // Make main image container responsive
-        if (screenWidth <= 768) {
-          mainImageContainer.style.maxWidth = '100%';
-          mainImageContainer.style.height = '250px';
-        }
         const mainImage = document.createElement('img');
         // Check if images exist.
         if (currentImageOrder.length > 0) {
@@ -278,15 +214,6 @@ const config = {
         thumbContainer.style.height = '100%';
         thumbContainer.style.overflowY = 'auto';
         thumbContainer.style.justifyContent = 'space-between';
-        
-        // Make thumbnail container responsive
-        if (screenWidth <= 768) {
-          thumbContainer.style.flexDirection = 'row';
-          thumbContainer.style.height = 'auto';
-          thumbContainer.style.overflowX = 'auto';
-          thumbContainer.style.overflowY = 'hidden';
-          thumbContainer.style.justifyContent = 'flex-start';
-        }
     
         function renderImageRow() {
           if (currentImageOrder.length > 0) {
@@ -301,13 +228,6 @@ const config = {
             thumb.style.cursor = 'pointer';
             thumb.style.borderRadius = '8px';
             thumb.style.objectFit = 'cover';
-            
-            // Make thumbnails responsive
-            if (screenWidth <= 768) {
-              thumb.style.width = '120px';
-              thumb.style.height = '80px';
-              thumb.style.flexShrink = '0';
-            }
             thumb.addEventListener('click', () => {
               const clickedIndex = index + 1;
               currentImageOrder = [

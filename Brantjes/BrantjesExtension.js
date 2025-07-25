@@ -5,11 +5,7 @@ export const BrantjesExtension = {
     trace.type === 'ext_brantjes_recommendation' ||
     (trace.payload && trace.payload.name === 'ext_brantjes_recommendation'),
   render: ({ trace, element }) => {
-    try {
-      console.log('🎯 Rendering BrantjesExtension');
-      console.log('📦 Raw trace:', trace);
-      console.log('📦 Raw trace.payload:', trace.payload);
-      console.log('📦 Element:', element);
+    console.log('Rendering BrantjesExtension');
 
     // Helper function to format city names to proper case
     function formatCityName(cityName) {
@@ -21,61 +17,36 @@ export const BrantjesExtension = {
     if (typeof trace.payload === 'string') {
       try {
         payloadObj = JSON.parse(trace.payload);
-        console.log('✅ Successfully parsed string payload');
       } catch (e) {
-        console.error('❌ Error parsing trace.payload:', e);
-        element.innerHTML = `<p style="color: red; padding: 20px;">Error parsing payload: ${e.message}</p>`;
+        console.error('Error parsing trace.payload:', e);
         return;
       }
     } else {
       payloadObj = trace.payload || {};
-      console.log('✅ Using object payload directly');
     }
-    console.log('📦 Parsed Payload:', payloadObj);
+    console.log('Parsed Payload:', payloadObj);
 
     let properties = payloadObj.properties;
-    console.log('🏠 Raw properties:', properties);
-    
     if (typeof properties === 'string') {
       try {
         properties = JSON.parse(properties);
-        console.log('✅ Successfully parsed properties string');
       } catch (e) {
-        console.error('❌ Error parsing "properties" field:', e);
-        element.innerHTML = `<p style="color: red; padding: 20px;">Error parsing properties: ${e.message}</p>`;
-        return;
+        console.error('Error parsing "properties" field:', e);
+        properties = [];
       }
     }
-    
-    console.log('🏠 Properties after string parsing:', properties);
-    
     // If properties is an object with a 'resultaten' array, use that
     if (properties && Array.isArray(properties.resultaten)) {
       properties = properties.resultaten;
-      console.log('✅ Using resultaten array from properties object');
     }
-    
     // --- FIX: If properties is a single object, wrap it in an array ---
     if (properties && !Array.isArray(properties)) {
       properties = [properties];
-      console.log('✅ Wrapped single property in array');
     }
-    
-    console.log('🏠 Final properties array:', properties);
-    
     if (!Array.isArray(properties) || properties.length === 0) {
-      console.warn('⚠️ No properties available');
-      element.innerHTML = `
-        <div style="padding: 20px; text-align: center; background: #f8f9fa; border-radius: 8px; margin: 20px;">
-          <h3 style="color: #1E7FCB; margin-bottom: 10px;">Brantjes Property Search</h3>
-          <p style="color: #666; margin-bottom: 15px;">No properties available at the moment.</p>
-          <p style="color: #999; font-size: 14px;">Please check the payload data or try again later.</p>
-        </div>
-      `;
+      element.innerHTML = `<p>No properties available.</p>`;
       return;
     }
-    
-    console.log(`✅ Found ${properties.length} properties`);
 
     // Create stylesheet
     const style = document.createElement('style');
@@ -108,10 +79,9 @@ export const BrantjesExtension = {
       .brantjes-carousel-container {
         position: relative;
         width: 100%;
-        max-width: 650px; /* Max width */
-        min-width: 300px; /* Minimum width to prevent collapse */
+        max-width: 650px;
+        min-width: 320px;
         height: 420px; /* Fixed height for carousel area */
-        min-height: 300px; /* Minimum height to prevent collapse */
         margin: auto;
         overflow: hidden;
         padding: 0;
@@ -597,50 +567,83 @@ export const BrantjesExtension = {
         background: #166BB5;
       }
 
-      /* Responsive Styles - Updated */
-      @media (max-width: 900px) {
+      /* Responsive Styles */
+      @media (max-width: 1200px) {
         .brantjes-carousel-container {
-          width: 95%;
           max-width: 600px;
-          height: 380px;
+          min-width: 480px;
         }
-        .brantjes-carousel-list .brantjes-property-card {
-          width: 180px !important;
-          height: 300px !important;
+        .brantjes-property-card {
+          width: 180px;
+          height: 300px;
         }
-        .brantjes-carousel-list .act {
-          width: 200px !important;
-          height: 330px !important;
-        }
-        .brantjes-carousel-list .prev,
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% - 190px), -50%) scale(0.85) !important;
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 190px), -50%) scale(0.85) !important;
+        .brantjes-property-card.active {
+          width: 200px;
+          height: 330px;
         }
       }
+      
+      @media (max-width: 900px) {
+        .brantjes-carousel-container {
+          max-width: 480px;
+          min-width: 400px;
+          height: 380px;
+        }
+        .brantjes-property-card {
+          width: 160px;
+          height: 270px;
+        }
+        .brantjes-property-card.active {
+          width: 180px;
+          height: 300px;
+        }
+      }
+      
       @media (max-width: 600px) {
         .brantjes-carousel-container {
+          max-width: 100vw;
+          min-width: 320px;
           width: 100%;
-          max-width: none;
           height: 350px;
-          padding: 0 10px;
         }
-        .brantjes-carousel-list .brantjes-property-card {
-          width: 160px !important;
-          height: 270px !important;
+        .brantjes-property-card {
+          width: 280px;
+          height: 320px;
         }
-        .brantjes-carousel-list .act {
-          width: 180px !important;
-          height: 300px !important;
+        .brantjes-property-card.active {
+          width: 280px;
+          height: 320px;
         }
+        /* Hide navigation buttons on mobile for single card view */
+        .brantjes-nav-button {
+          display: none;
+        }
+      }
+      
+      /* Responsive positioning for carousel cards */
+      @media (max-width: 1200px) {
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 190px), -50%) scale(.85);
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 190px), -50%) scale(.85);
+        }
+      }
+      
+      @media (max-width: 900px) {
+        .brantjes-carousel-list .prev {
+          transform: translate(calc(-50% - 170px), -50%) scale(.85);
+        }
+        .brantjes-carousel-list .next {
+          transform: translate(calc(-50% + 170px), -50%) scale(.85);
+        }
+      }
+      
+      @media (max-width: 600px) {
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
-          transform: translate(calc(-50% - 170px), -50%) scale(0.85) !important;
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 170px), -50%) scale(0.85) !important;
+          opacity: 0;
+          visibility: hidden;
         }
       }
 
@@ -2020,398 +2023,6 @@ export const BrantjesExtension = {
       .search-nearby-btn:hover {
         background: #166BB5;
       }
-
-      /* ===== RESPONSIVE DESIGN ===== */
-      
-      /* Tablet Styles (768px - 1024px) */
-      @media (max-width: 1024px) {
-        .brantjes-carousel-container {
-          width: 95%;
-          max-width: 600px;
-          height: 380px;
-        }
-        
-        .brantjes-property-card {
-          width: 180px;
-          height: 300px;
-        }
-        
-        .brantjes-property-card.active {
-          width: 200px;
-          height: 330px;
-        }
-        
-        .detail-popup-content {
-          gap: 20px;
-        }
-        
-        .detail-popup-images-row {
-          gap: 8px;
-        }
-        
-        .detail-popup-main-image {
-          width: 280px;
-          height: 210px;
-          min-width: 280px;
-          max-width: 280px;
-          max-height: 210px;
-        }
-        
-        .detail-popup-thumbnails {
-          grid-template-columns: 130px 130px;
-          grid-template-rows: 100px 100px;
-          gap: 8px;
-          height: 210px;
-        }
-        
-        .detail-popup-thumbnail {
-          width: 130px;
-          height: 100px;
-        }
-        
-        .detail-popup-header-row {
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
-        
-        .detail-popup-header-price {
-          font-size: 0.95rem;
-        }
-        
-        .detail-popup-header-viewing-btn {
-          font-size: 10px;
-          padding: 0.4em 1.2em;
-        }
-      }
-      
-      /* Mobile Styles (480px - 767px) */
-      @media (max-width: 767px) {
-        .brantjes-carousel-container {
-          width: 100%;
-          max-width: none;
-          height: 350px;
-          padding: 0 10px;
-        }
-        
-        .brantjes-property-card {
-          width: 160px;
-          height: 270px;
-        }
-        
-        .brantjes-property-card.active {
-          width: 180px;
-          height: 300px;
-        }
-        
-        .brantjes-card-overlay {
-          padding: 12px 12px 18px 12px;
-        }
-        
-        .brantjes-card-info p {
-          font-size: 11px;
-        }
-        
-        .brantjes-card-info p:first-child {
-          font-size: 11px;
-        }
-        
-        .energy-label {
-          top: 10px;
-          left: 10px;
-          min-width: 32px;
-          height: 28px;
-          font-size: 18px;
-          line-height: 28px;
-          padding: 0 12px 0 8px;
-        }
-        
-        .energy-label::after {
-          right: -10px;
-          border-top: 14px solid transparent;
-          border-bottom: 14px solid transparent;
-          border-left: 10px solid;
-        }
-        
-        /* Modal adjustments for mobile */
-        .brantjes-modal-container {
-          width: 95%;
-          max-width: none;
-          max-height: 90vh;
-          margin: 20px auto;
-          padding: 20px;
-        }
-        
-        .detail-popup-content {
-          gap: 16px;
-        }
-        
-        .detail-popup-header {
-          gap: 0.3rem;
-        }
-        
-        .detail-popup-title-main {
-          font-size: 1.3rem;
-        }
-        
-        .detail-popup-header-row {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.8rem;
-          margin-top: 0.5rem;
-        }
-        
-        .detail-popup-header-details {
-          margin-right: 0;
-          white-space: normal;
-        }
-        
-        .detail-popup-header-price {
-          margin-right: 0;
-          margin-left: 0;
-          white-space: normal;
-          font-size: 0.9rem;
-        }
-        
-        .detail-popup-header-viewing-btn {
-          align-self: flex-start;
-          margin-left: 0;
-          font-size: 11px;
-          padding: 0.5em 1.5em;
-        }
-        
-        .detail-popup-images-row {
-          flex-direction: column;
-          gap: 12px;
-          align-items: center;
-        }
-        
-        .detail-popup-main-image {
-          width: 100%;
-          max-width: 320px;
-          height: 240px;
-          min-width: auto;
-          max-height: 240px;
-        }
-        
-        .detail-popup-thumbnails {
-          width: 100%;
-          max-width: 320px;
-          grid-template-columns: 1fr 1fr;
-          grid-template-rows: 80px 80px;
-          gap: 8px;
-          height: auto;
-          justify-content: center;
-        }
-        
-        .detail-popup-thumbnail {
-          width: 100%;
-          height: 80px;
-        }
-        
-        .detail-popup-specs-row {
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          font-size: 0.85rem;
-        }
-        
-        .detail-popup-dot {
-          margin: 0 0.3rem;
-        }
-        
-        /* Contact form mobile adjustments */
-        .contact-form-container {
-          padding: 1rem;
-          margin: 0;
-          border-radius: 0;
-        }
-        
-        .contact-form {
-          padding: 1.5rem;
-        }
-        
-        .contact-form .form-row {
-          flex-direction: column;
-        }
-        
-        .contact-form .form-row > div {
-          flex: 1 1 auto;
-        }
-        
-        .contact-form-header h1 {
-          font-size: 1.3rem;
-        }
-        
-        .contact-form-header p {
-          font-size: 0.75rem;
-        }
-      }
-      
-      /* Small Mobile Styles (320px - 479px) */
-      @media (max-width: 479px) {
-        .brantjes-carousel-container {
-          height: 320px;
-          padding: 0 5px;
-        }
-        
-        .brantjes-property-card {
-          width: 140px;
-          height: 240px;
-        }
-        
-        .brantjes-property-card.active {
-          width: 160px;
-          height: 270px;
-        }
-        
-        .brantjes-card-overlay {
-          padding: 10px 10px 15px 10px;
-        }
-        
-        .brantjes-card-info p {
-          font-size: 10px;
-        }
-        
-        .brantjes-card-info p:first-child {
-          font-size: 10px;
-        }
-        
-        .energy-label {
-          top: 8px;
-          left: 8px;
-          min-width: 28px;
-          height: 24px;
-          font-size: 16px;
-          line-height: 24px;
-          padding: 0 10px 0 6px;
-        }
-        
-        .energy-label::after {
-          right: -8px;
-          border-top: 12px solid transparent;
-          border-bottom: 12px solid transparent;
-          border-left: 8px solid;
-        }
-        
-        /* Modal adjustments for small mobile */
-        .brantjes-modal-container {
-          width: 98%;
-          margin: 10px auto;
-          padding: 15px;
-        }
-        
-        .detail-popup-title-main {
-          font-size: 1.1rem;
-        }
-        
-        .detail-popup-header-row {
-          gap: 0.6rem;
-        }
-        
-        .detail-popup-header-price {
-          font-size: 0.85rem;
-        }
-        
-        .detail-popup-header-viewing-btn {
-          font-size: 10px;
-          padding: 0.4em 1.2em;
-        }
-        
-        .detail-popup-main-image {
-          height: 200px;
-          max-height: 200px;
-        }
-        
-        .detail-popup-thumbnails {
-          grid-template-rows: 70px 70px;
-          gap: 6px;
-        }
-        
-        .detail-popup-thumbnail {
-          height: 70px;
-        }
-        
-        .detail-popup-specs-row {
-          font-size: 0.8rem;
-          gap: 0.4rem;
-        }
-        
-        .detail-popup-dot {
-          margin: 0 0.2rem;
-        }
-        
-        /* Contact form small mobile adjustments */
-        .contact-form-container {
-          padding: 0.5rem;
-        }
-        
-        .contact-form {
-          padding: 1rem;
-        }
-        
-        .contact-form-header h1 {
-          font-size: 1.2rem;
-        }
-        
-        .contact-form-header p {
-          font-size: 0.7rem;
-        }
-        
-        .contact-form input,
-        .contact-form select,
-        .contact-form textarea {
-          font-size: 14px;
-          padding: 8px 10px;
-        }
-        
-        .contact-form .submit-btn {
-          font-size: 14px;
-          padding: 8px 20px;
-        }
-      }
-      
-      /* Landscape Mobile Styles */
-      @media (max-width: 767px) and (orientation: landscape) {
-        .brantjes-carousel-container {
-          height: 280px;
-        }
-        
-        .brantjes-property-card {
-          width: 150px;
-          height: 250px;
-        }
-        
-        .brantjes-property-card.active {
-          width: 170px;
-          height: 280px;
-        }
-        
-        .detail-popup-images-row {
-          flex-direction: row;
-          align-items: flex-end;
-        }
-        
-        .detail-popup-main-image {
-          width: 200px;
-          height: 150px;
-          min-width: 200px;
-          max-width: 200px;
-          max-height: 150px;
-        }
-        
-        .detail-popup-thumbnails {
-          width: auto;
-          max-width: none;
-          grid-template-columns: 100px 100px;
-          grid-template-rows: 70px 70px;
-          gap: 6px;
-          height: 150px;
-        }
-        
-        .detail-popup-thumbnail {
-          width: 100px;
-          height: 70px;
-        }
-      }
     `;
     element.appendChild(style);
 
@@ -3320,19 +2931,8 @@ export const BrantjesExtension = {
       card.style.transform = 'none'; // Clear any transforms
       card.style.opacity = '1';
       card.style.zIndex = '3';
-      
-      // Responsive sizing for single card
-      const screenWidth = window.innerWidth;
-      if (screenWidth <= 600) {
-        card.style.width = '180px';
-        card.style.height = '300px';
-      } else if (screenWidth <= 900) {
-        card.style.width = '200px';
-        card.style.height = '330px';
-      } else {
-        card.style.width = '219px';
-        card.style.height = '365px';
-      }
+      card.style.width = '219px'; // Active width
+      card.style.height = '365px'; // Active height
 
       // Make the single card clickable to show details
       card.addEventListener('click', () => {
@@ -3347,34 +2947,9 @@ export const BrantjesExtension = {
     // --- CAROUSEL RENDERING FOR totalSlides > 1 ---
     const carouselContainer = document.createElement('div');
     carouselContainer.className = 'brantjes-carousel-container';
-    carouselContainer.style.border = '2px solid red'; // Debug: Make container visible
-    carouselContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.1)'; // Debug: Add background
-    // Responsive minimum dimensions based on screen size
-    const screenWidth = window.innerWidth;
-    if (screenWidth > 1024) { // Desktop
-      carouselContainer.style.minWidth = '700px'; // Reduced from 900px
-      carouselContainer.style.minHeight = '400px'; // Reduced from 500px
-    } else if (screenWidth > 768) { // Tablet
-      carouselContainer.style.minWidth = '500px'; // Reduced from 600px
-      carouselContainer.style.minHeight = '350px'; // Reduced from 400px
-    } else { // Mobile
-      carouselContainer.style.minWidth = '280px'; // Reduced from 300px
-      carouselContainer.style.minHeight = '280px'; // Reduced from 300px
-    }
 
     const list = document.createElement('ul');
     list.className = 'brantjes-carousel-list';
-    // Responsive minimum dimensions for list based on screen size
-    if (screenWidth > 1024) { // Desktop
-      list.style.minWidth = '700px'; // Reduced from 900px
-      list.style.minHeight = '400px'; // Reduced from 500px
-    } else if (screenWidth > 768) { // Tablet
-      list.style.minWidth = '500px'; // Reduced from 600px
-      list.style.minHeight = '350px'; // Reduced from 400px
-    } else { // Mobile
-      list.style.minWidth = '280px'; // Reduced from 300px
-      list.style.minHeight = '280px'; // Reduced from 300px
-    }
     carouselContainer.appendChild(list);
 
     // Populate all unique property cards in the list initially
@@ -3382,23 +2957,6 @@ export const BrantjesExtension = {
         const card = createCardElement(prop);
         list.appendChild(card);
     });
-    
-    // Debug: Add a simple test card if no cards were created
-    if (list.children.length === 0) {
-        console.log('⚠️ No cards created, adding test card');
-        const testCard = document.createElement('div');
-        testCard.className = 'brantjes-property-card';
-        testCard.style.width = '200px';
-        testCard.style.height = '300px';
-        testCard.style.backgroundColor = 'blue';
-        testCard.style.color = 'white';
-        testCard.style.display = 'flex';
-        testCard.style.alignItems = 'center';
-        testCard.style.justifyContent = 'center';
-        testCard.style.borderRadius = '8px';
-        testCard.textContent = 'TEST CARD';
-        list.appendChild(testCard);
-    }
 
     let currentPropertyIndex = 0; // Tracks the index of the active card in realSlidesData
 
@@ -3406,113 +2964,37 @@ export const BrantjesExtension = {
         const cards = Array.from(list.children); // Get all card elements in the DOM
         const nextIndex = (currentPropertyIndex + 1) % totalSlides;
         const prevIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
-        
-        console.log('🔄 Updating card classes and transforms');
-        console.log('🔄 Total cards:', cards.length);
-        console.log('🔄 Current index:', currentPropertyIndex);
-        console.log('🔄 Next index:', nextIndex);
-        console.log('🔄 Prev index:', prevIndex);
 
-        // Get responsive dimensions based on screen size
-        const screenWidth = window.innerWidth;
-        let defaultWidth, defaultHeight, activeWidth, activeHeight, offsetDistance;
-        let cardsToShow = 1; // Default: show 1 card
-        
-        if (screenWidth <= 600) {
-            // Mobile
-            defaultWidth = '160px';
-            defaultHeight = '270px';
-            activeWidth = '180px';
-            activeHeight = '300px';
-            offsetDistance = '170px';
-            cardsToShow = 1; // Show 1 card on mobile
-        } else if (screenWidth <= 900) {
-            // Tablet
-            defaultWidth = '180px';
-            defaultHeight = '300px';
-            activeWidth = '200px';
-            activeHeight = '330px';
-            offsetDistance = '190px';
-            cardsToShow = 2; // Show 2 cards on tablet
-        } else {
-            // Desktop
-            defaultWidth = '201px';
-            defaultHeight = '335px';
-            activeWidth = '219px';
-            activeHeight = '365px';
-            offsetDistance = '220px';
-            cardsToShow = 3; // Show 3 cards on desktop
-        }
 
         cards.forEach((card, index) => {
             // Reset all potential carousel classes and default styles
-            card.classList.remove('prev', 'act', 'next', 'prev2', 'next2');
+            card.classList.remove('prev', 'act', 'next');
             card.style.opacity = '0'; // Default to hidden
             card.style.zIndex = '1'; // Default z-index
             card.style.transform = `translate(-50%, -50%) scale(0.85)`; // Default scale and centering adjustment
-            card.style.width = defaultWidth; // Responsive default width
-            card.style.height = defaultHeight; // Responsive default height
+            card.style.width = '201px'; // Default width
+            card.style.height = '335px'; // Default height
 
-            // Calculate which cards should be visible based on screen size
-            const nextIndex2 = (currentPropertyIndex + 2) % totalSlides;
-            const prevIndex2 = (currentPropertyIndex - 2 + totalSlides) % totalSlides;
-            
-            if (index === currentPropertyIndex) { // Active card (always visible)
+            if (index === currentPropertyIndex) { // Active card
                 card.classList.add('act');
                 card.style.opacity = '1';
                 card.style.zIndex = '3';
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
-                card.style.width = activeWidth;
-                card.style.height = activeHeight;
-                card.style.border = '2px solid green'; // Debug: Make active card visible
-                console.log(`✅ Card ${index} set as ACTIVE - Width: ${activeWidth}, Height: ${activeHeight}`);
-            } else if (index === nextIndex && cardsToShow >= 2) { // Next card (visible on tablet+)
+                card.style.width = '219px'; // Active width
+                card.style.height = '365px'; // Active height
+            } else if (index === nextIndex) { // Next card
                 card.classList.add('next');
-                card.style.opacity = '0.8';
+                card.style.opacity = '0.25';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.9)`;
-                card.style.border = '2px solid blue'; // Debug: Make next card visible
-                console.log(`➡️ Card ${index} set as NEXT - Offset: ${offsetDistance}`);
-            } else if (index === prevIndex && cardsToShow >= 2) { // Previous card (visible on tablet+)
+                card.style.transform = `translate(calc(-50% + 220px), -50%) scale(0.85)`;
+            } else if (index === prevIndex) { // Previous card
                 card.classList.add('prev');
-                card.style.opacity = '0.8';
+                card.style.opacity = '0.25';
                 card.style.zIndex = '2';
-                card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.9)`;
-                card.style.border = '2px solid orange'; // Debug: Make prev card visible
-                console.log(`⬅️ Card ${index} set as PREV - Offset: ${offsetDistance}`);
-            } else if (index === nextIndex2 && cardsToShow >= 3) { // Second next card (visible on desktop only)
-                card.classList.add('next2');
-                card.style.opacity = '0.6';
-                card.style.zIndex = '1';
-                card.style.transform = `translate(calc(-50% + ${offsetDistance * 2}), -50%) scale(0.8)`;
-                card.style.border = '2px solid purple'; // Debug: Make second next card visible
-                console.log(`➡️➡️ Card ${index} set as NEXT2 - Offset: ${offsetDistance * 2}`);
-            } else if (index === prevIndex2 && cardsToShow >= 3) { // Second previous card (visible on desktop only)
-                card.classList.add('prev2');
-                card.style.opacity = '0.6';
-                card.style.zIndex = '1';
-                card.style.transform = `translate(calc(-50% - ${offsetDistance * 2}), -50%) scale(0.8)`;
-                card.style.border = '2px solid pink'; // Debug: Make second prev card visible
-                console.log(`⬅️⬅️ Card ${index} set as PREV2 - Offset: ${offsetDistance * 2}`);
-            } else {
-                card.style.border = '1px solid gray'; // Debug: Make hidden cards slightly visible
-                console.log(`❌ Card ${index} set as HIDDEN`);
+                card.style.transform = `translate(calc(-50% - 220px), -50%) scale(0.85)`;
             }
             // All other cards will retain the default hidden/scaled state
         });
-        
-        // Fallback: If no cards are visible, make the first one visible
-        const visibleCards = cards.filter(card => card.style.opacity === '1' || card.style.opacity === '0.25');
-        if (visibleCards.length === 0 && cards.length > 0) {
-            console.log('⚠️ No cards visible, making first card visible as fallback');
-            const firstCard = cards[0];
-            firstCard.classList.add('act');
-            firstCard.style.opacity = '1';
-            firstCard.style.zIndex = '3';
-            firstCard.style.transform = `translate(-50%, -50%) scale(1)`;
-            firstCard.style.width = activeWidth;
-            firstCard.style.height = activeHeight;
-        }
     }
 
     function next() {
@@ -3527,36 +3009,6 @@ export const BrantjesExtension = {
 
     // Call initial update
     updateCardClassesAndTransforms();
-    
-    // Debug: Check what cards were created
-    console.log('🔍 Cards created:', list.children.length);
-    console.log('🔍 List element:', list);
-    console.log('🔍 Carousel container:', carouselContainer);
-    
-    // Add resize listener for responsive updates
-    const resizeHandler = () => {
-        // Update container dimensions on resize
-        const screenWidth = window.innerWidth;
-        if (screenWidth > 1024) { // Desktop
-            carouselContainer.style.minWidth = '700px';
-            carouselContainer.style.minHeight = '400px';
-            list.style.minWidth = '700px';
-            list.style.minHeight = '400px';
-        } else if (screenWidth > 768) { // Tablet
-            carouselContainer.style.minWidth = '500px';
-            carouselContainer.style.minHeight = '350px';
-            list.style.minWidth = '500px';
-            list.style.minHeight = '350px';
-        } else { // Mobile
-            carouselContainer.style.minWidth = '280px';
-            carouselContainer.style.minHeight = '280px';
-            list.style.minWidth = '280px';
-            list.style.minHeight = '280px';
-        }
-        
-        updateCardClassesAndTransforms();
-    };
-    window.addEventListener('resize', resizeHandler);
 
     // Click handler for cards
     list.addEventListener('click', event => {
@@ -3589,19 +3041,6 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', prev);
 
     element.appendChild(carouselContainer);
-    
-    console.log('✅ BrantjesExtension rendered successfully');
-    console.log('📦 Final element content:', element.innerHTML.substring(0, 200) + '...');
-    } catch (error) {
-      console.error('❌ Error in BrantjesExtension render:', error);
-      element.innerHTML = `
-        <div style="padding: 20px; text-align: center; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 20px;">
-          <h3 style="color: #856404; margin-bottom: 10px;">Brantjes Extension Error</h3>
-          <p style="color: #856404; margin-bottom: 15px;">Something went wrong while loading the property search.</p>
-          <p style="color: #856404; font-size: 14px;">Error: ${error.message}</p>
-        </div>
-      `;
-    }
   },
 };
 
@@ -3687,34 +3126,9 @@ export const NearbyMap = {
 
     // 2) Create container
     const mapEl = document.createElement('div');
-    mapEl.style.width = '100%';
-    mapEl.style.maxWidth = '600px';
+    mapEl.style.width = '300px';
     mapEl.style.height = '400px';
-    mapEl.style.margin = '0 auto';
-    mapEl.style.borderRadius = '12px';
-    mapEl.style.overflow = 'hidden';
     element.appendChild(mapEl);
-    
-    // Add responsive styles
-    const mapStyle = document.createElement('style');
-    mapStyle.innerHTML = `
-      @media (max-width: 768px) {
-        div[style*="max-width: 600px"] {
-          max-width: 100% !important;
-          height: 350px !important;
-          margin: 10px auto !important;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        div[style*="max-width: 600px"] {
-          max-width: 100% !important;
-          height: 300px !important;
-          margin: 5px auto !important;
-        }
-      }
-    `;
-    element.appendChild(mapStyle);
 
     // 3) Load Google Maps JS
     function loadScript(src) {
