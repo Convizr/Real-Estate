@@ -5,7 +5,11 @@ export const BrantjesExtension = {
     trace.type === 'ext_brantjes_recommendation' ||
     (trace.payload && trace.payload.name === 'ext_brantjes_recommendation'),
   render: ({ trace, element }) => {
-    console.log('Rendering BrantjesExtension');
+    try {
+      console.log('🎯 Rendering BrantjesExtension');
+      console.log('📦 Raw trace:', trace);
+      console.log('📦 Raw trace.payload:', trace.payload);
+      console.log('📦 Element:', element);
 
     // Helper function to format city names to proper case
     function formatCityName(cityName) {
@@ -17,36 +21,61 @@ export const BrantjesExtension = {
     if (typeof trace.payload === 'string') {
       try {
         payloadObj = JSON.parse(trace.payload);
+        console.log('✅ Successfully parsed string payload');
       } catch (e) {
-        console.error('Error parsing trace.payload:', e);
+        console.error('❌ Error parsing trace.payload:', e);
+        element.innerHTML = `<p style="color: red; padding: 20px;">Error parsing payload: ${e.message}</p>`;
         return;
       }
     } else {
       payloadObj = trace.payload || {};
+      console.log('✅ Using object payload directly');
     }
-    console.log('Parsed Payload:', payloadObj);
+    console.log('📦 Parsed Payload:', payloadObj);
 
     let properties = payloadObj.properties;
+    console.log('🏠 Raw properties:', properties);
+    
     if (typeof properties === 'string') {
       try {
         properties = JSON.parse(properties);
+        console.log('✅ Successfully parsed properties string');
       } catch (e) {
-        console.error('Error parsing "properties" field:', e);
-        properties = [];
+        console.error('❌ Error parsing "properties" field:', e);
+        element.innerHTML = `<p style="color: red; padding: 20px;">Error parsing properties: ${e.message}</p>`;
+        return;
       }
     }
+    
+    console.log('🏠 Properties after string parsing:', properties);
+    
     // If properties is an object with a 'resultaten' array, use that
     if (properties && Array.isArray(properties.resultaten)) {
       properties = properties.resultaten;
+      console.log('✅ Using resultaten array from properties object');
     }
+    
     // --- FIX: If properties is a single object, wrap it in an array ---
     if (properties && !Array.isArray(properties)) {
       properties = [properties];
+      console.log('✅ Wrapped single property in array');
     }
+    
+    console.log('🏠 Final properties array:', properties);
+    
     if (!Array.isArray(properties) || properties.length === 0) {
-      element.innerHTML = `<p>No properties available.</p>`;
+      console.warn('⚠️ No properties available');
+      element.innerHTML = `
+        <div style="padding: 20px; text-align: center; background: #f8f9fa; border-radius: 8px; margin: 20px;">
+          <h3 style="color: #1E7FCB; margin-bottom: 10px;">Brantjes Property Search</h3>
+          <p style="color: #666; margin-bottom: 15px;">No properties available at the moment.</p>
+          <p style="color: #999; font-size: 14px;">Please check the payload data or try again later.</p>
+        </div>
+      `;
       return;
     }
+    
+    console.log(`✅ Found ${properties.length} properties`);
 
     // Create stylesheet
     const style = document.createElement('style');
@@ -3385,6 +3414,19 @@ export const BrantjesExtension = {
     prevButton.addEventListener('click', prev);
 
     element.appendChild(carouselContainer);
+    
+    console.log('✅ BrantjesExtension rendered successfully');
+    console.log('📦 Final element content:', element.innerHTML.substring(0, 200) + '...');
+    } catch (error) {
+      console.error('❌ Error in BrantjesExtension render:', error);
+      element.innerHTML = `
+        <div style="padding: 20px; text-align: center; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; margin: 20px;">
+          <h3 style="color: #856404; margin-bottom: 10px;">Brantjes Extension Error</h3>
+          <p style="color: #856404; margin-bottom: 15px;">Something went wrong while loading the property search.</p>
+          <p style="color: #856404; font-size: 14px;">Error: ${error.message}</p>
+        </div>
+      `;
+    }
   },
 };
 
