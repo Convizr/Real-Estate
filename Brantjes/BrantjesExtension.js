@@ -2362,12 +2362,12 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.8rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 0.75rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
         }
         
@@ -2390,7 +2390,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
+          font-size: 13px !important;
           padding: 0.4em 1.2em !important;
           height: 2em !important;
         }
@@ -2408,6 +2408,19 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-content {
           gap: 24px !important;
+          text-align: right !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          text-align: right !important;
+        }
+        
+        .brantjes-modal-container table {
+          text-align: right !important;
+        }
+        
+        .brantjes-modal-container table td {
+          text-align: right !important;
         }
         
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
@@ -5096,12 +5109,12 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-details {
-          font-size: 0.8rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 0.75rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
         }
         
@@ -5124,7 +5137,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
+          font-size: 13px !important;
           padding: 0.4em 1.2em !important;
           height: 2em !important;
         }
@@ -5142,6 +5155,19 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .detail-popup-content {
           gap: 24px !important;
+          text-align: right !important;
+        }
+        
+        .property-details-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
+          text-align: right !important;
+        }
+        
+        .property-details-container table {
+          text-align: right !important;
+        }
+        
+        .property-details-container table td {
+          text-align: right !important;
         }
         
         .property-details-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
