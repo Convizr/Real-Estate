@@ -594,8 +594,8 @@ export const BrantjesExtension = {
       
       @media (max-width: 400px) {
         .brantjes-carousel-container {
-          width: 95vw;
-          max-width: 95vw;
+          width: 35vvw;
+          max-width: 100vw;
           min-width: 260px;
           height: 260px;
         }
@@ -618,8 +618,8 @@ export const BrantjesExtension = {
       
       @media (max-width: 350px) {
         .brantjes-carousel-container {
-          width: 95vw;
-          max-width: 95vw;
+          width: 35vw;
+          max-width: 100vw;
           min-width: 240px;
           height: 240px;
         }
