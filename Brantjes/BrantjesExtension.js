@@ -2543,53 +2543,118 @@ export const BrantjesExtension = {
         titleMain.textContent = streetAddress || 'Onbekend adres';
         header.appendChild(titleMain);
 
+        // Check if mobile
+        const isMobile = window.innerWidth <= 768;
+        
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
 
-        // Address (postal code + city)
-        const plaats = property.adres?.plaats || '';
-        const postcode = property.adres?.postcode || '';
-        let hasAddress = Boolean(postcode || plaats);
-        let hasEnergy = Boolean(property.algemeen?.energieklasse);
-        if (hasAddress) {
-          const addrSpan = document.createElement('span');
-          addrSpan.className = 'detail-popup-header-details';
-          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-          addrSpan.style.fontWeight = 'bold';
-          headerRow.appendChild(addrSpan);
+        if (isMobile) {
+          // Mobile layout: Address and price on one line, energy label below
+          const topRow = document.createElement('div');
+          topRow.style.display = 'flex';
+          topRow.style.justifyContent = 'space-between';
+          topRow.style.alignItems = 'center';
+          topRow.style.width = '100%';
+          
+          // Address (postal code + city)
+          const plaats = property.adres?.plaats || '';
+          const postcode = property.adres?.postcode || '';
+          let hasAddress = Boolean(postcode || plaats);
+          if (hasAddress) {
+            const addrSpan = document.createElement('span');
+            addrSpan.className = 'detail-popup-header-details';
+            addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+            addrSpan.style.fontWeight = 'bold';
+            topRow.appendChild(addrSpan);
+          }
+          
+          // Price
+          const price = property.financieel?.overdracht?.koopprijs || 0;
+          const priceDiv = document.createElement('div');
+          priceDiv.className = 'detail-popup-header-price';
+          priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+          topRow.appendChild(priceDiv);
+          
+          headerRow.appendChild(topRow);
+          
+          // Energy label row (if exists)
+          let hasEnergy = Boolean(property.algemeen?.energieklasse);
+          if (hasEnergy) {
+            const energyRow = document.createElement('div');
+            energyRow.style.display = 'flex';
+            energyRow.style.alignItems = 'center';
+            energyRow.style.gap = '0.5rem';
+            energyRow.style.marginTop = '0.5rem';
+            
+            const energyDiv = document.createElement('div');
+            energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+            energyDiv.textContent = property.algemeen.energieklasse;
+            energyRow.appendChild(energyDiv);
+            
+            headerRow.appendChild(energyRow);
+          }
+          
+          // Viewing button row
+          const buttonRow = document.createElement('div');
+          buttonRow.style.display = 'flex';
+          buttonRow.style.justifyContent = 'center';
+          buttonRow.style.marginTop = '0.5rem';
+          
+          const viewingBtn = document.createElement('button');
+          viewingBtn.className = 'detail-popup-header-viewing-btn';
+          viewingBtn.textContent = 'Bezichtiging';
+          viewingBtn.onclick = () => showBookingModal(property);
+          buttonRow.appendChild(viewingBtn);
+          
+          headerRow.appendChild(buttonRow);
+        } else {
+          // Desktop layout: original structure
+          // Address (postal code + city)
+          const plaats = property.adres?.plaats || '';
+          const postcode = property.adres?.postcode || '';
+          let hasAddress = Boolean(postcode || plaats);
+          let hasEnergy = Boolean(property.algemeen?.energieklasse);
+          if (hasAddress) {
+            const addrSpan = document.createElement('span');
+            addrSpan.className = 'detail-popup-header-details';
+            addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+            addrSpan.style.fontWeight = 'bold';
+            headerRow.appendChild(addrSpan);
+          }
+          // Dot separator only if both address and energy label
+          if (hasAddress && hasEnergy) {
+            const dot = document.createElement('span');
+            dot.className = 'detail-popup-dot';
+            dot.textContent = '•';
+            headerRow.appendChild(dot);
+          }
+          // Energy label
+          if (hasEnergy) {
+            const energyDiv = document.createElement('div');
+            energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+            energyDiv.textContent = property.algemeen.energieklasse;
+            headerRow.appendChild(energyDiv);
+            // Dot after energy label
+            const dot2 = document.createElement('span');
+            dot2.className = 'detail-popup-dot';
+            dot2.textContent = '•';
+            headerRow.appendChild(dot2);
+          }
+          // Price
+          const price = property.financieel?.overdracht?.koopprijs || 0;
+          const priceDiv = document.createElement('div');
+          priceDiv.className = 'detail-popup-header-price';
+          priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+          headerRow.appendChild(priceDiv);
+          // Viewing button
+          const viewingBtn = document.createElement('button');
+          viewingBtn.className = 'detail-popup-header-viewing-btn';
+          viewingBtn.textContent = 'Bezichtiging';
+          viewingBtn.onclick = () => showBookingModal(property);
+          headerRow.appendChild(viewingBtn);
         }
-        // Dot separator only if both address and energy label
-        if (hasAddress && hasEnergy) {
-          const dot = document.createElement('span');
-          dot.className = 'detail-popup-dot';
-          dot.textContent = '•';
-          headerRow.appendChild(dot);
-        }
-        // Energy label
-        if (hasEnergy) {
-          const energyDiv = document.createElement('div');
-          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-          energyDiv.textContent = property.algemeen.energieklasse;
-          headerRow.appendChild(energyDiv);
-          // Dot after energy label
-          const dot2 = document.createElement('span');
-          dot2.className = 'detail-popup-dot';
-          dot2.textContent = '•';
-          headerRow.appendChild(dot2);
-        }
-        // Price
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        headerRow.appendChild(priceDiv);
-        // Viewing button
-        const viewingBtn = document.createElement('button');
-        viewingBtn.className = 'detail-popup-header-viewing-btn';
-        viewingBtn.textContent = 'Bezichtiging';
-        viewingBtn.onclick = () => showBookingModal(property);
-        headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
 
@@ -5534,45 +5599,111 @@ export const PropertyDetailsExtension = {
       titleMain.textContent = streetAddress || 'Onbekend adres';
       header.appendChild(titleMain);
 
+      // Check if mobile
+      const isMobile = window.innerWidth <= 768;
+      
       const headerRow = document.createElement('div');
       headerRow.className = 'detail-popup-header-row';
-      const plaats = property.adres?.plaats || '';
-      const postcode = property.adres?.postcode || '';
-      let hasAddress = Boolean(postcode || plaats);
-      let hasEnergy = Boolean(property.algemeen?.energieklasse);
-      if (hasAddress) {
-        const addrSpan = document.createElement('span');
-        addrSpan.className = 'detail-popup-header-details';
-        addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
-        addrSpan.style.fontWeight = 'bold';
-        headerRow.appendChild(addrSpan);
+      
+      if (isMobile) {
+        // Mobile layout: Address and price on one line, energy label below
+        const topRow = document.createElement('div');
+        topRow.style.display = 'flex';
+        topRow.style.justifyContent = 'space-between';
+        topRow.style.alignItems = 'center';
+        topRow.style.width = '100%';
+        
+        // Address (postal code + city)
+        const plaats = property.adres?.plaats || '';
+        const postcode = property.adres?.postcode || '';
+        let hasAddress = Boolean(postcode || plaats);
+        if (hasAddress) {
+          const addrSpan = document.createElement('span');
+          addrSpan.className = 'detail-popup-header-details';
+          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+          addrSpan.style.fontWeight = 'bold';
+          topRow.appendChild(addrSpan);
+        }
+        
+        // Price
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'detail-popup-header-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+        topRow.appendChild(priceDiv);
+        
+        headerRow.appendChild(topRow);
+        
+        // Energy label row (if exists)
+        let hasEnergy = Boolean(property.algemeen?.energieklasse);
+        if (hasEnergy) {
+          const energyRow = document.createElement('div');
+          energyRow.style.display = 'flex';
+          energyRow.style.alignItems = 'center';
+          energyRow.style.gap = '0.5rem';
+          energyRow.style.marginTop = '0.5rem';
+          
+          const energyDiv = document.createElement('div');
+          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.textContent = property.algemeen.energieklasse;
+          energyRow.appendChild(energyDiv);
+          
+          headerRow.appendChild(energyRow);
+        }
+        
+        // Viewing button row
+        const buttonRow = document.createElement('div');
+        buttonRow.style.display = 'flex';
+        buttonRow.style.justifyContent = 'center';
+        buttonRow.style.marginTop = '0.5rem';
+        
+        const viewingBtn = document.createElement('button');
+        viewingBtn.className = 'detail-popup-header-viewing-btn';
+        viewingBtn.textContent = 'Bezichtiging';
+        viewingBtn.onclick = () => showBookingModal(property);
+        buttonRow.appendChild(viewingBtn);
+        
+        headerRow.appendChild(buttonRow);
+      } else {
+        // Desktop layout: original structure
+        const plaats = property.adres?.plaats || '';
+        const postcode = property.adres?.postcode || '';
+        let hasAddress = Boolean(postcode || plaats);
+        let hasEnergy = Boolean(property.algemeen?.energieklasse);
+        if (hasAddress) {
+          const addrSpan = document.createElement('span');
+          addrSpan.className = 'detail-popup-header-details';
+          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+          addrSpan.style.fontWeight = 'bold';
+          headerRow.appendChild(addrSpan);
+        }
+        if (hasAddress && hasEnergy) {
+          const dot = document.createElement('span');
+          dot.className = 'detail-popup-dot';
+          dot.textContent = '•';
+          headerRow.appendChild(dot);
+        }
+        if (hasEnergy) {
+          const energyDiv = document.createElement('div');
+          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.textContent = property.algemeen.energieklasse;
+          headerRow.appendChild(energyDiv);
+          const dot2 = document.createElement('span');
+          dot2.className = 'detail-popup-dot';
+          dot2.textContent = '•';
+          headerRow.appendChild(dot2);
+        }
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'detail-popup-header-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+        headerRow.appendChild(priceDiv);
+        const viewingBtn = document.createElement('button');
+        viewingBtn.className = 'detail-popup-header-viewing-btn';
+        viewingBtn.textContent = 'Bezichtiging';
+        viewingBtn.onclick = () => showBookingModal(property);
+        headerRow.appendChild(viewingBtn);
       }
-      if (hasAddress && hasEnergy) {
-        const dot = document.createElement('span');
-        dot.className = 'detail-popup-dot';
-        dot.textContent = '•';
-        headerRow.appendChild(dot);
-      }
-      if (hasEnergy) {
-        const energyDiv = document.createElement('div');
-        energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
-        energyDiv.textContent = property.algemeen.energieklasse;
-        headerRow.appendChild(energyDiv);
-        const dot2 = document.createElement('span');
-        dot2.className = 'detail-popup-dot';
-        dot2.textContent = '•';
-        headerRow.appendChild(dot2);
-      }
-      const price = property.financieel?.overdracht?.koopprijs || 0;
-      const priceDiv = document.createElement('div');
-      priceDiv.className = 'detail-popup-header-price';
-      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-      headerRow.appendChild(priceDiv);
-      const viewingBtn = document.createElement('button');
-      viewingBtn.className = 'detail-popup-header-viewing-btn';
-      viewingBtn.textContent = 'Bezichtiging';
-      viewingBtn.onclick = () => showBookingModal(property);
-      headerRow.appendChild(viewingBtn);
       header.appendChild(headerRow);
       detailContent.appendChild(header);
 
