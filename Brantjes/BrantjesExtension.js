@@ -2150,24 +2150,36 @@ export const BrantjesExtension = {
         .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
-          gap: 12px !important;
+          gap: 8px !important;
         }
         .detail-popup-main-image {
           width: 100% !important;
           max-width: 100% !important;
           margin-bottom: 0 !important;
+          display: flex !important;
+          justify-content: center !important;
+        }
+        .detail-popup-main-image img {
+          width: 100% !important;
+          height: auto !important;
+          max-height: 250px !important;
+          object-fit: cover !important;
+          border-radius: 8px !important;
         }
         .detail-popup-thumbnails {
           width: 100% !important;
           display: grid !important;
           grid-template-columns: repeat(4, 1fr) !important;
-          gap: 6px !important;
+          gap: 4px !important;
           margin-top: 0 !important;
+          justify-content: center !important;
         }
         .detail-popup-thumbnail {
           width: 100% !important;
-          height: 60px !important;
+          height: 80px !important;
           border-radius: 6px !important;
+          background-size: cover !important;
+          background-position: center !important;
         }
         /* Specifications row for mobile */
         .detail-popup-specs-row {
@@ -2180,6 +2192,37 @@ export const BrantjesExtension = {
         .detail-popup-title-main {
           font-size: 1.4rem !important;
           line-height: 1.2 !important;
+        }
+      }
+
+      /* Desktop adjustments for larger screens */
+      @media (min-width: 769px) {
+        .detail-popup-header-row {
+          flex-wrap: wrap !important;
+          gap: 0.8rem !important;
+        }
+        .detail-popup-header-details {
+          font-size: 0.85rem !important;
+          white-space: nowrap !important;
+          margin-right: 0.8rem !important;
+        }
+        .detail-popup-header-price {
+          font-size: 0.85rem !important;
+          white-space: nowrap !important;
+          margin-right: 0.8rem !important;
+        }
+        .detail-popup-header-viewing-btn {
+          font-size: 10px !important;
+          padding: 0.4em 1em !important;
+          height: 1.8em !important;
+          white-space: nowrap !important;
+        }
+        .detail-popup-dot {
+          margin: 0 0.3rem !important;
+          font-size: 1rem !important;
+        }
+        .detail-popup-title-main {
+          font-size: 1.6rem !important;
         }
       }
     `;
@@ -4637,24 +4680,36 @@ export const PropertyDetailsExtension = {
         .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
-          gap: 12px !important;
+          gap: 8px !important;
         }
         .detail-popup-main-image {
           width: 100% !important;
           max-width: 100% !important;
           margin-bottom: 0 !important;
+          display: flex !important;
+          justify-content: center !important;
+        }
+        .detail-popup-main-image img {
+          width: 100% !important;
+          height: auto !important;
+          max-height: 250px !important;
+          object-fit: cover !important;
+          border-radius: 8px !important;
         }
         .detail-popup-thumbnails {
           width: 100% !important;
           display: grid !important;
           grid-template-columns: repeat(4, 1fr) !important;
-          gap: 6px !important;
+          gap: 4px !important;
           margin-top: 0 !important;
+          justify-content: center !important;
         }
         .detail-popup-thumbnail {
           width: 100% !important;
-          height: 60px !important;
+          height: 80px !important;
           border-radius: 6px !important;
+          background-size: cover !important;
+          background-position: center !important;
         }
         /* Specifications row for mobile */
         .detail-popup-specs-row {
@@ -4667,6 +4722,37 @@ export const PropertyDetailsExtension = {
         .detail-popup-title-main {
           font-size: 1.4rem !important;
           line-height: 1.2 !important;
+        }
+      }
+
+      /* Desktop adjustments for larger screens */
+      @media (min-width: 769px) {
+        .detail-popup-header-row {
+          flex-wrap: wrap !important;
+          gap: 0.8rem !important;
+        }
+        .detail-popup-header-details {
+          font-size: 0.85rem !important;
+          white-space: nowrap !important;
+          margin-right: 0.8rem !important;
+        }
+        .detail-popup-header-price {
+          font-size: 0.85rem !important;
+          white-space: nowrap !important;
+          margin-right: 0.8rem !important;
+        }
+        .detail-popup-header-viewing-btn {
+          font-size: 10px !important;
+          padding: 0.4em 1em !important;
+          height: 1.8em !important;
+          white-space: nowrap !important;
+        }
+        .detail-popup-dot {
+          margin: 0 0.3rem !important;
+          font-size: 1rem !important;
+        }
+        .detail-popup-title-main {
+          font-size: 1.6rem !important;
         }
       }
     `;
