@@ -2121,131 +2121,65 @@ export const BrantjesExtension = {
         }
       }
 
-      /* MOBILE RESPONSIVE MODAL STYLES - HIGHEST PRIORITY */
+      /* Responsive adjustments */
       @media (max-width: 768px) {
-        .brantjes-modal-container .detail-popup-main-image {
-          width: 100% !important;
-          max-width: 100% !important;
-          min-width: auto !important;
-          height: auto !important;
-          max-height: none !important;
-          margin-bottom: 16px !important;
-          display: block !important;
-          position: relative !important;
-          align-self: stretch !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-main-image img {
-          width: 100% !important;
-          height: auto !important;
-          max-height: 300px !important;
-          object-fit: cover !important;
-          display: block !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-thumbnails {
-          width: 100% !important;
-          max-width: 100% !important;
-          display: grid !important;
-          grid-template-columns: repeat(4, 1fr) !important;
-          grid-template-rows: repeat(2, 1fr) !important;
+        /* Header adjustments for mobile */
+        .detail-popup-header-row {
+          flex-direction: column !important;
+          align-items: flex-start !important;
           gap: 8px !important;
-          height: 120px !important;
-          margin-top: 0 !important;
-          position: static !important;
-          align-items: stretch !important;
-          justify-content: stretch !important;
+          flex-wrap: wrap !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnail {
+        .detail-popup-header-details,
+        .detail-popup-header-price,
+        .detail-popup-header-viewing-btn {
           width: 100% !important;
-          height: 100% !important;
-          position: static !important;
-          opacity: 1 !important;
-          pointer-events: auto !important;
-          background-size: cover !important;
-          background-position: center !important;
-          background-repeat: no-repeat !important;
-          border-radius: 6px !important;
-          cursor: pointer !important;
+          margin: 0 !important;
+          font-size: 0.95rem !important;
         }
-        
-        .brantjes-modal-container .detail-popup-images-row {
+        .detail-popup-header-viewing-btn {
+          font-size: 0.9rem !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
+          white-space: nowrap !important;
+        }
+        .detail-popup-dot {
+          display: none !important;
+        }
+        /* Images layout for mobile */
+        .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
-          gap: 16px !important;
-          margin-top: 24px !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-row {
-          flex-direction: column !important;
-          align-items: stretch !important;
           gap: 12px !important;
         }
-      }
-
-      /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
-      @media (min-width: 769px) {
-        .brantjes-modal-container .detail-popup-main-image {
-          width: 320px !important;
-          height: 240px !important;
-          min-width: 320px !important;
-          max-width: 320px !important;
-          max-height: 240px !important;
-          margin-bottom: 0 !important;
-          display: flex !important;
-          position: relative !important;
-          align-self: flex-end !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-main-image img {
+        .detail-popup-main-image {
           width: 100% !important;
-          height: 100% !important;
-          object-fit: cover !important;
-          display: block !important;
+          max-width: 100% !important;
+          margin-bottom: 0 !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnails {
+        .detail-popup-thumbnails {
+          width: 100% !important;
           display: grid !important;
-          grid-template-columns: 150px 150px !important;
-          grid-template-rows: 115px 115px !important;
-          gap: 10px !important;
-          align-items: end !important;
-          height: 240px !important;
-          justify-content: flex-start !important;
-          position: relative !important;
+          grid-template-columns: repeat(4, 1fr) !important;
+          gap: 6px !important;
+          margin-top: 0 !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnail {
-          width: 150px !important;
-          height: 115px !important;
-          position: absolute !important;
-          opacity: 0 !important;
-          pointer-events: none !important;
-          background-size: cover !important;
-          background-position: center !important;
-          border-radius: 8px !important;
-          cursor: pointer !important;
-          transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        .detail-popup-thumbnail {
+          width: 100% !important;
+          height: 60px !important;
+          border-radius: 6px !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnail.fade-in {
-          opacity: 1 !important;
-          position: static !important;
-          pointer-events: auto !important;
+        /* Specifications row for mobile */
+        .detail-popup-specs-row {
+          flex-wrap: wrap !important;
+          justify-content: center !important;
+          gap: 8px !important;
+          font-size: 0.75rem !important;
         }
-        
-        .brantjes-modal-container .detail-popup-images-row {
-          flex-direction: row !important;
-          align-items: flex-end !important;
-          gap: 10px !important;
-          margin-top: 16px !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-row {
-          flex-direction: row !important;
-          align-items: center !important;
-          gap: 1.2rem !important;
+        /* Title adjustments for mobile */
+        .detail-popup-title-main {
+          font-size: 1.4rem !important;
+          line-height: 1.2 !important;
         }
       }
     `;
@@ -2287,7 +2221,6 @@ export const BrantjesExtension = {
     function showDetailModal(property) {
         // --- IMAGE DATA ---
         const media = Array.isArray(property.media) ? property.media : [];
-        
         // Track original indices for counter
         const allImgs = [];
         const mainImgObj = media.find(m => m.vrijgave && m.soort === 'HOOFDFOTO' && m.mimetype && m.mimetype.startsWith('image/'))
@@ -2302,12 +2235,6 @@ export const BrantjesExtension = {
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
-        
-        // Add responsive inline styles
-        detailContent.style.width = '100%';
-        detailContent.style.maxWidth = '100%';
-        detailContent.style.overflowX = 'hidden';
-        detailContent.style.boxSizing = 'border-box';
 
         // --- HEADER SECTION (Brantjes style) ---
         const header = document.createElement('div');
@@ -2324,22 +2251,6 @@ export const BrantjesExtension = {
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
-        
-        // Add responsive inline styles for mobile
-        headerRow.style.flexWrap = 'wrap';
-        headerRow.style.gap = '1rem';
-        headerRow.style.alignItems = 'flex-start';
-        headerRow.style.width = '100%';
-        headerRow.style.maxWidth = '100%';
-        headerRow.style.overflowX = 'hidden';
-        headerRow.style.boxSizing = 'border-box';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (window.innerWidth <= 768) {
-          headerRow.style.flexDirection = 'column';
-          headerRow.style.alignItems = 'stretch';
-          headerRow.style.gap = '12px';
-        }
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
@@ -2351,13 +2262,6 @@ export const BrantjesExtension = {
           addrSpan.className = 'detail-popup-header-details';
           addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
           addrSpan.style.fontWeight = 'bold';
-          addrSpan.style.fontSize = '0.9rem';
-          addrSpan.style.whiteSpace = 'normal';
-          addrSpan.style.flex = '1';
-          addrSpan.style.minWidth = '0';
-          addrSpan.style.maxWidth = '100%';
-          addrSpan.style.overflowWrap = 'break-word';
-          addrSpan.style.wordWrap = 'break-word';
           headerRow.appendChild(addrSpan);
         }
         // Dot separator only if both address and energy label
@@ -2384,23 +2288,12 @@ export const BrantjesExtension = {
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
         priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        priceDiv.style.fontSize = '0.9rem';
-        priceDiv.style.whiteSpace = 'normal';
-        priceDiv.style.flexShrink = '0';
-        priceDiv.style.maxWidth = '100%';
-        priceDiv.style.overflowWrap = 'break-word';
-        priceDiv.style.wordWrap = 'break-word';
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
         viewingBtn.textContent = 'Bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
-        viewingBtn.style.fontSize = '10px';
-        viewingBtn.style.padding = '0.4em 1.2em';
-        viewingBtn.style.height = '2em';
-        viewingBtn.style.flexShrink = '0';
-        viewingBtn.style.whiteSpace = 'nowrap';
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
@@ -2408,61 +2301,12 @@ export const BrantjesExtension = {
         // --- IMAGES ROW ---
         const imagesRow = document.createElement('div');
         imagesRow.className = 'detail-popup-images-row';
-        
-        // Add responsive inline styles for images
-        imagesRow.style.width = '100%';
-        imagesRow.style.maxWidth = '100%';
-        imagesRow.style.overflowX = 'hidden';
-        imagesRow.style.boxSizing = 'border-box';
-        imagesRow.style.marginTop = '16px';
-        imagesRow.style.display = 'flex';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (window.innerWidth <= 768) {
-          imagesRow.style.flexDirection = 'column';
-          imagesRow.style.alignItems = 'center';
-          imagesRow.style.gap = '16px';
-          imagesRow.style.marginTop = '24px';
-        } else {
-          imagesRow.style.flexDirection = 'row';
-          imagesRow.style.alignItems = 'flex-start';
-          imagesRow.style.gap = '16px';
-        }
         // Main image
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
-        
-        // Add responsive inline styles for main image
-        mainImgCol.style.setProperty('position', 'relative', 'important');
-        mainImgCol.style.setProperty('box-sizing', 'border-box', 'important');
-        mainImgCol.style.setProperty('display', 'block', 'important');
-        
-        // Check if we're on mobile and adjust accordingly
-        if (window.innerWidth <= 768) {
-          mainImgCol.style.setProperty('width', '100%', 'important');
-          mainImgCol.style.setProperty('max-width', '100%', 'important');
-          mainImgCol.style.setProperty('margin-bottom', '16px', 'important');
-          mainImgCol.style.setProperty('min-width', 'auto', 'important');
-          mainImgCol.style.setProperty('height', 'auto', 'important');
-          mainImgCol.style.setProperty('max-height', 'none', 'important');
-        } else {
-          mainImgCol.style.setProperty('width', '60%', 'important');
-          mainImgCol.style.setProperty('max-width', 'none', 'important');
-          mainImgCol.style.setProperty('min-width', 'auto', 'important');
-          mainImgCol.style.setProperty('height', 'auto', 'important');
-          mainImgCol.style.setProperty('max-height', 'none', 'important');
-        }
         const mainImg = document.createElement('img');
-        const mainImgSrc = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
-        mainImg.src = mainImgSrc;
+        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
-        mainImg.style.setProperty('width', '100%', 'important');
-        mainImg.style.setProperty('height', 'auto', 'important');
-        mainImg.style.setProperty('display', 'block', 'important');
-        mainImg.style.setProperty('border-radius', '8px', 'important');
-        
-
-        
         mainImgCol.appendChild(mainImg);
         // Image counter
         let counter;
@@ -2476,39 +2320,6 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        
-        // Add responsive inline styles for thumbnails
-        thumbsCol.style.position = 'static';
-        thumbsCol.style.alignItems = 'stretch';
-        thumbsCol.style.justifyContent = 'stretch';
-        thumbsCol.style.boxSizing = 'border-box';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (window.innerWidth <= 768) {
-          thumbsCol.style.setProperty('width', '100%', 'important');
-          thumbsCol.style.setProperty('max-width', '100%', 'important');
-          thumbsCol.style.setProperty('display', 'grid', 'important');
-          thumbsCol.style.setProperty('grid-template-columns', 'repeat(4, 1fr)', 'important');
-          thumbsCol.style.setProperty('grid-template-rows', 'repeat(2, 1fr)', 'important');
-          thumbsCol.style.setProperty('gap', '8px', 'important');
-          thumbsCol.style.setProperty('height', '100px', 'important');
-          thumbsCol.style.setProperty('margin-top', '0', 'important');
-          thumbsCol.style.setProperty('position', 'static', 'important');
-          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
-          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
-        } else {
-          thumbsCol.style.setProperty('width', '40%', 'important');
-          thumbsCol.style.setProperty('max-width', 'none', 'important');
-          thumbsCol.style.setProperty('display', 'grid', 'important');
-          thumbsCol.style.setProperty('grid-template-columns', 'repeat(2, 1fr)', 'important');
-          thumbsCol.style.setProperty('grid-template-rows', 'repeat(4, 1fr)', 'important');
-          thumbsCol.style.setProperty('gap', '4px', 'important');
-          thumbsCol.style.setProperty('height', 'auto', 'important');
-          thumbsCol.style.setProperty('margin-top', '0', 'important');
-          thumbsCol.style.setProperty('position', 'static', 'important');
-          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
-          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
-        }
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
@@ -2524,16 +2335,6 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                thumbDiv.style.setProperty('background-size', 'cover', 'important');
-                thumbDiv.style.setProperty('background-position', 'center', 'important');
-                thumbDiv.style.setProperty('background-repeat', 'no-repeat', 'important');
-                thumbDiv.style.setProperty('border-radius', '6px', 'important');
-                thumbDiv.style.setProperty('cursor', 'pointer', 'important');
-                thumbDiv.style.setProperty('position', 'static', 'important');
-                thumbDiv.style.setProperty('opacity', '1', 'important');
-                thumbDiv.style.setProperty('pointer-events', 'auto', 'important');
-                
-
                 // Position in grid
                 let gridPos = i;
                 if (gridPos <= 4) {
@@ -2566,84 +2367,48 @@ export const BrantjesExtension = {
         // --- SPECIFICATIONS ROW (Brantjes style) ---
         const specsRow = document.createElement('div');
         specsRow.className = 'detail-popup-specs-row';
-        
-        // Add responsive inline styles for specifications
-        specsRow.style.width = '100%';
-        specsRow.style.maxWidth = '100%';
-        specsRow.style.overflowX = 'hidden';
-        specsRow.style.boxSizing = 'border-box';
-        specsRow.style.padding = '0';
-        specsRow.style.margin = '24px 0 0 0';
-        specsRow.style.flexWrap = 'wrap';
-        specsRow.style.gap = '12px';
-        specsRow.style.display = 'flex';
-        specsRow.style.alignItems = 'center';
-        specsRow.style.justifyContent = 'flex-start';
-        
-        // Check if we're on mobile and adjust accordingly
-        if (window.innerWidth <= 768) {
-          specsRow.style.justifyContent = 'center';
-          specsRow.style.gap = '16px';
-        }
 
         // Woonoppervlakte
         const woonopp = property.algemeen?.woonoppervlakte;
         if (woonopp) {
           const woonoppSpan = document.createElement('span');
           woonoppSpan.innerHTML = `<strong>${woonopp} m²</strong> woonoppervlakte`;
-          woonoppSpan.style.fontSize = '14px';
-          woonoppSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(woonoppSpan);
         }
         // Dot
         const dot1 = document.createElement('span');
         dot1.className = 'detail-popup-dot';
         dot1.textContent = '•';
-        dot1.style.fontSize = '16px';
-        dot1.style.color = '#666';
-        dot1.style.margin = '0 4px';
         specsRow.appendChild(dot1);
         // Slaapkamers
         const slaapkamers = property.detail?.etages?.reduce((acc, e) => acc + (e.aantalSlaapkamers || 0), 0) || property.algemeen?.aantalSlaapkamers;
         if (slaapkamers) {
           const slaapSpan = document.createElement('span');
           slaapSpan.innerHTML = `<strong>${slaapkamers}</strong> slaapkamers`;
-          slaapSpan.style.fontSize = '14px';
-          slaapSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(slaapSpan);
         }
         // Dot
         const dot2 = document.createElement('span');
         dot2.className = 'detail-popup-dot';
         dot2.textContent = '•';
-        dot2.style.fontSize = '16px';
-        dot2.style.color = '#666';
-        dot2.style.margin = '0 4px';
         specsRow.appendChild(dot2);
         // Bouwjaar
         const bouwjaar = property.algemeen?.bouwjaar;
         if (bouwjaar) {
           const bouwjaarSpan = document.createElement('span');
           bouwjaarSpan.innerHTML = `Bouwjaar <strong>${bouwjaar}</strong>`;
-          bouwjaarSpan.style.fontSize = '14px';
-          bouwjaarSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(bouwjaarSpan);
         }
         // Dot
         const dot3 = document.createElement('span');
         dot3.className = 'detail-popup-dot';
         dot3.textContent = '•';
-        dot3.style.fontSize = '16px';
-        dot3.style.color = '#666';
-        dot3.style.margin = '0 4px';
         specsRow.appendChild(dot3);
         // Perceel
         const perceel = property.detail?.kadaster?.[0]?.kadastergegevens?.oppervlakte;
         if (perceel) {
           const perceelSpan = document.createElement('span');
           perceelSpan.innerHTML = `<strong>${perceel} m²</strong> perceel`;
-          perceelSpan.style.fontSize = '14px';
-          perceelSpan.style.whiteSpace = 'nowrap';
           specsRow.appendChild(perceelSpan);
         }
 
@@ -2652,14 +2417,6 @@ export const BrantjesExtension = {
         // --- RIGHT: Info ---
         const infoCol = document.createElement('div');
         infoCol.className = 'detail-popup-info';
-        
-        // Add responsive inline styles for info section
-        infoCol.style.width = '100%';
-        infoCol.style.maxWidth = '100%';
-        infoCol.style.overflowX = 'hidden';
-        infoCol.style.boxSizing = 'border-box';
-        infoCol.style.padding = '0';
-        infoCol.style.margin = '0';
 
         // --- Description with 'toon meer' ---
         const desc = property.teksten?.aanbiedingstekst || '';
@@ -4853,318 +4610,63 @@ export const PropertyDetailsExtension = {
 
       /* Responsive adjustments */
       @media (max-width: 768px) {
-        .property-details-container {
-          padding: 1rem;
-          margin: 0;
-          border-radius: 0;
-        }
-        
-        /* Force all detail popup content to stay within bounds */
-        .brantjes-modal-container .detail-popup-content,
-        .detail-popup-content {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        
-        /* Ensure modal container itself doesn't overflow */
-        .brantjes-modal-container {
-          overflow-x: hidden !important;
-          overflow-y: auto !important;
-          box-sizing: border-box !important;
-        }
-        
-        /* Force all elements inside modal to respect container bounds */
-        .brantjes-modal-container * {
-          max-width: 100% !important;
-          box-sizing: border-box !important;
-        }
-        
-        /* Also handle inline property details container */
-        .property-details-container {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 1rem !important;
-          margin: 0 !important;
-        }
-        
-        .property-details-container * {
-          max-width: 100% !important;
-          box-sizing: border-box !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header,
-        .detail-popup-header {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-row,
+        /* Header adjustments for mobile */
         .detail-popup-header-row {
-          flex-wrap: wrap !important;
-          flex-direction: row !important;
-          gap: 1rem !important;
+          flex-direction: column !important;
           align-items: flex-start !important;
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 0 !important;
-          margin: 0 !important;
+          gap: 8px !important;
+          flex-wrap: wrap !important;
         }
-        
-        .brantjes-modal-container .detail-popup-header-details,
-        .detail-popup-header-details {
-          font-size: 0.9rem !important;
-          margin-right: 1rem !important;
-          white-space: normal !important;
-          flex: 1 !important;
-          min-width: 0 !important;
-          max-width: 100% !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-          word-break: break-word !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-price,
-        .detail-popup-header-price {
-          font-size: 0.9rem !important;
-          margin-right: 1rem !important;
-          white-space: normal !important;
-          flex-shrink: 0 !important;
-          max-width: 100% !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-          word-break: break-word !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-viewing-btn,
+        .detail-popup-header-details,
+        .detail-popup-header-price,
         .detail-popup-header-viewing-btn {
-          font-size: 10px !important;
+          width: 100% !important;
+          margin: 0 !important;
+          font-size: 0.95rem !important;
+        }
+        .detail-popup-header-viewing-btn {
+          font-size: 0.9rem !important;
           padding: 0.4em 1.2em !important;
           height: 2em !important;
-          flex-shrink: 0 !important;
           white-space: nowrap !important;
         }
-        
-        .brantjes-modal-container .detail-popup-dot,
         .detail-popup-dot {
-          flex-shrink: 0 !important;
+          display: none !important;
         }
-        
-        .brantjes-modal-container .detail-popup-header-energy,
-        .detail-popup-header-energy {
-          flex-shrink: 0 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-images-row,
+        /* Images layout for mobile */
         .detail-popup-images-row {
           flex-direction: column !important;
           align-items: center !important;
           gap: 12px !important;
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          flex-wrap: nowrap !important;
-          margin-top: 16px !important;
         }
-        
-        .brantjes-modal-container .detail-popup-main-image,
         .detail-popup-main-image {
           width: 100% !important;
           max-width: 100% !important;
-          position: relative !important;
-          box-sizing: border-box !important;
+          margin-bottom: 0 !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnails,
         .detail-popup-thumbnails {
           width: 100% !important;
-          max-width: 100% !important;
           display: grid !important;
           grid-template-columns: repeat(4, 1fr) !important;
-          grid-template-rows: repeat(2, 1fr) !important;
           gap: 6px !important;
-          height: 80px !important;
-          position: static !important;
-          align-items: stretch !important;
-          justify-content: stretch !important;
-          margin-top: 8px !important;
-          box-sizing: border-box !important;
+          margin-top: 0 !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnail,
         .detail-popup-thumbnail {
           width: 100% !important;
-          height: 100% !important;
+          height: 60px !important;
           border-radius: 6px !important;
-          background-size: cover !important;
-          background-position: center !important;
-          cursor: pointer !important;
-          transition: opacity 0.2s !important;
-          position: static !important;
-          pointer-events: auto !important;
-          opacity: 1 !important;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
         }
-        
-        .brantjes-modal-container .detail-popup-thumbnail:hover,
-        .detail-popup-thumbnail:hover {
-          opacity: 0.8 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-thumbnail.fade-in,
-        .detail-popup-thumbnail.fade-in {
-          position: static !important;
-          pointer-events: auto !important;
-          opacity: 1 !important;
-        }
-        
-        /* Handle specifications and description overflow */
-        .brantjes-modal-container .detail-popup-specs-row,
+        /* Specifications row for mobile */
         .detail-popup-specs-row {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 0 !important;
-          margin: 0 !important;
           flex-wrap: wrap !important;
-          gap: 0.5rem !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-info,
-        .detail-popup-info {
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-          box-sizing: border-box !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        
-        /* Ensure all text content wraps properly */
-        .brantjes-modal-container p,
-        .brantjes-modal-container span,
-        .brantjes-modal-container div,
-        .property-details-container p,
-        .property-details-container span,
-        .property-details-container div {
-          max-width: 100% !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-          word-break: break-word !important;
-        }
-        
-        /* Ensure both functions get the same responsive treatment */
-        .detail-popup-content,
-        .detail-popup-header,
-        .detail-popup-header-row,
-        .detail-popup-header-details,
-        .detail-popup-header-price,
-        .detail-popup-header-viewing-btn,
-        .detail-popup-images-row,
-        .detail-popup-main-image,
-        .detail-popup-thumbnails,
-        .detail-popup-thumbnail,
-        .detail-popup-specs-row,
-        .detail-popup-info {
-          max-width: 100% !important;
-          box-sizing: border-box !important;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .brantjes-modal-container {
-          padding: 1rem !important;
-          width: 95% !important;
-          max-width: 95vw !important;
-          max-height: 90vh !important;
-        }
-        
-        .detail-popup-content {
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        
-        .detail-popup-header-row {
-          flex-direction: column !important;
-          flex-wrap: nowrap !important;
-          align-items: flex-start !important;
-          gap: 1rem !important;
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-x: hidden !important;
-        }
-        
-        .detail-popup-header-details,
-        .detail-popup-header-price {
-          margin-right: 0 !important;
-          margin-bottom: 0.5rem !important;
-          white-space: normal !important;
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-        }
-        
-        .detail-popup-header-viewing-btn {
-          align-self: stretch !important;
           justify-content: center !important;
-          width: 100% !important;
-          max-width: 100% !important;
+          gap: 8px !important;
+          font-size: 0.75rem !important;
         }
-        
-        .detail-popup-thumbnails {
-          grid-template-columns: repeat(3, 1fr) !important;
-          grid-template-rows: repeat(3, 1fr) !important;
-          height: 120px !important;
-        }
-      }
-      
-      @media (max-width: 360px) {
-        .brantjes-modal-container {
-          padding: 0.8rem !important;
-          width: 98% !important;
-          max-width: 98vw !important;
-        }
-        
-        .detail-popup-content {
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        
-        .detail-popup-header-details,
-        .detail-popup-header-price {
-          font-size: 0.85rem !important;
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow-wrap: break-word !important;
-          word-wrap: break-word !important;
-        }
-        
-        .detail-popup-header-viewing-btn {
-          font-size: 9px !important;
-          padding: 0.3em 1em !important;
-          height: 1.8em !important;
-          width: 100% !important;
-          max-width: 100% !important;
-        }
-        
-        .detail-popup-thumbnails {
-          grid-template-columns: repeat(2, 1fr) !important;
-          grid-template-rows: repeat(4, 1fr) !important;
-          height: 160px !important;
+        /* Title adjustments for mobile */
+        .detail-popup-title-main {
+          font-size: 1.4rem !important;
+          line-height: 1.2 !important;
         }
       }
     `;
