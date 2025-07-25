@@ -2173,22 +2173,10 @@ export const BrantjesExtension = {
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
-        
-        // Add responsive styles directly to the content
-        detailContent.style.width = '100%';
-        detailContent.style.maxWidth = '100%';
-        detailContent.style.overflowX = 'hidden';
-        detailContent.style.boxSizing = 'border-box';
 
         // --- HEADER SECTION (Brantjes style) ---
         const header = document.createElement('div');
         header.className = 'detail-popup-header';
-        
-        // Add responsive styles to header
-        header.style.width = '100%';
-        header.style.maxWidth = '100%';
-        header.style.overflowX = 'hidden';
-        header.style.boxSizing = 'border-box';
         // Title (street + number)
         const straat = property.adres?.straat || '';
         const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
@@ -2201,15 +2189,6 @@ export const BrantjesExtension = {
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
-        
-        // Add responsive styles to header row
-        headerRow.style.width = '100%';
-        headerRow.style.maxWidth = '100%';
-        headerRow.style.overflowX = 'hidden';
-        headerRow.style.boxSizing = 'border-box';
-        headerRow.style.flexWrap = 'wrap';
-        headerRow.style.gap = '0.8rem';
-        headerRow.style.alignItems = 'flex-start';
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
@@ -2221,14 +2200,6 @@ export const BrantjesExtension = {
           addrSpan.className = 'detail-popup-header-details';
           addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
           addrSpan.style.fontWeight = 'bold';
-          addrSpan.style.fontSize = '0.9rem';
-          addrSpan.style.whiteSpace = 'normal';
-          addrSpan.style.flex = '1';
-          addrSpan.style.minWidth = '0';
-          addrSpan.style.maxWidth = '100%';
-          addrSpan.style.overflowWrap = 'break-word';
-          addrSpan.style.wordWrap = 'break-word';
-          addrSpan.style.wordBreak = 'break-word';
           headerRow.appendChild(addrSpan);
         }
         // Dot separator only if both address and energy label
@@ -2255,24 +2226,12 @@ export const BrantjesExtension = {
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
         priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        priceDiv.style.fontSize = '0.9rem';
-        priceDiv.style.whiteSpace = 'normal';
-        priceDiv.style.flexShrink = '0';
-        priceDiv.style.maxWidth = '100%';
-        priceDiv.style.overflowWrap = 'break-word';
-        priceDiv.style.wordWrap = 'break-word';
-        priceDiv.style.wordBreak = 'break-word';
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
         viewingBtn.textContent = 'Bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
-        viewingBtn.style.fontSize = '10px';
-        viewingBtn.style.padding = '0.4em 1.2em';
-        viewingBtn.style.height = '2em';
-        viewingBtn.style.flexShrink = '0';
-        viewingBtn.style.whiteSpace = 'nowrap';
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
@@ -2280,23 +2239,9 @@ export const BrantjesExtension = {
         // --- IMAGES ROW ---
         const imagesRow = document.createElement('div');
         imagesRow.className = 'detail-popup-images-row';
-        
-        // Add responsive styles to images row
-        imagesRow.style.flexDirection = 'column';
-        imagesRow.style.alignItems = 'center';
-        imagesRow.style.gap = '8px';
-        imagesRow.style.width = '100%';
-        imagesRow.style.maxWidth = '100%';
-        imagesRow.style.overflowX = 'hidden';
-        imagesRow.style.boxSizing = 'border-box';
         // Main image
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
-        
-        // Add responsive styles to main image
-        mainImgCol.style.width = '100%';
-        mainImgCol.style.maxWidth = '320px';
-        mainImgCol.style.position = 'relative';
         const mainImg = document.createElement('img');
         mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
@@ -2313,18 +2258,6 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
-        
-        // Add responsive styles to thumbnails
-        thumbsCol.style.width = '100%';
-        thumbsCol.style.maxWidth = '320px';
-        thumbsCol.style.display = 'grid';
-        thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
-        thumbsCol.style.gap = '4px';
-        thumbsCol.style.height = '80px';
-        thumbsCol.style.position = 'static';
-        thumbsCol.style.alignItems = 'stretch';
-        thumbsCol.style.justifyContent = 'stretch';
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
@@ -2340,19 +2273,6 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                
-                // Add responsive styles to thumbnails
-                thumbDiv.style.width = '100%';
-                thumbDiv.style.height = '100%';
-                thumbDiv.style.borderRadius = '6px';
-                thumbDiv.style.backgroundSize = 'cover';
-                thumbDiv.style.backgroundPosition = 'center';
-                thumbDiv.style.cursor = 'pointer';
-                thumbDiv.style.transition = 'opacity 0.2s';
-                thumbDiv.style.position = 'static';
-                thumbDiv.style.pointerEvents = 'auto';
-                thumbDiv.style.opacity = '1';
-                thumbDiv.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)';
                 // Position in grid
                 let gridPos = i;
                 if (gridPos <= 4) {
