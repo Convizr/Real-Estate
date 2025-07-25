@@ -2325,7 +2325,7 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          justify-content: flex-start !important;
+          justify-content: space-between !important;
           gap: 0.3rem !important;
         }
         
@@ -2417,13 +2417,13 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
           text-align: left !important;
           width: 100% !important;
-          max-width: 80% !important;
+          max-width: 100% !important;
         }
         
         .brantjes-modal-container table {
           text-align: left !important;
           width: 100% !important;
-          max-width: 80% !important;
+          max-width: 100% !important;
         }
         
         .brantjes-modal-container table td {
@@ -2447,6 +2447,8 @@ export const BrantjesExtension = {
           font-size: 16px !important;
           padding: 12px 32px !important;
           min-width: 200px !important;
+          display: block !important;
+          margin: 0 auto !important;
         }
       }
     `;
@@ -5079,7 +5081,7 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
-          justify-content: flex-start !important;
+          justify-content: space-between !important;
           gap: 0.3rem !important;
         }
         
@@ -5171,13 +5173,13 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
           text-align: left !important;
           width: 100% !important;
-          max-width: 80% !important;
+          max-width: 100% !important;
         }
         
         .property-details-container table {
           text-align: left !important;
           width: 100% !important;
-          max-width: 80% !important;
+          max-width: 100% !important;
         }
         
         .property-details-container table td {
@@ -5201,6 +5203,8 @@ export const PropertyDetailsExtension = {
           font-size: 16px !important;
           padding: 12px 32px !important;
           min-width: 200px !important;
+          display: block !important;
+          margin: 0 auto !important;
         }
       }
     `;
