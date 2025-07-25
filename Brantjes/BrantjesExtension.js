@@ -2104,6 +2104,14 @@ export const BrantjesExtension = {
           visibility: hidden !important;
         }
       }
+      
+      /* FORCE OVERRIDE FOR CONFLICTING CSS */
+      @media (max-width: 600px) {
+        .brantjes-carousel-container {
+          width: 70vw !important;
+          height: 115vw !important;
+        }
+      }
     `;
     element.appendChild(style);
 
