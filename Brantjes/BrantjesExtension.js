@@ -2173,6 +2173,12 @@ export const BrantjesExtension = {
         // --- MODAL CONTENT ---
         const detailContent = document.createElement('div');
         detailContent.className = 'detail-popup-content';
+        
+        // Add responsive inline styles
+        detailContent.style.width = '100%';
+        detailContent.style.maxWidth = '100%';
+        detailContent.style.overflowX = 'hidden';
+        detailContent.style.boxSizing = 'border-box';
 
         // --- HEADER SECTION (Brantjes style) ---
         const header = document.createElement('div');
@@ -2189,6 +2195,15 @@ export const BrantjesExtension = {
         // Row: address, energy label, price, viewing button
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
+        
+        // Add responsive inline styles for mobile
+        headerRow.style.flexWrap = 'wrap';
+        headerRow.style.gap = '1rem';
+        headerRow.style.alignItems = 'flex-start';
+        headerRow.style.width = '100%';
+        headerRow.style.maxWidth = '100%';
+        headerRow.style.overflowX = 'hidden';
+        headerRow.style.boxSizing = 'border-box';
 
         // Address (postal code + city)
         const plaats = property.adres?.plaats || '';
@@ -2200,6 +2215,13 @@ export const BrantjesExtension = {
           addrSpan.className = 'detail-popup-header-details';
           addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
           addrSpan.style.fontWeight = 'bold';
+          addrSpan.style.fontSize = '0.9rem';
+          addrSpan.style.whiteSpace = 'normal';
+          addrSpan.style.flex = '1';
+          addrSpan.style.minWidth = '0';
+          addrSpan.style.maxWidth = '100%';
+          addrSpan.style.overflowWrap = 'break-word';
+          addrSpan.style.wordWrap = 'break-word';
           headerRow.appendChild(addrSpan);
         }
         // Dot separator only if both address and energy label
@@ -2226,12 +2248,23 @@ export const BrantjesExtension = {
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
         priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        priceDiv.style.fontSize = '0.9rem';
+        priceDiv.style.whiteSpace = 'normal';
+        priceDiv.style.flexShrink = '0';
+        priceDiv.style.maxWidth = '100%';
+        priceDiv.style.overflowWrap = 'break-word';
+        priceDiv.style.wordWrap = 'break-word';
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
         viewingBtn.className = 'detail-popup-header-viewing-btn';
         viewingBtn.textContent = 'Bezichtiging';
         viewingBtn.onclick = () => showBookingModal(property);
+        viewingBtn.style.fontSize = '10px';
+        viewingBtn.style.padding = '0.4em 1.2em';
+        viewingBtn.style.height = '2em';
+        viewingBtn.style.flexShrink = '0';
+        viewingBtn.style.whiteSpace = 'nowrap';
         headerRow.appendChild(viewingBtn);
         header.appendChild(headerRow);
         detailContent.appendChild(header);
@@ -2239,9 +2272,25 @@ export const BrantjesExtension = {
         // --- IMAGES ROW ---
         const imagesRow = document.createElement('div');
         imagesRow.className = 'detail-popup-images-row';
+        
+        // Add responsive inline styles for images
+        imagesRow.style.flexDirection = 'column';
+        imagesRow.style.alignItems = 'center';
+        imagesRow.style.gap = '12px';
+        imagesRow.style.width = '100%';
+        imagesRow.style.maxWidth = '100%';
+        imagesRow.style.overflowX = 'hidden';
+        imagesRow.style.boxSizing = 'border-box';
+        imagesRow.style.marginTop = '16px';
         // Main image
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
+        
+        // Add responsive inline styles for main image
+        mainImgCol.style.width = '100%';
+        mainImgCol.style.maxWidth = '100%';
+        mainImgCol.style.position = 'relative';
+        mainImgCol.style.boxSizing = 'border-box';
         const mainImg = document.createElement('img');
         mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.alt = 'Hoofdfoto';
@@ -2258,6 +2307,20 @@ export const BrantjesExtension = {
         // Thumbnails
         const thumbsCol = document.createElement('div');
         thumbsCol.className = 'detail-popup-thumbnails';
+        
+        // Add responsive inline styles for thumbnails
+        thumbsCol.style.width = '100%';
+        thumbsCol.style.maxWidth = '100%';
+        thumbsCol.style.display = 'grid';
+        thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
+        thumbsCol.style.gap = '6px';
+        thumbsCol.style.height = '80px';
+        thumbsCol.style.position = 'static';
+        thumbsCol.style.alignItems = 'stretch';
+        thumbsCol.style.justifyContent = 'stretch';
+        thumbsCol.style.marginTop = '8px';
+        thumbsCol.style.boxSizing = 'border-box';
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
             // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
@@ -4565,12 +4628,42 @@ export const PropertyDetailsExtension = {
           margin: 0 !important;
         }
         
+        /* Ensure modal container itself doesn't overflow */
+        .brantjes-modal-container {
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          box-sizing: border-box !important;
+        }
+        
+        /* Force all elements inside modal to respect container bounds */
+        .brantjes-modal-container * {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        
+        /* Also handle inline property details container */
+        .property-details-container {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          padding: 1rem !important;
+          margin: 0 !important;
+        }
+        
+        .property-details-container * {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        
         .brantjes-modal-container .detail-popup-header,
         .detail-popup-header {
           width: 100% !important;
           max-width: 100% !important;
           overflow-x: hidden !important;
           box-sizing: border-box !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
         
         .brantjes-modal-container .detail-popup-header-row,
@@ -4647,14 +4740,15 @@ export const PropertyDetailsExtension = {
         .brantjes-modal-container .detail-popup-main-image,
         .detail-popup-main-image {
           width: 100% !important;
-          max-width: 320px !important;
+          max-width: 100% !important;
           position: relative !important;
+          box-sizing: border-box !important;
         }
         
         .brantjes-modal-container .detail-popup-thumbnails,
         .detail-popup-thumbnails {
           width: 100% !important;
-          max-width: 320px !important;
+          max-width: 100% !important;
           display: grid !important;
           grid-template-columns: repeat(4, 1fr) !important;
           grid-template-rows: repeat(2, 1fr) !important;
@@ -4664,6 +4758,7 @@ export const PropertyDetailsExtension = {
           align-items: stretch !important;
           justify-content: stretch !important;
           margin-top: 8px !important;
+          box-sizing: border-box !important;
         }
         
         .brantjes-modal-container .detail-popup-thumbnail,
@@ -4691,6 +4786,59 @@ export const PropertyDetailsExtension = {
           position: static !important;
           pointer-events: auto !important;
           opacity: 1 !important;
+        }
+        
+        /* Handle specifications and description overflow */
+        .brantjes-modal-container .detail-popup-specs-row,
+        .detail-popup-specs-row {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          flex-wrap: wrap !important;
+          gap: 0.5rem !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-info,
+        .detail-popup-info {
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        
+        /* Ensure all text content wraps properly */
+        .brantjes-modal-container p,
+        .brantjes-modal-container span,
+        .brantjes-modal-container div,
+        .property-details-container p,
+        .property-details-container span,
+        .property-details-container div {
+          max-width: 100% !important;
+          overflow-wrap: break-word !important;
+          word-wrap: break-word !important;
+          word-break: break-word !important;
+        }
+        
+        /* Ensure both functions get the same responsive treatment */
+        .detail-popup-content,
+        .detail-popup-header,
+        .detail-popup-header-row,
+        .detail-popup-header-details,
+        .detail-popup-header-price,
+        .detail-popup-header-viewing-btn,
+        .detail-popup-images-row,
+        .detail-popup-main-image,
+        .detail-popup-thumbnails,
+        .detail-popup-thumbnail,
+        .detail-popup-specs-row,
+        .detail-popup-info {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
         }
       }
       
