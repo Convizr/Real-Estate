@@ -2309,34 +2309,33 @@ export const BrantjesExtension = {
         mainImgCol.className = 'detail-popup-main-image';
         
         // Add responsive inline styles for main image
-        mainImgCol.style.position = 'relative';
-        mainImgCol.style.boxSizing = 'border-box';
-        mainImgCol.style.display = 'block';
-        mainImgCol.style.minHeight = '200px'; // Ensure minimum height
-        mainImgCol.style.overflow = 'hidden'; // Prevent overflow
+        mainImgCol.style.setProperty('position', 'relative', 'important');
+        mainImgCol.style.setProperty('box-sizing', 'border-box', 'important');
+        mainImgCol.style.setProperty('display', 'block', 'important');
         
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
-          mainImgCol.style.width = '100%';
-          mainImgCol.style.maxWidth = '100%';
-          mainImgCol.style.marginBottom = '16px';
-          mainImgCol.style.minHeight = '250px'; // Larger on mobile
+          mainImgCol.style.setProperty('width', '100%', 'important');
+          mainImgCol.style.setProperty('max-width', '100%', 'important');
+          mainImgCol.style.setProperty('margin-bottom', '16px', 'important');
+          mainImgCol.style.setProperty('min-width', 'auto', 'important');
+          mainImgCol.style.setProperty('height', 'auto', 'important');
+          mainImgCol.style.setProperty('max-height', 'none', 'important');
         } else {
-          mainImgCol.style.width = '60%';
-          mainImgCol.style.maxWidth = 'none';
-          mainImgCol.style.minHeight = '300px'; // Larger on desktop
+          mainImgCol.style.setProperty('width', '60%', 'important');
+          mainImgCol.style.setProperty('max-width', 'none', 'important');
+          mainImgCol.style.setProperty('min-width', 'auto', 'important');
+          mainImgCol.style.setProperty('height', 'auto', 'important');
+          mainImgCol.style.setProperty('max-height', 'none', 'important');
         }
         const mainImg = document.createElement('img');
         const mainImgSrc = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
         mainImg.src = mainImgSrc;
         mainImg.alt = 'Hoofdfoto';
-        mainImg.style.width = '100%';
-        mainImg.style.height = 'auto';
-        mainImg.style.display = 'block';
-        mainImg.style.borderRadius = '8px';
-        mainImg.style.objectFit = 'cover'; // Ensure image covers container
-        mainImg.style.minHeight = '200px'; // Ensure minimum height
-        mainImg.style.maxHeight = '400px'; // Limit maximum height
+        mainImg.style.setProperty('width', '100%', 'important');
+        mainImg.style.setProperty('height', 'auto', 'important');
+        mainImg.style.setProperty('display', 'block', 'important');
+        mainImg.style.setProperty('border-radius', '8px', 'important');
         
         console.log('Main image src:', mainImgSrc); // Debug log
         console.log('Main image element:', mainImg); // Debug log
@@ -2366,25 +2365,29 @@ export const BrantjesExtension = {
         
         // Check if we're on mobile and adjust accordingly
         if (window.innerWidth <= 768) {
-          thumbsCol.style.width = '100%';
-          thumbsCol.style.maxWidth = '100%';
-          thumbsCol.style.display = 'grid';
-          thumbsCol.style.gridTemplateColumns = 'repeat(4, 1fr)';
-          thumbsCol.style.gridTemplateRows = 'repeat(2, 1fr)';
-          thumbsCol.style.gap = '8px';
-          thumbsCol.style.height = '120px'; // Increased height
-          thumbsCol.style.marginTop = '0';
-          thumbsCol.style.minHeight = '120px'; // Ensure minimum height
+          thumbsCol.style.setProperty('width', '100%', 'important');
+          thumbsCol.style.setProperty('max-width', '100%', 'important');
+          thumbsCol.style.setProperty('display', 'grid', 'important');
+          thumbsCol.style.setProperty('grid-template-columns', 'repeat(4, 1fr)', 'important');
+          thumbsCol.style.setProperty('grid-template-rows', 'repeat(2, 1fr)', 'important');
+          thumbsCol.style.setProperty('gap', '8px', 'important');
+          thumbsCol.style.setProperty('height', '100px', 'important');
+          thumbsCol.style.setProperty('margin-top', '0', 'important');
+          thumbsCol.style.setProperty('position', 'static', 'important');
+          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
+          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
         } else {
-          thumbsCol.style.width = '40%';
-          thumbsCol.style.maxWidth = 'none';
-          thumbsCol.style.display = 'grid';
-          thumbsCol.style.gridTemplateColumns = 'repeat(2, 1fr)';
-          thumbsCol.style.gridTemplateRows = 'repeat(4, 1fr)';
-          thumbsCol.style.gap = '4px';
-          thumbsCol.style.height = 'auto';
-          thumbsCol.style.marginTop = '0';
-          thumbsCol.style.minHeight = '200px'; // Ensure minimum height
+          thumbsCol.style.setProperty('width', '40%', 'important');
+          thumbsCol.style.setProperty('max-width', 'none', 'important');
+          thumbsCol.style.setProperty('display', 'grid', 'important');
+          thumbsCol.style.setProperty('grid-template-columns', 'repeat(2, 1fr)', 'important');
+          thumbsCol.style.setProperty('grid-template-rows', 'repeat(4, 1fr)', 'important');
+          thumbsCol.style.setProperty('gap', '4px', 'important');
+          thumbsCol.style.setProperty('height', 'auto', 'important');
+          thumbsCol.style.setProperty('margin-top', '0', 'important');
+          thumbsCol.style.setProperty('position', 'static', 'important');
+          thumbsCol.style.setProperty('align-items', 'stretch', 'important');
+          thumbsCol.style.setProperty('justify-content', 'stretch', 'important');
         }
         function renderThumbnails() {
             console.log('Rendering thumbnails, imageList length:', imageList.length); // Debug log
@@ -2403,15 +2406,14 @@ export const BrantjesExtension = {
                     thumbUrl += thumbUrl.includes('?') ? '&resize=4' : '?resize=4';
                 }
                 thumbDiv.style.backgroundImage = `url('${thumbUrl}')`;
-                thumbDiv.style.backgroundSize = 'cover';
-                thumbDiv.style.backgroundPosition = 'center';
-                thumbDiv.style.backgroundRepeat = 'no-repeat';
-                thumbDiv.style.borderRadius = '6px';
-                thumbDiv.style.cursor = 'pointer';
-                thumbDiv.style.minHeight = '50px'; // Ensure minimum height
-                thumbDiv.style.width = '100%';
-                thumbDiv.style.height = '100%';
-                thumbDiv.style.display = 'block';
+                thumbDiv.style.setProperty('background-size', 'cover', 'important');
+                thumbDiv.style.setProperty('background-position', 'center', 'important');
+                thumbDiv.style.setProperty('background-repeat', 'no-repeat', 'important');
+                thumbDiv.style.setProperty('border-radius', '6px', 'important');
+                thumbDiv.style.setProperty('cursor', 'pointer', 'important');
+                thumbDiv.style.setProperty('position', 'static', 'important');
+                thumbDiv.style.setProperty('opacity', '1', 'important');
+                thumbDiv.style.setProperty('pointer-events', 'auto', 'important');
                 
                 console.log(`Thumbnail ${i} URL:`, thumbUrl); // Debug log
                 console.log(`Thumbnail ${i} element:`, thumbDiv); // Debug log
