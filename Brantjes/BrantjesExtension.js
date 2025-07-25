@@ -2325,6 +2325,7 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
+          justify-content: flex-start !important;
           gap: 0.3rem !important;
         }
         
@@ -2408,19 +2409,23 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-content {
           gap: 24px !important;
-          text-align: right !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: flex-start !important;
         }
         
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
-          text-align: right !important;
+          text-align: left !important;
+          width: 100% !important;
         }
         
         .brantjes-modal-container table {
-          text-align: right !important;
+          text-align: left !important;
+          width: 100% !important;
         }
         
         .brantjes-modal-container table td {
-          text-align: right !important;
+          text-align: left !important;
         }
         
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
@@ -5072,6 +5077,7 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-row {
           flex-direction: row !important;
           align-items: center !important;
+          justify-content: flex-start !important;
           gap: 0.3rem !important;
         }
         
@@ -5155,19 +5161,23 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .detail-popup-content {
           gap: 24px !important;
-          text-align: right !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: flex-start !important;
         }
         
         .property-details-container .detail-popup-content > div:not(.detail-popup-images-row):not(.detail-popup-specs-row) {
-          text-align: right !important;
+          text-align: left !important;
+          width: 100% !important;
         }
         
         .property-details-container table {
-          text-align: right !important;
+          text-align: left !important;
+          width: 100% !important;
         }
         
         .property-details-container table td {
-          text-align: right !important;
+          text-align: left !important;
         }
         
         .property-details-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
