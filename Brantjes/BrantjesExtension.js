@@ -4555,124 +4555,137 @@ export const PropertyDetailsExtension = {
         }
         
         .detail-popup-header-row {
-          flex-wrap: wrap;
-          gap: 0.8rem;
-          align-items: flex-start;
+          flex-wrap: wrap !important;
+          gap: 0.8rem !important;
+          align-items: flex-start !important;
         }
         
         .detail-popup-header-details {
-          font-size: 0.9rem;
-          margin-right: 0.8rem;
-          white-space: normal;
-          flex: 1;
-          min-width: 0;
+          font-size: 0.9rem !important;
+          margin-right: 0.8rem !important;
+          white-space: normal !important;
+          flex: 1 !important;
+          min-width: 0 !important;
         }
         
         .detail-popup-header-price {
-          font-size: 0.9rem;
-          margin-right: 0.8rem;
-          white-space: normal;
-          flex-shrink: 0;
+          font-size: 0.9rem !important;
+          margin-right: 0.8rem !important;
+          white-space: normal !important;
+          flex-shrink: 0 !important;
         }
         
         .detail-popup-header-viewing-btn {
-          font-size: 10px;
-          padding: 0.4em 1.2em;
-          height: 2em;
-          flex-shrink: 0;
+          font-size: 10px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
+          flex-shrink: 0 !important;
         }
         
         .detail-popup-images-row {
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
+          flex-direction: column !important;
+          align-items: center !important;
+          gap: 8px !important;
         }
         
         .detail-popup-main-image {
-          width: 100%;
-          max-width: 320px;
-          position: relative;
+          width: 100% !important;
+          max-width: 320px !important;
+          position: relative !important;
         }
         
         .detail-popup-thumbnails {
-          width: 100%;
-          max-width: 320px;
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          grid-template-rows: repeat(2, 1fr);
-          gap: 4px;
-          height: 80px;
+          width: 100% !important;
+          max-width: 320px !important;
+          display: grid !important;
+          grid-template-columns: repeat(4, 1fr) !important;
+          grid-template-rows: repeat(2, 1fr) !important;
+          gap: 4px !important;
+          height: 80px !important;
+          position: static !important;
+          align-items: stretch !important;
+          justify-content: stretch !important;
         }
         
         .detail-popup-thumbnail {
-          width: 100%;
-          height: 100%;
-          border-radius: 6px;
-          background-size: cover;
-          background-position: center;
-          cursor: pointer;
-          transition: opacity 0.2s;
+          width: 100% !important;
+          height: 100% !important;
+          border-radius: 6px !important;
+          background-size: cover !important;
+          background-position: center !important;
+          cursor: pointer !important;
+          transition: opacity 0.2s !important;
+          position: static !important;
+          pointer-events: auto !important;
+          opacity: 1 !important;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
         }
         
         .detail-popup-thumbnail:hover {
-          opacity: 0.8;
+          opacity: 0.8 !important;
+        }
+        
+        .detail-popup-thumbnail.fade-in {
+          position: static !important;
+          pointer-events: auto !important;
+          opacity: 1 !important;
         }
       }
       
       @media (max-width: 480px) {
         .brantjes-modal-container {
-          padding: 1rem;
-          width: 95%;
-          max-width: 95vw;
-          max-height: 90vh;
+          padding: 1rem !important;
+          width: 95% !important;
+          max-width: 95vw !important;
+          max-height: 90vh !important;
         }
         
         .detail-popup-header-row {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.6rem;
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 0.6rem !important;
         }
         
         .detail-popup-header-details,
         .detail-popup-header-price {
-          margin-right: 0;
-          white-space: normal;
+          margin-right: 0 !important;
+          white-space: normal !important;
         }
         
         .detail-popup-header-viewing-btn {
-          align-self: stretch;
-          justify-content: center;
+          align-self: stretch !important;
+          justify-content: center !important;
         }
         
         .detail-popup-thumbnails {
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-rows: repeat(3, 1fr);
-          height: 120px;
+          grid-template-columns: repeat(3, 1fr) !important;
+          grid-template-rows: repeat(3, 1fr) !important;
+          height: 120px !important;
         }
       }
       
       @media (max-width: 360px) {
         .brantjes-modal-container {
-          padding: 0.8rem;
-          width: 98%;
-          max-width: 98vw;
+          padding: 0.8rem !important;
+          width: 98% !important;
+          max-width: 98vw !important;
         }
         
         .detail-popup-header-details,
         .detail-popup-header-price {
-          font-size: 0.85rem;
+          font-size: 0.85rem !important;
         }
         
         .detail-popup-header-viewing-btn {
-          font-size: 9px;
-          padding: 0.3em 1em;
-          height: 1.8em;
+          font-size: 9px !important;
+          padding: 0.3em 1em !important;
+          height: 1.8em !important;
         }
         
         .detail-popup-thumbnails {
-          grid-template-columns: repeat(2, 1fr);
-          grid-template-rows: repeat(4, 1fr);
-          height: 160px;
+          grid-template-columns: repeat(2, 1fr) !important;
+          grid-template-rows: repeat(4, 1fr) !important;
+          height: 160px !important;
         }
       }
     `;
