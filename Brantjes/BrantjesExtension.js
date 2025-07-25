@@ -79,7 +79,7 @@ export const BrantjesExtension = {
       .brantjes-carousel-container {
         position: relative;
         width: 100%;
-        max-width: 650px;
+        max-width: 600px;
         min-width: 320px;
         height: 420px; /* Fixed height for carousel area */
         margin: auto;
@@ -568,77 +568,45 @@ export const BrantjesExtension = {
       }
 
       /* Responsive Styles */
-      @media (max-width: 1200px) {
+      @media (max-width: 600px) {
         .brantjes-carousel-container {
-          max-width: 600px;
-          min-width: 480px;
-        }
-        .brantjes-property-card {
-          width: 180px;
-          height: 300px;
-        }
-        .brantjes-property-card.active {
-          width: 200px;
-          height: 330px;
-        }
-      }
-      
-      @media (max-width: 900px) {
-        .brantjes-carousel-container {
-          max-width: 480px;
-          min-width: 400px;
+          max-width: 100%;
+          min-width: 320px;
+          width: 100%;
           height: 380px;
         }
         .brantjes-property-card {
-          width: 160px;
-          height: 270px;
-        }
-        .brantjes-property-card.active {
-          width: 180px;
+          width: 260px;
           height: 300px;
         }
-      }
-      
-      @media (max-width: 600px) {
-        .brantjes-carousel-container {
-          max-width: 100vw;
-          min-width: 320px;
-          width: 100%;
-          height: 350px;
-        }
-        .brantjes-property-card {
-          width: 280px;
-          height: 320px;
-        }
         .brantjes-property-card.active {
-          width: 280px;
-          height: 320px;
+          width: 260px;
+          height: 300px;
         }
-        /* Hide navigation buttons on mobile for single card view */
+        /* Hide navigation buttons for single card view */
         .brantjes-nav-button {
           display: none;
         }
       }
       
+      @media (max-width: 500px) {
+        .brantjes-carousel-container {
+          max-width: 100%;
+          min-width: 280px;
+          width: 100%;
+          height: 350px;
+        }
+        .brantjes-property-card {
+          width: 240px;
+          height: 280px;
+        }
+        .brantjes-property-card.active {
+          width: 240px;
+          height: 280px;
+        }
+      }
+      
       /* Responsive positioning for carousel cards */
-      @media (max-width: 1200px) {
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 190px), -50%) scale(.85);
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 190px), -50%) scale(.85);
-        }
-      }
-      
-      @media (max-width: 900px) {
-        .brantjes-carousel-list .prev {
-          transform: translate(calc(-50% - 170px), -50%) scale(.85);
-        }
-        .brantjes-carousel-list .next {
-          transform: translate(calc(-50% + 170px), -50%) scale(.85);
-        }
-      }
-      
       @media (max-width: 600px) {
         .brantjes-carousel-list .prev,
         .brantjes-carousel-list .next {
