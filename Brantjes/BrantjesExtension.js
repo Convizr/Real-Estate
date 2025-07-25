@@ -3345,6 +3345,8 @@ export const BrantjesExtension = {
     // --- CAROUSEL RENDERING FOR totalSlides > 1 ---
     const carouselContainer = document.createElement('div');
     carouselContainer.className = 'brantjes-carousel-container';
+    carouselContainer.style.border = '2px solid red'; // Debug: Make container visible
+    carouselContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.1)'; // Debug: Add background
 
     const list = document.createElement('ul');
     list.className = 'brantjes-carousel-list';
@@ -3355,6 +3357,23 @@ export const BrantjesExtension = {
         const card = createCardElement(prop);
         list.appendChild(card);
     });
+    
+    // Debug: Add a simple test card if no cards were created
+    if (list.children.length === 0) {
+        console.log('⚠️ No cards created, adding test card');
+        const testCard = document.createElement('div');
+        testCard.className = 'brantjes-property-card';
+        testCard.style.width = '200px';
+        testCard.style.height = '300px';
+        testCard.style.backgroundColor = 'blue';
+        testCard.style.color = 'white';
+        testCard.style.display = 'flex';
+        testCard.style.alignItems = 'center';
+        testCard.style.justifyContent = 'center';
+        testCard.style.borderRadius = '8px';
+        testCard.textContent = 'TEST CARD';
+        list.appendChild(testCard);
+    }
 
     let currentPropertyIndex = 0; // Tracks the index of the active card in realSlidesData
 
@@ -3362,6 +3381,12 @@ export const BrantjesExtension = {
         const cards = Array.from(list.children); // Get all card elements in the DOM
         const nextIndex = (currentPropertyIndex + 1) % totalSlides;
         const prevIndex = (currentPropertyIndex - 1 + totalSlides) % totalSlides;
+        
+        console.log('🔄 Updating card classes and transforms');
+        console.log('🔄 Total cards:', cards.length);
+        console.log('🔄 Current index:', currentPropertyIndex);
+        console.log('🔄 Next index:', nextIndex);
+        console.log('🔄 Prev index:', prevIndex);
 
         // Get responsive dimensions based on screen size
         const screenWidth = window.innerWidth;
@@ -3406,19 +3431,37 @@ export const BrantjesExtension = {
                 card.style.transform = `translate(-50%, -50%) scale(1)`;
                 card.style.width = activeWidth; // Responsive active width
                 card.style.height = activeHeight; // Responsive active height
+                console.log(`✅ Card ${index} set as ACTIVE`);
             } else if (index === nextIndex) { // Next card
                 card.classList.add('next');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% + ${offsetDistance}), -50%) scale(0.85)`;
+                console.log(`➡️ Card ${index} set as NEXT`);
             } else if (index === prevIndex) { // Previous card
                 card.classList.add('prev');
                 card.style.opacity = '0.25';
                 card.style.zIndex = '2';
                 card.style.transform = `translate(calc(-50% - ${offsetDistance}), -50%) scale(0.85)`;
+                console.log(`⬅️ Card ${index} set as PREV`);
+            } else {
+                console.log(`❌ Card ${index} set as HIDDEN`);
             }
             // All other cards will retain the default hidden/scaled state
         });
+        
+        // Fallback: If no cards are visible, make the first one visible
+        const visibleCards = cards.filter(card => card.style.opacity === '1' || card.style.opacity === '0.25');
+        if (visibleCards.length === 0 && cards.length > 0) {
+            console.log('⚠️ No cards visible, making first card visible as fallback');
+            const firstCard = cards[0];
+            firstCard.classList.add('act');
+            firstCard.style.opacity = '1';
+            firstCard.style.zIndex = '3';
+            firstCard.style.transform = `translate(-50%, -50%) scale(1)`;
+            firstCard.style.width = activeWidth;
+            firstCard.style.height = activeHeight;
+        }
     }
 
     function next() {
@@ -3433,6 +3476,11 @@ export const BrantjesExtension = {
 
     // Call initial update
     updateCardClassesAndTransforms();
+    
+    // Debug: Check what cards were created
+    console.log('🔍 Cards created:', list.children.length);
+    console.log('🔍 List element:', list);
+    console.log('🔍 Carousel container:', carouselContainer);
     
     // Add resize listener for responsive updates
     const resizeHandler = () => {
