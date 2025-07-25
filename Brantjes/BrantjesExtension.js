@@ -3352,28 +3352,28 @@ export const BrantjesExtension = {
     // Responsive minimum dimensions based on screen size
     const screenWidth = window.innerWidth;
     if (screenWidth > 1024) { // Desktop
-      carouselContainer.style.minWidth = '900px'; // Show 3 cards on desktop
-      carouselContainer.style.minHeight = '500px';
+      carouselContainer.style.minWidth = '700px'; // Reduced from 900px
+      carouselContainer.style.minHeight = '400px'; // Reduced from 500px
     } else if (screenWidth > 768) { // Tablet
-      carouselContainer.style.minWidth = '600px'; // Show 2 cards on tablet
-      carouselContainer.style.minHeight = '400px';
+      carouselContainer.style.minWidth = '500px'; // Reduced from 600px
+      carouselContainer.style.minHeight = '350px'; // Reduced from 400px
     } else { // Mobile
-      carouselContainer.style.minWidth = '300px'; // Show 1 card on mobile
-      carouselContainer.style.minHeight = '300px';
+      carouselContainer.style.minWidth = '280px'; // Reduced from 300px
+      carouselContainer.style.minHeight = '280px'; // Reduced from 300px
     }
 
     const list = document.createElement('ul');
     list.className = 'brantjes-carousel-list';
     // Responsive minimum dimensions for list based on screen size
     if (screenWidth > 1024) { // Desktop
-      list.style.minWidth = '900px'; // Show 3 cards on desktop
-      list.style.minHeight = '500px';
+      list.style.minWidth = '700px'; // Reduced from 900px
+      list.style.minHeight = '400px'; // Reduced from 500px
     } else if (screenWidth > 768) { // Tablet
-      list.style.minWidth = '600px'; // Show 2 cards on tablet
-      list.style.minHeight = '400px';
+      list.style.minWidth = '500px'; // Reduced from 600px
+      list.style.minHeight = '350px'; // Reduced from 400px
     } else { // Mobile
-      list.style.minWidth = '300px'; // Show 1 card on mobile
-      list.style.minHeight = '300px';
+      list.style.minWidth = '280px'; // Reduced from 300px
+      list.style.minHeight = '280px'; // Reduced from 300px
     }
     carouselContainer.appendChild(list);
 
@@ -3538,20 +3538,20 @@ export const BrantjesExtension = {
         // Update container dimensions on resize
         const screenWidth = window.innerWidth;
         if (screenWidth > 1024) { // Desktop
-            carouselContainer.style.minWidth = '900px';
-            carouselContainer.style.minHeight = '500px';
-            list.style.minWidth = '900px';
-            list.style.minHeight = '500px';
-        } else if (screenWidth > 768) { // Tablet
-            carouselContainer.style.minWidth = '600px';
+            carouselContainer.style.minWidth = '700px';
             carouselContainer.style.minHeight = '400px';
-            list.style.minWidth = '600px';
+            list.style.minWidth = '700px';
             list.style.minHeight = '400px';
+        } else if (screenWidth > 768) { // Tablet
+            carouselContainer.style.minWidth = '500px';
+            carouselContainer.style.minHeight = '350px';
+            list.style.minWidth = '500px';
+            list.style.minHeight = '350px';
         } else { // Mobile
-            carouselContainer.style.minWidth = '300px';
-            carouselContainer.style.minHeight = '300px';
-            list.style.minWidth = '300px';
-            list.style.minHeight = '300px';
+            carouselContainer.style.minWidth = '280px';
+            carouselContainer.style.minHeight = '280px';
+            list.style.minWidth = '280px';
+            list.style.minHeight = '280px';
         }
         
         updateCardClassesAndTransforms();
