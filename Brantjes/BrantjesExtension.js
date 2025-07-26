@@ -425,7 +425,7 @@ export const BrantjesExtension = {
         right: 12px;
         background: rgba(0,0,0,0.55);
         color: #fff;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         padding: 2px 10px;
         border-radius: 12px;
         font-weight: 500;
@@ -2493,6 +2493,42 @@ export const BrantjesExtension = {
           border-left-style: solid !important;
         }
         
+        /* Specific energy label colors for Chromium */
+        .brantjes-modal-container .energy-label-detail-A::after {
+          border-left-color: #1EC773 !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-B::after {
+          border-left-color: #8DD800 !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-C::after {
+          border-left-color: #F7D900 !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-D::after {
+          border-left-color: #F7A600 !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-E::after {
+          border-left-color: #F76B1C !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-F::after {
+          border-left-color: #E2001A !important;
+          border-left-style: solid !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail-G::after {
+          border-left-color: #A50021 !important;
+          border-left-style: solid !important;
+        }
+        
         .brantjes-modal-container .detail-popup-header-viewing-btn {
           font-size: 13px !important;
           padding: 0.4em 1.2em !important;
@@ -2505,7 +2541,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 0.55rem !important;
+          font-size: 0.7em !important;
           white-space: nowrap !important;
         }
         
@@ -2589,8 +2625,44 @@ export const BrantjesExtension = {
               }
               
               .detail-popup-specs-row span {
-                font-size: 0.8rem !important;
+                font-size: 0.7em !important;
                 white-space: nowrap !important;
+              }
+              
+              /* Energy label arrow colors for all grades */
+              .energy-label-detail-A::after {
+                border-left-color: #1EC773 !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-B::after {
+                border-left-color: #8DD800 !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-C::after {
+                border-left-color: #F7D900 !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-D::after {
+                border-left-color: #F7A600 !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-E::after {
+                border-left-color: #F76B1C !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-F::after {
+                border-left-color: #E2001A !important;
+                border-left-style: solid !important;
+              }
+              
+              .energy-label-detail-G::after {
+                border-left-color: #A50021 !important;
+                border-left-style: solid !important;
               }
             }
           `;
@@ -4901,7 +4973,7 @@ export const PropertyDetailsExtension = {
         right: 12px;
         background: rgba(0,0,0,0.55);
         color: #fff;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         padding: 2px 10px;
         border-radius: 12px;
         font-weight: 500;
@@ -5403,6 +5475,42 @@ export const PropertyDetailsExtension = {
           border-left-style: solid !important;
         }
         
+        /* Specific energy label colors for Chromium */
+        .property-details-container .energy-label-detail-A::after {
+          border-left-color: #1EC773 !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-B::after {
+          border-left-color: #8DD800 !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-C::after {
+          border-left-color: #F7D900 !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-D::after {
+          border-left-color: #F7A600 !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-E::after {
+          border-left-color: #F76B1C !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-F::after {
+          border-left-color: #E2001A !important;
+          border-left-style: solid !important;
+        }
+        
+        .property-details-container .energy-label-detail-G::after {
+          border-left-color: #A50021 !important;
+          border-left-style: solid !important;
+        }
+        
         .property-details-container .detail-popup-header-viewing-btn {
           font-size: 13px !important;
           padding: 0.4em 1.2em !important;
@@ -5416,7 +5524,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-specs-row span {
-          font-size: 0.8rem !important;
+          font-size: 0.7em !important;
           white-space: nowrap !important;
         }
         
