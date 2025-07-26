@@ -3362,27 +3362,27 @@ export const BrantjesExtension = {
             </div>
             <div class="form-group">
               <label for="message">Jouw bericht</label>
-              <textarea id="message" name="message" rows="3" placeholder="Typ hier je bericht..."></textarea>
+              <textarea id="message" name="message" rows="3" placeholder="Type hier je bericht..."></textarea>
             </div>
             <span class="section-title">Contactgegevens</span>
             <div class="form-row">
               <div class="form-group">
                 <label for="first-name">Voornaam <span class="required">*</span></label>
-                <input type="text" id="first-name" name="first-name" placeholder="Typ je voornaam in" required>
+                <input type="text" id="first-name" name="first-name" placeholder="Voornaam.." required>
               </div>
               <div class="form-group">
                 <label for="last-name">Achternaam <span class="required">*</span></label>
-                <input type="text" id="last-name" name="last-name" placeholder="Typ je achternaam in" required>
+                <input type="text" id="last-name" name="last-name" placeholder="Achternaam.." required>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label for="email">E-mail <span class="required">*</span></label>
-                <input type="email" id="email" name="email" placeholder="Typ je e-mailadres in" required>
+                <input type="email" id="email" name="email" placeholder="E-mailadres.." required>
               </div>
               <div class="form-group">
                 <label for="phone">Telefoon <span class="required">*</span></label>
-                <input type="tel" id="phone" name="phone" placeholder="Typ je telefoonnummer in" required>
+                <input type="tel" id="phone" name="phone" placeholder="Telefoonnummer.." required>
               </div>
             </div>
             <div class="checkbox-row">
