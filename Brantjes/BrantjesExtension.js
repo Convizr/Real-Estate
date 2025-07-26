@@ -2196,6 +2196,8 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: column !important;
           gap: 12px !important;
+          align-items: flex-start !important;
+          width: 100% !important;
         }
         
         /* Mobile-specific header styling */
@@ -2207,6 +2209,8 @@ export const BrantjesExtension = {
           max-width: 100% !important;
           overflow-wrap: break-word !important;
           word-wrap: break-word !important;
+          text-align: left !important;
+          align-self: flex-start !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
@@ -2216,6 +2220,13 @@ export const BrantjesExtension = {
           max-width: 100% !important;
           overflow-wrap: break-word !important;
           word-wrap: break-word !important;
+          text-align: left !important;
+          align-self: flex-start !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-energy {
+          align-self: flex-start !important;
+          text-align: left !important;
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
@@ -2225,6 +2236,11 @@ export const BrantjesExtension = {
           flex-shrink: 0 !important;
           white-space: nowrap !important;
           width: 80% !important;
+          align-self: center !important;
+          text-align: center !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
         
         /* Mobile-specific specs row styling */
