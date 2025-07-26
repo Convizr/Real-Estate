@@ -385,7 +385,7 @@ export const BrantjesExtension = {
         display: inline-block;
         margin: 0 0.5rem;
         color: #bdbdbd;
-        font-size: 1.2em;
+        font-size: 0.8em;
         vertical-align: middle;
         font-weight: bold;
       }
@@ -4979,7 +4979,7 @@ export const PropertyDetailsExtension = {
         display: inline-block;
         margin: 0 0.5rem;
         color: #bdbdbd;
-        font-size: 1.2em;
+        font-size: 0.8em;
         vertical-align: middle;
         font-weight: bold;
       }
