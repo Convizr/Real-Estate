@@ -2293,7 +2293,7 @@ export const BrantjesExtension = {
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
-      @media (min-width: 769px) {
+      @media (min-width: 769px), (min-device-width: 769px) {
         .brantjes-modal-container .detail-popup-main-image {
           width: 350px !important;
           height: 240px !important;
@@ -2355,6 +2355,9 @@ export const BrantjesExtension = {
           align-items: center !important;
           justify-content: space-between !important;
           gap: 0.3rem !important;
+          display: flex !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
         }
         
         /* Fix images row width for desktop */
@@ -2393,11 +2396,15 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-header-details {
           font-size: 0.9rem !important;
           white-space: nowrap !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
           font-size: 0.9rem !important;
           white-space: nowrap !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
         }
         
         .brantjes-modal-container .energy-label-detail {
@@ -2416,6 +2423,13 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .energy-label-detail-C::after {
           border-left-color: #FFD700 !important;
+          border-left-style: solid !important;
+        }
+        
+        /* Force energy label colors for all browsers */
+        .brantjes-modal-container .energy-label-detail::after {
+          border-left-color: #FFD700 !important;
+          border-left-style: solid !important;
         }
         
         .brantjes-modal-container .detail-popup-header-viewing-btn {
@@ -5077,7 +5091,7 @@ export const PropertyDetailsExtension = {
       }
 
       /* DESKTOP STYLES - PROPERTY DETAILS EXTENSION */
-      @media (min-width: 769px) {
+      @media (min-width: 769px), (min-device-width: 769px) {
         .property-details-container .detail-popup-main-image {
           width: 320px !important;
           height: 240px !important;
@@ -5139,6 +5153,9 @@ export const PropertyDetailsExtension = {
           align-items: center !important;
           justify-content: space-between !important;
           gap: 0.3rem !important;
+          display: flex !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
         }
         
         /* Fix images row width for PropertyDetailsExtension desktop */
@@ -5177,11 +5194,15 @@ export const PropertyDetailsExtension = {
         .property-details-container .detail-popup-header-details {
           font-size: 0.9rem !important;
           white-space: nowrap !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
         }
         
         .property-details-container .detail-popup-header-price {
           font-size: 0.9rem !important;
           white-space: nowrap !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
         }
         
         .property-details-container .energy-label-detail {
@@ -5200,6 +5221,13 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .energy-label-detail-C::after {
           border-left-color: #FFD700 !important;
+          border-left-style: solid !important;
+        }
+        
+        /* Force energy label colors for all browsers */
+        .property-details-container .energy-label-detail::after {
+          border-left-color: #FFD700 !important;
+          border-left-style: solid !important;
         }
         
         .property-details-container .detail-popup-header-viewing-btn {
