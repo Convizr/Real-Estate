@@ -2335,6 +2335,17 @@ export const BrantjesExtension = {
         .brantjes-modal-container .detail-popup-dot {
           display: none !important;
         }
+        
+        /* Mobile placeholder styling for booking form */
+        .viewing-booking-form input::placeholder,
+        .viewing-booking-form textarea::placeholder {
+          font-size: 13px !important;
+          color: #999 !important;
+        }
+        
+        .viewing-booking-form select {
+          font-size: 13px !important;
+        }
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
@@ -4173,16 +4184,6 @@ export const ViewingBookingExtension = {
         
         .viewing-booking-form .form-row > div {
           flex: 1 1 auto;
-        }
-        
-        .viewing-booking-form input::placeholder,
-        .viewing-booking-form textarea::placeholder {
-          font-size: 13px !important;
-          color: #999 !important;
-        }
-        
-        .viewing-booking-form select {
-          font-size: 13px !important;
         }
       }
     `;
