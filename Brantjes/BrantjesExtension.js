@@ -4174,6 +4174,16 @@ export const ViewingBookingExtension = {
         .viewing-booking-form .form-row > div {
           flex: 1 1 auto;
         }
+        
+        .viewing-booking-form input::placeholder,
+        .viewing-booking-form textarea::placeholder {
+          font-size: 13px !important;
+          color: #999 !important;
+        }
+        
+        .viewing-booking-form select {
+          font-size: 13px !important;
+        }
       }
     `;
     element.appendChild(style);
