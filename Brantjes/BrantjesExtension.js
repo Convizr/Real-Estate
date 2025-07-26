@@ -2178,7 +2178,6 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: column !important;
-          align-items: stretch !important;
           gap: 12px !important;
         }
         
@@ -2392,12 +2391,12 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 1rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
-          font-size: 1rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
@@ -2432,7 +2431,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 0.85rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
         }
         
@@ -4970,7 +4969,6 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .detail-popup-header-row {
           flex-direction: column !important;
-          align-items: stretch !important;
           gap: 12px !important;
         }
         
@@ -5177,12 +5175,12 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-details {
-          font-size: 1rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 1rem !important;
+          font-size: 0.9rem !important;
           white-space: nowrap !important;
         }
         
