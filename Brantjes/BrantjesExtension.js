@@ -2177,8 +2177,38 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-row {
-          flex-direction: column !important;
-          gap: 12px !important;
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto auto !important;
+          gap: 8px !important;
+        }
+        
+        /* Hide the separator dots on mobile */
+        .brantjes-modal-container .detail-popup-header-row .separator-dot {
+          display: none !important;
+        }
+        
+        /* Reorder elements for mobile layout */
+        .brantjes-modal-container .detail-popup-header-details {
+          order: 1 !important;
+          grid-row: 1 !important;
+        }
+        
+        .brantjes-modal-container .energy-label-detail {
+          order: 2 !important;
+          grid-row: 1 !important;
+          display: inline-block !important;
+          margin-left: 8px !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-price {
+          order: 3 !important;
+          grid-row: 2 !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-viewing-btn {
+          order: 4 !important;
+          grid-row: 3 !important;
         }
         
         /* Mobile-specific header styling */
@@ -4968,8 +4998,38 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-row {
-          flex-direction: column !important;
-          gap: 12px !important;
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto auto !important;
+          gap: 8px !important;
+        }
+        
+        /* Hide the separator dots on mobile */
+        .property-details-container .detail-popup-header-row .separator-dot {
+          display: none !important;
+        }
+        
+        /* Reorder elements for mobile layout */
+        .property-details-container .detail-popup-header-details {
+          order: 1 !important;
+          grid-row: 1 !important;
+        }
+        
+        .property-details-container .energy-label-detail {
+          order: 2 !important;
+          grid-row: 1 !important;
+          display: inline-block !important;
+          margin-left: 8px !important;
+        }
+        
+        .property-details-container .detail-popup-header-price {
+          order: 3 !important;
+          grid-row: 2 !important;
+        }
+        
+        .property-details-container .detail-popup-header-viewing-btn {
+          order: 4 !important;
+          grid-row: 3 !important;
         }
         
         /* Mobile-specific header styling for PropertyDetailsExtension */
