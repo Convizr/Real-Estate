@@ -2447,6 +2447,27 @@ export const BrantjesExtension = {
           color: inherit !important;
         }
         
+        /* Target specific elements with maximum specificity */
+        .detail-popup-header-row .detail-popup-header-price,
+        .detail-popup-header-row .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        .detail-popup-header-viewing-btn {
+          font-size: 13px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
+        }
+        
+        .detail-popup-specs-row span {
+          font-size: 0.8rem !important;
+          white-space: nowrap !important;
+        }
+        
         .brantjes-modal-container .energy-label-detail {
           font-size: 1rem !important;
           height: 22px !important;
@@ -2551,6 +2572,21 @@ export const BrantjesExtension = {
                 line-height: 1.2 !important;
                 margin: 0 !important;
                 color: inherit !important;
+              }
+              
+              .detail-popup-header-row .detail-popup-header-price,
+              .detail-popup-header-row .detail-popup-header-details {
+                font-size: 0.9rem !important;
+                font-weight: normal !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+                color: inherit !important;
+              }
+              
+              .detail-popup-header-viewing-btn {
+                font-size: 13px !important;
+                padding: 0.4em 1.2em !important;
+                height: 2em !important;
               }
               
               .detail-popup-specs-row span {
@@ -5320,6 +5356,27 @@ export const PropertyDetailsExtension = {
           line-height: 1.2 !important;
           margin: 0 !important;
           color: inherit !important;
+        }
+        
+        /* Target specific elements with maximum specificity */
+        .detail-popup-header-row .detail-popup-header-price,
+        .detail-popup-header-row .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        .detail-popup-header-viewing-btn {
+          font-size: 13px !important;
+          padding: 0.4em 1.2em !important;
+          height: 2em !important;
+        }
+        
+        .detail-popup-specs-row span {
+          font-size: 0.8rem !important;
+          white-space: nowrap !important;
         }
         
         .property-details-container .energy-label-detail {
