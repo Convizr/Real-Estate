@@ -2293,7 +2293,7 @@ export const BrantjesExtension = {
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
-      @media (min-width: 769px) and (max-width: 1199px), (min-device-width: 769px) and (max-device-width: 1199px) {
+      @media (min-width: 769px), (min-device-width: 769px) {
         .brantjes-modal-container .detail-popup-main-image {
           width: 350px !important;
           height: 240px !important;
@@ -2551,40 +2551,6 @@ export const BrantjesExtension = {
           min-width: 200px !important;
           display: block !important;
           margin: 0 auto !important;
-        }
-      }
-      
-      /* LARGE SCREEN STYLES - WHEN DEV TOOLS ARE LIKELY OPEN */
-      @media (min-width: 1200px), (min-device-width: 1200px) {
-        .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.8rem !important;
-          white-space: nowrap !important;
-          font-weight: normal !important;
-          line-height: 1.2 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-price {
-          font-size: 0.8rem !important;
-          white-space: nowrap !important;
-          font-weight: normal !important;
-          line-height: 1.2 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-viewing-btn {
-          font-size: 13px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 0.55rem !important;
-          white-space: nowrap !important;
-        }
-        
-        .brantjes-modal-container .energy-label-detail {
-          font-size: 0.8rem !important;
-          height: 22px !important;
-          padding: 0 10px 0 8px !important;
         }
       }
     `;
@@ -5237,7 +5203,7 @@ export const PropertyDetailsExtension = {
       }
 
       /* DESKTOP STYLES - PROPERTY DETAILS EXTENSION */
-      @media (min-width: 769px) and (max-width: 1199px), (min-device-width: 769px) and (max-device-width: 1199px) {
+      @media (min-width: 769px), (min-device-width: 769px) {
         .property-details-container .detail-popup-main-image {
           width: 320px !important;
           height: 240px !important;
@@ -5496,40 +5462,6 @@ export const PropertyDetailsExtension = {
           min-width: 200px !important;
           display: block !important;
           margin: 0 auto !important;
-        }
-      }
-      
-      /* LARGE SCREEN STYLES - WHEN DEV TOOLS ARE LIKELY OPEN */
-      @media (min-width: 1200px), (min-device-width: 1200px) {
-        .property-details-container .detail-popup-header-details {
-          font-size: 0.8rem !important;
-          white-space: nowrap !important;
-          font-weight: normal !important;
-          line-height: 1.2 !important;
-        }
-        
-        .property-details-container .detail-popup-header-price {
-          font-size: 0.8rem !important;
-          white-space: nowrap !important;
-          font-weight: normal !important;
-          line-height: 1.2 !important;
-        }
-        
-        .property-details-container .detail-popup-header-viewing-btn {
-          font-size: 13px !important;
-          padding: 0.4em 1.2em !important;
-          height: 2em !important;
-        }
-        
-        .property-details-container .detail-popup-specs-row span {
-          font-size: 0.55rem !important;
-          white-space: nowrap !important;
-        }
-        
-        .property-details-container .energy-label-detail {
-          font-size: 0.8rem !important;
-          height: 22px !important;
-          padding: 0 10px 0 8px !important;
         }
       }
     `;
