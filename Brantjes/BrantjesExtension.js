@@ -2394,7 +2394,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           white-space: nowrap !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
@@ -2410,7 +2410,7 @@ export const BrantjesExtension = {
         /* Override any conflicting general styles */
         .brantjes-modal-container .detail-popup-header-price,
         .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -2430,7 +2430,7 @@ export const BrantjesExtension = {
         /* Shadow DOM penetration - use :host and ::part if available */
         :host .brantjes-modal-container .detail-popup-header-price,
         :host .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 0.8rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -2469,7 +2469,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .energy-label-detail {
-          font-size: 1rem !important;
+          font-size: 0.8rem !important;
           height: 22px !important;
           padding: 0 10px 0 8px !important;
         }
@@ -2501,12 +2501,11 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-specs-row {
           justify-content: flex-start !important;
-          gap: 0.8rem !important;
           flex-wrap: nowrap !important;
         }
         
         .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 0.8rem !important;
+          font-size: 0.55rem !important;
           white-space: nowrap !important;
         }
         
@@ -2711,7 +2710,7 @@ export const BrantjesExtension = {
         const price = property.financieel?.overdracht?.koopprijs || 0;
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:0.8rem;font-weight:400;\">k.k.</span>`;
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
