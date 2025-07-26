@@ -2241,6 +2241,11 @@ export const BrantjesExtension = {
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
+          transition: background 0.2s !important;
+        }
+        
+        .brantjes-modal-container .detail-popup-header-viewing-btn:active {
+          background: #166BB5 !important;
         }
         
         /* Mobile-specific specs row styling */
@@ -2322,6 +2327,10 @@ export const BrantjesExtension = {
         .brantjes-modal-container .booking-modal .checkbox-label {
           font-size: 12px !important;
           line-height: 1.4 !important;
+        }
+        .brantjes-property-card.act:active {
+          box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.18) !important;
+          filter: brightness(1.04) !important;
         }
       }
 
@@ -5321,6 +5330,10 @@ export const PropertyDetailsExtension = {
         .property-details-container .booking-modal .checkbox-label {
           font-size: 12px !important;
           line-height: 1.4 !important;
+        }
+        .brantjes-property-card.act:active {
+          box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.18) !important;
+          filter: brightness(1.04) !important;
         }
       }
 
