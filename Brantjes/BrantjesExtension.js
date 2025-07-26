@@ -2332,6 +2332,9 @@ export const BrantjesExtension = {
           box-shadow: 0px 12px 35px 0px rgba(30, 127, 203, 0.18) !important;
           filter: brightness(1.04) !important;
         }
+        .brantjes-modal-container .detail-popup-dot {
+          display: none !important;
+        }
       }
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
