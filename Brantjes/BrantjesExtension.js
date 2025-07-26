@@ -2574,7 +2574,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container table {
-          font-size: 0.85rem !important;
+          font-size: 0.6rem !important;
         }
         
         .brantjes-modal-container table td {
