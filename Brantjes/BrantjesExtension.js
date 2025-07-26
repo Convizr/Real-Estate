@@ -2177,38 +2177,8 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-header-row {
-          display: grid !important;
-          grid-template-columns: 1fr !important;
-          grid-template-rows: auto auto auto !important;
-          gap: 8px !important;
-        }
-        
-        /* Hide the separator dots on mobile */
-        .brantjes-modal-container .detail-popup-header-row .separator-dot {
-          display: none !important;
-        }
-        
-        /* Reorder elements for mobile layout */
-        .brantjes-modal-container .detail-popup-header-details {
-          order: 1 !important;
-          grid-row: 1 !important;
-        }
-        
-        .brantjes-modal-container .energy-label-detail {
-          order: 2 !important;
-          grid-row: 1 !important;
-          display: inline-block !important;
-          margin-left: 8px !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-price {
-          order: 3 !important;
-          grid-row: 2 !important;
-        }
-        
-        .brantjes-modal-container .detail-popup-header-viewing-btn {
-          order: 4 !important;
-          grid-row: 3 !important;
+          flex-direction: column !important;
+          gap: 12px !important;
         }
         
         /* Mobile-specific header styling */
@@ -2220,6 +2190,47 @@ export const BrantjesExtension = {
           max-width: 100% !important;
           overflow-wrap: break-word !important;
           word-wrap: break-word !important;
+        }
+        
+        /* Mobile-specific header layout classes */
+        .brantjes-modal-container .mobile-header-row {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .mobile-address-energy-row {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .brantjes-modal-container .mobile-price-row {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+        }
+        
+        .brantjes-modal-container .mobile-button-row {
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: flex-start !important;
+          margin-top: 8px !important;
+        }
+        
+        .brantjes-modal-container .mobile-hidden {
+          display: none !important;
+        }
+        
+        /* Hide desktop structure on mobile */
+        .brantjes-modal-container .detail-popup-header-row {
+          display: none !important;
+        }
+        
+        /* Show mobile structure on mobile */
+        .brantjes-modal-container .mobile-header-row {
+          display: flex !important;
         }
         
         .brantjes-modal-container .detail-popup-header-price {
@@ -2324,6 +2335,15 @@ export const BrantjesExtension = {
 
       /* DESKTOP MODAL STYLES - RESTORE ORIGINAL LAYOUT */
       @media (min-width: 769px) {
+        /* Hide mobile structure on desktop */
+        .brantjes-modal-container .mobile-header-row {
+          display: none !important;
+        }
+        
+        /* Show desktop structure on desktop */
+        .brantjes-modal-container .detail-popup-header-row {
+          display: flex !important;
+        }
         .brantjes-modal-container .detail-popup-main-image {
           width: 350px !important;
           height: 240px !important;
@@ -2584,6 +2604,57 @@ export const BrantjesExtension = {
         const postcode = property.adres?.postcode || '';
         let hasAddress = Boolean(postcode || plaats);
         let hasEnergy = Boolean(property.algemeen?.energieklasse);
+        
+        // Create mobile-specific structure
+        const mobileHeaderRow = document.createElement('div');
+        mobileHeaderRow.className = 'mobile-header-row';
+        
+        // Mobile: Address and Energy on same line
+        if (hasAddress || hasEnergy) {
+          const mobileAddressEnergyRow = document.createElement('div');
+          mobileAddressEnergyRow.className = 'mobile-address-energy-row';
+          
+          if (hasAddress) {
+            const addrSpan = document.createElement('span');
+            addrSpan.className = 'detail-popup-header-details';
+            addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+            addrSpan.style.fontWeight = 'bold';
+            mobileAddressEnergyRow.appendChild(addrSpan);
+          }
+          
+          if (hasEnergy) {
+            const energyDiv = document.createElement('div');
+            energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+            energyDiv.textContent = property.algemeen.energieklasse;
+            mobileAddressEnergyRow.appendChild(energyDiv);
+          }
+          
+          mobileHeaderRow.appendChild(mobileAddressEnergyRow);
+        }
+        
+        // Mobile: Price on separate line
+        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const mobilePriceRow = document.createElement('div');
+        mobilePriceRow.className = 'mobile-price-row';
+        
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'detail-popup-header-price';
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        mobilePriceRow.appendChild(priceDiv);
+        mobileHeaderRow.appendChild(mobilePriceRow);
+        
+        // Mobile: Button on separate line
+        const mobileButtonRow = document.createElement('div');
+        mobileButtonRow.className = 'mobile-button-row';
+        
+        const viewingBtn = document.createElement('button');
+        viewingBtn.className = 'detail-popup-header-viewing-btn';
+        viewingBtn.textContent = 'Bezichtiging';
+        viewingBtn.onclick = () => showBookingModal(property);
+        mobileButtonRow.appendChild(viewingBtn);
+        mobileHeaderRow.appendChild(mobileButtonRow);
+        
+        // Desktop: Original structure (with dots)
         if (hasAddress) {
           const addrSpan = document.createElement('span');
           addrSpan.className = 'detail-popup-header-details';
@@ -2611,18 +2682,20 @@ export const BrantjesExtension = {
           headerRow.appendChild(dot2);
         }
         // Price
-        const price = property.financieel?.overdracht?.koopprijs || 0;
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
-        headerRow.appendChild(priceDiv);
+        const priceDivDesktop = document.createElement('div');
+        priceDivDesktop.className = 'detail-popup-header-price';
+        priceDivDesktop.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:1.08rem;font-weight:400;\">k.k.</span>`;
+        headerRow.appendChild(priceDivDesktop);
         // Viewing button
-        const viewingBtn = document.createElement('button');
-        viewingBtn.className = 'detail-popup-header-viewing-btn';
-        viewingBtn.textContent = 'Bezichtiging';
-        viewingBtn.onclick = () => showBookingModal(property);
-        headerRow.appendChild(viewingBtn);
+        const viewingBtnDesktop = document.createElement('button');
+        viewingBtnDesktop.className = 'detail-popup-header-viewing-btn';
+        viewingBtnDesktop.textContent = 'Bezichtiging';
+        viewingBtnDesktop.onclick = () => showBookingModal(property);
+        headerRow.appendChild(viewingBtnDesktop);
+        
+        // Add both structures to header
         header.appendChild(headerRow);
+        header.appendChild(mobileHeaderRow);
         detailContent.appendChild(header);
 
         // --- IMAGES ROW ---
@@ -4998,38 +5071,8 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-header-row {
-          display: grid !important;
-          grid-template-columns: 1fr !important;
-          grid-template-rows: auto auto auto !important;
-          gap: 8px !important;
-        }
-        
-        /* Hide the separator dots on mobile */
-        .property-details-container .detail-popup-header-row .separator-dot {
-          display: none !important;
-        }
-        
-        /* Reorder elements for mobile layout */
-        .property-details-container .detail-popup-header-details {
-          order: 1 !important;
-          grid-row: 1 !important;
-        }
-        
-        .property-details-container .energy-label-detail {
-          order: 2 !important;
-          grid-row: 1 !important;
-          display: inline-block !important;
-          margin-left: 8px !important;
-        }
-        
-        .property-details-container .detail-popup-header-price {
-          order: 3 !important;
-          grid-row: 2 !important;
-        }
-        
-        .property-details-container .detail-popup-header-viewing-btn {
-          order: 4 !important;
-          grid-row: 3 !important;
+          flex-direction: column !important;
+          gap: 12px !important;
         }
         
         /* Mobile-specific header styling for PropertyDetailsExtension */
@@ -5041,6 +5084,47 @@ export const PropertyDetailsExtension = {
           max-width: 100% !important;
           overflow-wrap: break-word !important;
           word-wrap: break-word !important;
+        }
+        
+        /* Mobile-specific header layout classes for PropertyDetailsExtension */
+        .property-details-container .mobile-header-row {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .mobile-address-energy-row {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 8px !important;
+        }
+        
+        .property-details-container .mobile-price-row {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+        }
+        
+        .property-details-container .mobile-button-row {
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: flex-start !important;
+          margin-top: 8px !important;
+        }
+        
+        .property-details-container .mobile-hidden {
+          display: none !important;
+        }
+        
+        /* Hide desktop structure on mobile for PropertyDetailsExtension */
+        .property-details-container .detail-popup-header-row {
+          display: none !important;
+        }
+        
+        /* Show mobile structure on mobile for PropertyDetailsExtension */
+        .property-details-container .mobile-header-row {
+          display: flex !important;
         }
         
         .property-details-container .detail-popup-header-price {
@@ -5138,6 +5222,15 @@ export const PropertyDetailsExtension = {
 
       /* DESKTOP STYLES - PROPERTY DETAILS EXTENSION */
       @media (min-width: 769px) {
+        /* Hide mobile structure on desktop for PropertyDetailsExtension */
+        .property-details-container .mobile-header-row {
+          display: none !important;
+        }
+        
+        /* Show desktop structure on desktop for PropertyDetailsExtension */
+        .property-details-container .detail-popup-header-row {
+          display: flex !important;
+        }
         .property-details-container .detail-popup-main-image {
           width: 320px !important;
           height: 240px !important;
@@ -5610,6 +5703,57 @@ export const PropertyDetailsExtension = {
       const postcode = property.adres?.postcode || '';
       let hasAddress = Boolean(postcode || plaats);
       let hasEnergy = Boolean(property.algemeen?.energieklasse);
+      
+      // Create mobile-specific structure for PropertyDetailsExtension
+      const mobileHeaderRow = document.createElement('div');
+      mobileHeaderRow.className = 'mobile-header-row';
+      
+      // Mobile: Address and Energy on same line
+      if (hasAddress || hasEnergy) {
+        const mobileAddressEnergyRow = document.createElement('div');
+        mobileAddressEnergyRow.className = 'mobile-address-energy-row';
+        
+        if (hasAddress) {
+          const addrSpan = document.createElement('span');
+          addrSpan.className = 'detail-popup-header-details';
+          addrSpan.textContent = `${postcode} ${formatCityName(plaats)}`.trim();
+          addrSpan.style.fontWeight = 'bold';
+          mobileAddressEnergyRow.appendChild(addrSpan);
+        }
+        
+        if (hasEnergy) {
+          const energyDiv = document.createElement('div');
+          energyDiv.className = `energy-label-detail energy-label-detail-${property.algemeen.energieklasse} detail-popup-header-energy`;
+          energyDiv.textContent = property.algemeen.energieklasse;
+          mobileAddressEnergyRow.appendChild(energyDiv);
+        }
+        
+        mobileHeaderRow.appendChild(mobileAddressEnergyRow);
+      }
+      
+      // Mobile: Price on separate line
+      const price = property.financieel?.overdracht?.koopprijs || 0;
+      const mobilePriceRow = document.createElement('div');
+      mobilePriceRow.className = 'mobile-price-row';
+      
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'detail-popup-header-price';
+      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+      mobilePriceRow.appendChild(priceDiv);
+      mobileHeaderRow.appendChild(mobilePriceRow);
+      
+      // Mobile: Button on separate line
+      const mobileButtonRow = document.createElement('div');
+      mobileButtonRow.className = 'mobile-button-row';
+      
+      const viewingBtn = document.createElement('button');
+      viewingBtn.className = 'detail-popup-header-viewing-btn';
+      viewingBtn.textContent = 'Bezichtiging';
+      viewingBtn.onclick = () => showBookingModal(property);
+      mobileButtonRow.appendChild(viewingBtn);
+      mobileHeaderRow.appendChild(mobileButtonRow);
+      
+      // Desktop: Original structure (with dots)
       if (hasAddress) {
         const addrSpan = document.createElement('span');
         addrSpan.className = 'detail-popup-header-details';
@@ -5633,17 +5777,19 @@ export const PropertyDetailsExtension = {
         dot2.textContent = '•';
         headerRow.appendChild(dot2);
       }
-      const price = property.financieel?.overdracht?.koopprijs || 0;
-      const priceDiv = document.createElement('div');
-      priceDiv.className = 'detail-popup-header-price';
-      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
-      headerRow.appendChild(priceDiv);
-      const viewingBtn = document.createElement('button');
-      viewingBtn.className = 'detail-popup-header-viewing-btn';
-      viewingBtn.textContent = 'Bezichtiging';
-      viewingBtn.onclick = () => showBookingModal(property);
-      headerRow.appendChild(viewingBtn);
+      const priceDivDesktop = document.createElement('div');
+      priceDivDesktop.className = 'detail-popup-header-price';
+      priceDivDesktop.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+      headerRow.appendChild(priceDivDesktop);
+      const viewingBtnDesktop = document.createElement('button');
+      viewingBtnDesktop.className = 'detail-popup-header-viewing-btn';
+      viewingBtnDesktop.textContent = 'Bezichtiging';
+      viewingBtnDesktop.onclick = () => showBookingModal(property);
+      headerRow.appendChild(viewingBtnDesktop);
+      
+      // Add both structures to header
       header.appendChild(headerRow);
+      header.appendChild(mobileHeaderRow);
       detailContent.appendChild(header);
 
       // --- IMAGES ROW ---
