@@ -2407,6 +2407,26 @@ export const BrantjesExtension = {
           line-height: 1.2 !important;
         }
         
+        /* Override any conflicting general styles */
+        .brantjes-modal-container .detail-popup-header-price,
+        .brantjes-modal-container .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        /* Force override with maximum specificity */
+        .brantjes-modal-container .detail-popup-header .detail-popup-header-price,
+        .brantjes-modal-container .detail-popup-header .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
         .brantjes-modal-container .energy-label-detail {
           font-size: 1rem !important;
           height: 22px !important;
@@ -5203,6 +5223,26 @@ export const PropertyDetailsExtension = {
           white-space: nowrap !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
+        }
+        
+        /* Override any conflicting general styles */
+        .property-details-container .detail-popup-header-price,
+        .property-details-container .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        /* Force override with maximum specificity */
+        .property-details-container .detail-popup-header .detail-popup-header-price,
+        .property-details-container .detail-popup-header .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
         }
         
         .property-details-container .energy-label-detail {
