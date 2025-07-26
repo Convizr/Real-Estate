@@ -2427,6 +2427,26 @@ export const BrantjesExtension = {
           color: inherit !important;
         }
         
+        /* Shadow DOM penetration - use :host and ::part if available */
+        :host .brantjes-modal-container .detail-popup-header-price,
+        :host .brantjes-modal-container .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        /* Universal override for shadow DOM */
+        * .detail-popup-header-price,
+        * .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
         .brantjes-modal-container .energy-label-detail {
           font-size: 1rem !important;
           height: 22px !important;
@@ -2515,6 +2535,43 @@ export const BrantjesExtension = {
       }
     `;
     element.appendChild(style);
+    
+    // Inject CSS into shadow DOM if it exists
+    function injectCSSIntoShadowDOM() {
+      const shadowRoots = document.querySelectorAll('*');
+      shadowRoots.forEach(el => {
+        if (el.shadowRoot) {
+          const shadowStyle = document.createElement('style');
+          shadowStyle.textContent = `
+            @media (min-width: 769px), (min-device-width: 769px) {
+              .detail-popup-header-price,
+              .detail-popup-header-details {
+                font-size: 0.9rem !important;
+                font-weight: normal !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+                color: inherit !important;
+              }
+              
+              .detail-popup-specs-row span {
+                font-size: 0.8rem !important;
+                white-space: nowrap !important;
+              }
+            }
+          `;
+          el.shadowRoot.appendChild(shadowStyle);
+        }
+      });
+    }
+    
+    // Run immediately and also on DOM changes
+    injectCSSIntoShadowDOM();
+    
+    // Watch for new shadow DOM elements
+    const observer = new MutationObserver(() => {
+      injectCSSIntoShadowDOM();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
 
     // --- MODAL FUNCTIONS (UNCHANGED) ---
     function openModal(contentElement) {
@@ -5238,6 +5295,26 @@ export const PropertyDetailsExtension = {
         /* Force override with maximum specificity */
         .property-details-container .detail-popup-header .detail-popup-header-price,
         .property-details-container .detail-popup-header .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        /* Shadow DOM penetration - use :host and ::part if available */
+        :host .property-details-container .detail-popup-header-price,
+        :host .property-details-container .detail-popup-header-details {
+          font-size: 0.9rem !important;
+          font-weight: normal !important;
+          line-height: 1.2 !important;
+          margin: 0 !important;
+          color: inherit !important;
+        }
+        
+        /* Universal override for shadow DOM */
+        * .detail-popup-header-price,
+        * .detail-popup-header-details {
           font-size: 0.9rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
