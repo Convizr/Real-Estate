@@ -2210,17 +2210,6 @@ export const BrantjesExtension = {
           width: 80% !important;
         }
         
-        /* Hide separator dots on mobile */
-        .brantjes-modal-container .detail-popup-header-row .separator-dot {
-          display: none !important;
-        }
-        
-        /* Align header content to left */
-        .brantjes-modal-container .detail-popup-header-row {
-          align-items: flex-start !important;
-          text-align: left !important;
-        }
-        
         /* Mobile-specific specs row styling */
         .brantjes-modal-container .detail-popup-specs-row {
           justify-content: center !important;
@@ -5010,17 +4999,6 @@ export const PropertyDetailsExtension = {
           flex-shrink: 0 !important;
           white-space: nowrap !important;
           width: 80% !important;
-        }
-        
-        /* Hide separator dots on mobile */
-        .property-details-container .detail-popup-header-row .separator-dot {
-          display: none !important;
-        }
-        
-        /* Align header content to left */
-        .property-details-container .detail-popup-header-row {
-          align-items: flex-start !important;
-          text-align: left !important;
         }
         
         /* Mobile-specific specs row styling for PropertyDetailsExtension */
