@@ -2178,6 +2178,7 @@ export const BrantjesExtension = {
         
         .brantjes-modal-container .detail-popup-header-row {
           flex-direction: column !important;
+          align-items: stretch !important;
           gap: 12px !important;
         }
         
@@ -4969,6 +4970,7 @@ export const PropertyDetailsExtension = {
         
         .property-details-container .detail-popup-header-row {
           flex-direction: column !important;
+          align-items: stretch !important;
           gap: 12px !important;
         }
         
