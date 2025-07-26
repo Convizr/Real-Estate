@@ -13,6 +13,23 @@ export const BrantjesExtension = {
       return cityName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     }
 
+    // Helper function to format specification values to readable text
+    function formatSpecValue(value) {
+      if (!value) return '';
+      
+      // Convert to string if it's not already
+      const strValue = String(value);
+      
+      // Handle empty strings
+      if (strValue.trim() === '') return '';
+      
+      // Convert from UPPER_CASE_WITH_UNDERSCORES to Title Case
+      return strValue
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     let payloadObj;
     if (typeof trace.payload === 'string') {
       try {
@@ -2985,20 +3002,20 @@ export const BrantjesExtension = {
             title: 'Overdracht',
             rows: [
               ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
-              ['Status', property.financieel?.overdracht?.status || ''],
-              ['Aanvaarding', property.financieel?.overdracht?.aanvaarding || ''],
+              ['Status', formatSpecValue(property.financieel?.overdracht?.status) || ''],
+              ['Aanvaarding', formatSpecValue(property.financieel?.overdracht?.aanvaarding) || ''],
               ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
             ]
           },
           {
             title: 'Bouw',
             rows: [
-              ['Type object', property.object?.type?.objecttype || ''],
-              ['Soort', property.algemeen?.woonhuissoort || ''],
-              ['Type', property.algemeen?.woonhuistype || ''],
+              ['Type object', formatSpecValue(property.object?.type?.objecttype) || ''],
+              ['Soort', formatSpecValue(property.algemeen?.woonhuissoort) || ''],
+              ['Type', formatSpecValue(property.algemeen?.woonhuistype) || ''],
               ['Bouwjaar', property.algemeen?.bouwjaar || ''],
-              ['Dak type', property.detail?.buitenruimte?.daktype || ''],
-              ['Isolatievormen', (property.algemeen?.isolatievormen || []).join(', ')],
+              ['Dak type', formatSpecValue(property.detail?.buitenruimte?.daktype) || ''],
+              ['Isolatievormen', (property.algemeen?.isolatievormen || []).map(formatSpecValue).join(', ')],
             ]
           },
           {
@@ -3020,23 +3037,23 @@ export const BrantjesExtension = {
           {
             title: 'Locatie',
             rows: [
-              ['Ligging', (property.algemeen?.liggingen || []).join(', ')],
+              ['Ligging', (property.algemeen?.liggingen || []).map(formatSpecValue).join(', ')],
             ]
           },
           {
             title: 'Tuin',
             rows: [
-              ['Type', (property.detail?.buitenruimte?.tuintypes || []).join(', ')],
-              ['Staat', property.detail?.buitenruimte?.tuinkwaliteit || ''],
-              ['Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || ''],
+              ['Type', (property.detail?.buitenruimte?.tuintypes || []).map(formatSpecValue).join(', ')],
+              ['Staat', formatSpecValue(property.detail?.buitenruimte?.tuinkwaliteit) || ''],
+              ['Ligging', formatSpecValue(property.detail?.buitenruimte?.hoofdtuinlocatie) || ''],
               ['Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee'],
             ]
           },
           {
             title: 'Uitrusting',
             rows: [
-              ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', ')],
-              ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', ')],
+              ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).map(formatSpecValue).join(', ')],
+              ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).map(formatSpecValue).join(', ')],
             ]
           },
         ];
@@ -4698,6 +4715,23 @@ export const PropertyDetailsExtension = {
       return cityName.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     }
 
+    // Helper function to format specification values to readable text
+    function formatSpecValue(value) {
+      if (!value) return '';
+      
+      // Convert to string if it's not already
+      const strValue = String(value);
+      
+      // Handle empty strings
+      if (strValue.trim() === '') return '';
+      
+      // Convert from UPPER_CASE_WITH_UNDERSCORES to Title Case
+      return strValue
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     let payloadObj;
     if (typeof trace.payload === 'string') {
       try {
@@ -6067,20 +6101,20 @@ export const PropertyDetailsExtension = {
           title: 'Overdracht',
           rows: [
             ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
-            ['Status', property.financieel?.overdracht?.status || ''],
-            ['Aanvaarding', property.financieel?.overdracht?.aanvaarding || ''],
+            ['Status', formatSpecValue(property.financieel?.overdracht?.status) || ''],
+            ['Aanvaarding', formatSpecValue(property.financieel?.overdracht?.aanvaarding) || ''],
             ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
           ]
         },
         {
           title: 'Bouw',
           rows: [
-            ['Type object', property.object?.type?.objecttype || ''],
-            ['Soort', property.algemeen?.woonhuissoort || ''],
-            ['Type', property.algemeen?.woonhuistype || ''],
+            ['Type object', formatSpecValue(property.object?.type?.objecttype) || ''],
+            ['Soort', formatSpecValue(property.algemeen?.woonhuissoort) || ''],
+            ['Type', formatSpecValue(property.algemeen?.woonhuistype) || ''],
             ['Bouwjaar', property.algemeen?.bouwjaar || ''],
-            ['Dak type', property.detail?.buitenruimte?.daktype || ''],
-            ['Isolatievormen', (property.algemeen?.isolatievormen || []).join(', ')],
+            ['Dak type', formatSpecValue(property.detail?.buitenruimte?.daktype) || ''],
+            ['Isolatievormen', (property.algemeen?.isolatievormen || []).map(formatSpecValue).join(', ')],
           ]
         },
         {
@@ -6102,23 +6136,23 @@ export const PropertyDetailsExtension = {
         {
           title: 'Locatie',
           rows: [
-            ['Ligging', (property.algemeen?.liggingen || []).join(', ')],
+            ['Ligging', (property.algemeen?.liggingen || []).map(formatSpecValue).join(', ')],
           ]
         },
         {
           title: 'Tuin',
           rows: [
-            ['Type', (property.detail?.buitenruimte?.tuintypes || []).join(', ')],
-            ['Staat', property.detail?.buitenruimte?.tuinkwaliteit || ''],
-            ['Ligging', property.detail?.buitenruimte?.hoofdtuinlocatie || ''],
+            ['Type', (property.detail?.buitenruimte?.tuintypes || []).map(formatSpecValue).join(', ')],
+            ['Staat', formatSpecValue(property.detail?.buitenruimte?.tuinkwaliteit) || ''],
+            ['Ligging', formatSpecValue(property.detail?.buitenruimte?.hoofdtuinlocatie) || ''],
             ['Achterom', property.detail?.buitenruimte?.hoofdtuinAchterom ? 'Ja' : 'Nee'],
           ]
         },
         {
           title: 'Uitrusting',
           rows: [
-            ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).join(', ')],
-            ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).join(', ')],
+            ['Soorten warm water', (property.algemeen?.warmwatersoorten || []).map(formatSpecValue).join(', ')],
+            ['Parkeer faciliteiten', (property.detail?.buitenruimte?.parkeerfaciliteiten || []).map(formatSpecValue).join(', ')],
           ]
         },
       ];
