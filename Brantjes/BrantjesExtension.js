@@ -67,16 +67,29 @@ export const BrantjesExtension = {
 
     // Extract property data from the new structure
     // New structure: properties[0].json contains the actual property data
-    const realSlidesData = properties.map(prop => {
-      // If the property has a 'json' field, use that as the property data
-      if (prop.json) {
-        console.log('Using new structure: property.json');
-        return prop.json;
-      }
-      // Fallback to the old structure if 'json' field doesn't exist
-      console.log('Using old structure: property directly');
-      return prop;
-    });
+    let realSlidesData;
+    
+    // Check if we have the nested structure: properties[0].properties[0].json
+    if (properties && properties.length > 0 && properties[0].properties) {
+      console.log('Using deeply nested structure: properties[0].properties[0].json');
+      realSlidesData = properties[0].properties.map(prop => {
+        if (prop.json) {
+          return prop.json;
+        }
+        return prop;
+      });
+    } else {
+      // Check if we have the direct structure: properties[0].json
+      realSlidesData = properties.map(prop => {
+        if (prop.json) {
+          console.log('Using new structure: property.json');
+          return prop.json;
+        }
+        // Fallback to the old structure if 'json' field doesn't exist
+        console.log('Using old structure: property directly');
+        return prop;
+      });
+    }
 
     const totalSlides = realSlidesData.length;
     console.log('Total slides:', totalSlides);
@@ -4824,16 +4837,29 @@ export const PropertyDetailsExtension = {
 
     // Extract property data from the new structure
     // New structure: properties[0].json contains the actual property data
-    const realSlidesData = properties.map(prop => {
-      // If the property has a 'json' field, use that as the property data
-      if (prop.json) {
-        console.log('PropertyDetailsExtension: Using new structure: property.json');
-        return prop.json;
-      }
-      // Fallback to the old structure if 'json' field doesn't exist
-      console.log('PropertyDetailsExtension: Using old structure: property directly');
-      return prop;
-    });
+    let realSlidesData;
+    
+    // Check if we have the nested structure: properties[0].properties[0].json
+    if (properties && properties.length > 0 && properties[0].properties) {
+      console.log('PropertyDetailsExtension: Using deeply nested structure: properties[0].properties[0].json');
+      realSlidesData = properties[0].properties.map(prop => {
+        if (prop.json) {
+          return prop.json;
+        }
+        return prop;
+      });
+    } else {
+      // Check if we have the direct structure: properties[0].json
+      realSlidesData = properties.map(prop => {
+        if (prop.json) {
+          console.log('PropertyDetailsExtension: Using new structure: property.json');
+          return prop.json;
+        }
+        // Fallback to the old structure if 'json' field doesn't exist
+        console.log('PropertyDetailsExtension: Using old structure: property directly');
+        return prop;
+      });
+    }
 
     // Use the first property for details
     const property = realSlidesData[0];
