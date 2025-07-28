@@ -65,6 +65,23 @@ export const BrantjesExtension = {
       return;
     }
 
+    // Extract property data from the new structure
+    // New structure: properties[0].json contains the actual property data
+    const realSlidesData = properties.map(prop => {
+      // If the property has a 'json' field, use that as the property data
+      if (prop.json) {
+        console.log('Using new structure: property.json');
+        return prop.json;
+      }
+      // Fallback to the old structure if 'json' field doesn't exist
+      console.log('Using old structure: property directly');
+      return prop;
+    });
+
+    const totalSlides = realSlidesData.length;
+    console.log('Total slides:', totalSlides);
+    console.log('First property data:', realSlidesData[0]);
+
     // Create stylesheet
     const style = document.createElement('style');
     style.innerHTML = `
@@ -3521,8 +3538,7 @@ export const BrantjesExtension = {
     }
 
     // --- INFINITE CAROUSEL SETUP (ADAPTED) ---
-    const realSlidesData = properties;
-    const totalSlides = realSlidesData.length;
+    // realSlidesData and totalSlides are already defined above
 
     // Helper to create a card element (unchanged)
     function createCardElement(propertyData) {
@@ -4806,8 +4822,22 @@ export const PropertyDetailsExtension = {
       return;
     }
 
+    // Extract property data from the new structure
+    // New structure: properties[0].json contains the actual property data
+    const realSlidesData = properties.map(prop => {
+      // If the property has a 'json' field, use that as the property data
+      if (prop.json) {
+        console.log('PropertyDetailsExtension: Using new structure: property.json');
+        return prop.json;
+      }
+      // Fallback to the old structure if 'json' field doesn't exist
+      console.log('PropertyDetailsExtension: Using old structure: property directly');
+      return prop;
+    });
+
     // Use the first property for details
-    const property = properties[0];
+    const property = realSlidesData[0];
+    console.log('PropertyDetailsExtension: Property data:', property);
 
     // Create stylesheet
     const style = document.createElement('style');
