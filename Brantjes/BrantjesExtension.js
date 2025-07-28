@@ -1042,7 +1042,7 @@ export const BrantjesExtension = {
         flex-direction: row;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         margin: 0;
         flex-wrap: nowrap;
         overflow: hidden;
@@ -2865,10 +2865,21 @@ export const BrantjesExtension = {
           headerRow.appendChild(dot2);
         }
         // Price
-        const price = property.financieel?.overdracht?.koopprijs || 0;
+        const isRental = property.financieel?.overdracht?.huurprijs && 
+                        property.financieel?.overdracht?.huurprijs > 0;
+        
+        let price, priceLabel;
+        if (isRental) {
+          price = property.financieel?.overdracht?.huurprijs || 0;
+          priceLabel = 'p.m.';
+        } else {
+          price = property.financieel?.overdracht?.koopprijs || 0;
+          priceLabel = 'k.k.';
+        }
+        
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:0.8rem;font-weight:400;\">k.k.</span>`;
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:0.8rem;font-weight:400;\">${priceLabel}</span>`;
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
@@ -3070,7 +3081,7 @@ export const BrantjesExtension = {
           {
             title: 'Overdracht',
             rows: [
-              ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
+              ['Prijs', `€ ${(isRental ? (property.financieel?.overdracht?.huurprijs || 0) : (property.financieel?.overdracht?.koopprijs || 0)).toLocaleString('nl-NL')} ${isRental ? 'p.m.' : 'k.k.'}`],
               ['Status', formatSpecValue(property.financieel?.overdracht?.status) || ''],
               ['Aanvaarding', formatSpecValue(property.financieel?.overdracht?.aanvaarding) || ''],
               ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
@@ -3591,7 +3602,18 @@ export const BrantjesExtension = {
       const postcode = propertyData.adres?.postcode || '';
       const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
       const cityPostal = [postcode, formatCityName(plaats)].filter(Boolean).join(' ');
-      const price = propertyData.financieel?.overdracht?.koopprijs || 0;
+      // Determine if this is a rental or sale property
+      const isRental = propertyData.financieel?.overdracht?.huurprijs && 
+                      propertyData.financieel?.overdracht?.huurprijs > 0;
+      
+      let price, priceLabel;
+      if (isRental) {
+        price = propertyData.financieel?.overdracht?.huurprijs || 0;
+        priceLabel = 'p.m.'; // per month for rentals
+      } else {
+        price = propertyData.financieel?.overdracht?.koopprijs || 0;
+        priceLabel = 'k.k.'; // buyer's costs for sales
+      }
       const area = propertyData.algemeen?.woonoppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
       const energy = propertyData.algemeen?.energieklasse || '';
@@ -3606,7 +3628,7 @@ export const BrantjesExtension = {
       city.className = 'brantjes-card-city';
       // Price
       const priceP = document.createElement('p');
-      priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">k.k.</span>`;
+      priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">${priceLabel}</span>`;
       priceP.className = 'brantjes-card-price';
       // Details pill (area, rooms)
       const detailsPill = document.createElement('div');
@@ -6015,10 +6037,22 @@ export const PropertyDetailsExtension = {
         dot2.textContent = '•';
         headerRow.appendChild(dot2);
       }
-      const price = property.financieel?.overdracht?.koopprijs || 0;
+      // Determine if this is a rental or sale property
+      const isRental = property.financieel?.overdracht?.huurprijs && 
+                      property.financieel?.overdracht?.huurprijs > 0;
+      
+      let price, priceLabel;
+      if (isRental) {
+        price = property.financieel?.overdracht?.huurprijs || 0;
+        priceLabel = 'p.m.';
+      } else {
+        price = property.financieel?.overdracht?.koopprijs || 0;
+        priceLabel = 'k.k.';
+      }
+      
       const priceDiv = document.createElement('div');
       priceDiv.className = 'detail-popup-header-price';
-      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">k.k.</span>`;
+      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">${priceLabel}</span>`;
       headerRow.appendChild(priceDiv);
       const viewingBtn = document.createElement('button');
       viewingBtn.className = 'detail-popup-header-viewing-btn';
@@ -6199,7 +6233,7 @@ export const PropertyDetailsExtension = {
         {
           title: 'Overdracht',
           rows: [
-            ['Prijs', `€ ${(property.financieel?.overdracht?.koopprijs || 0).toLocaleString('nl-NL')} k.k.`],
+            ['Prijs', `€ ${(isRental ? (property.financieel?.overdracht?.huurprijs || 0) : (property.financieel?.overdracht?.koopprijs || 0)).toLocaleString('nl-NL')} ${isRental ? 'p.m.' : 'k.k.'}`],
             ['Status', formatSpecValue(property.financieel?.overdracht?.status) || ''],
             ['Aanvaarding', formatSpecValue(property.financieel?.overdracht?.aanvaarding) || ''],
             ['Aangeboden sinds', property.financieel?.overdracht?.aangebodenSinds || ''],
