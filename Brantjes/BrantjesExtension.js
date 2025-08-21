@@ -2935,12 +2935,26 @@ export const BrantjesExtension = {
                 if (gridPos <= 4) {
                   // Visible thumbs
                   thumbDiv.classList.add('fade-in');
-                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
-                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                  if (isMobile) {
+                    // Mobile: single row layout
+                    thumbDiv.style.gridRow = 1;
+                    thumbDiv.style.gridColumn = gridPos;
+                  } else {
+                    // Desktop: 2x2 grid layout
+                    thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                    thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                  }
                 } else {
                   // Preloaded invisible thumbs
-                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
-                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                  if (isMobile) {
+                    // Mobile: single row layout
+                    thumbDiv.style.gridRow = 1;
+                    thumbDiv.style.gridColumn = gridPos;
+                  } else {
+                    // Desktop: 2x2 grid layout
+                    thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                    thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                  }
                 }
                 thumbDiv.onclick = () => {
                     // Move all images before this one (including main) to end
@@ -5516,14 +5530,14 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-thumbnails {
-          grid-template-columns: 130px 130px !important;
-          grid-template-rows: 115px 115px !important;
+          grid-template-columns: 1fr 1fr 1fr 1fr !important;
+          grid-template-rows: 115px !important;
           gap: 8px !important;
-          height: 240px !important;
+          height: 115px !important;
         }
         
         .property-details-container .detail-popup-thumbnail {
-          width: 130px !important;
+          width: 100% !important;
           height: 115px !important;
         }
         
@@ -6112,11 +6126,25 @@ export const PropertyDetailsExtension = {
               let gridPos = i;
               if (gridPos <= 4) {
                 thumbDiv.classList.add('fade-in');
-                thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
-                thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                if (isMobile) {
+                  // Mobile: single row layout
+                  thumbDiv.style.gridRow = 1;
+                  thumbDiv.style.gridColumn = gridPos;
+                } else {
+                  // Desktop: 2x2 grid layout
+                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                }
               } else {
-                thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
-                thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                if (isMobile) {
+                  // Mobile: single row layout
+                  thumbDiv.style.gridRow = 1;
+                  thumbDiv.style.gridColumn = gridPos;
+                } else {
+                  // Desktop: 2x2 grid layout
+                  thumbDiv.style.gridRow = ((gridPos - 1) % 2) + 1;
+                  thumbDiv.style.gridColumn = Math.floor((gridPos - 1) / 2) + 1;
+                }
               }
               thumbDiv.onclick = () => {
                   imageList = imageList.slice(i).concat(imageList.slice(0, i));
