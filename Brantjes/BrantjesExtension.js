@@ -2475,7 +2475,7 @@ export const BrantjesExtension = {
         
         /* Restore original desktop font sizes */
         .brantjes-modal-container .detail-popup-title-main {
-          font-size: 1.2rem !important;
+          font-size: 2rem !important;
           line-height: 1.1 !important;
         }
         
@@ -2655,12 +2655,12 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
-          font-size: 15px !important;
+          font-size: 13px !important;
           line-height: 1.6 !important;
         }
         
         .brantjes-modal-container table {
-          font-size: 0.6rem !important;
+          font-size: 1rem !important;
         }
         
         .brantjes-modal-container table td {
@@ -2688,7 +2688,7 @@ export const BrantjesExtension = {
             @media (min-width: 769px), (min-device-width: 769px) {
               .detail-popup-header-price,
               .detail-popup-header-details {
-                font-size: 0.9rem !important;
+                font-size: 1rem !important;
                 font-weight: normal !important;
                 line-height: 1.2 !important;
                 margin: 0 !important;
@@ -2697,7 +2697,7 @@ export const BrantjesExtension = {
               
               .detail-popup-header-row .detail-popup-header-price,
               .detail-popup-header-row .detail-popup-header-details {
-                font-size: 0.9rem !important;
+                font-size: 1rem !important;
                 font-weight: normal !important;
                 line-height: 1.2 !important;
                 margin: 0 !important;
@@ -5543,19 +5543,19 @@ export const PropertyDetailsExtension = {
         
         /* Restore original desktop font sizes for PropertyDetailsExtension */
         .property-details-container .detail-popup-title-main {
-          font-size: 1.2rem !important;
+          font-size: 2rem !important;
           line-height: 1.1 !important;
         }
         
         .property-details-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
         }
         
         .property-details-container .detail-popup-header-price {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
@@ -5564,7 +5564,7 @@ export const PropertyDetailsExtension = {
         /* Override any conflicting general styles */
         .property-details-container .detail-popup-header-price,
         .property-details-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -5574,7 +5574,7 @@ export const PropertyDetailsExtension = {
         /* Force override with maximum specificity */
         .property-details-container .detail-popup-header .detail-popup-header-price,
         .property-details-container .detail-popup-header .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -5584,7 +5584,7 @@ export const PropertyDetailsExtension = {
         /* Shadow DOM penetration - use :host and ::part if available */
         :host .property-details-container .detail-popup-header-price,
         :host .property-details-container .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -5594,7 +5594,7 @@ export const PropertyDetailsExtension = {
         /* Universal override for shadow DOM */
         * .detail-popup-header-price,
         * .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -5604,7 +5604,7 @@ export const PropertyDetailsExtension = {
         /* Target specific elements with maximum specificity */
         .detail-popup-header-row .detail-popup-header-price,
         .detail-popup-header-row .detail-popup-header-details {
-          font-size: 0.9rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -5724,12 +5724,12 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-content > div:not(.detail-popup-header):not(.detail-popup-images-row):not(.detail-popup-specs-row) {
-          font-size: 15px !important;
+          font-size: 13px !important;
           line-height: 1.6 !important;
         }
         
         .property-details-container table {
-          font-size: 0.85rem !important;
+          font-size: 1rem !important;
         }
         
         .property-details-container table td {
