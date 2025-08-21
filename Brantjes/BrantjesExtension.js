@@ -2286,7 +2286,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container .detail-popup-specs-row span {
-          font-size: 14px !important;
+          font-size: 16px !important;
           white-space: nowrap !important;
         }
         
@@ -5375,7 +5375,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-specs-row span {
-          font-size: 14px !important;
+          font-size: 16px !important;
           white-space: nowrap !important;
         }
         
@@ -5618,7 +5618,7 @@ export const PropertyDetailsExtension = {
         }
         
         .detail-popup-specs-row span {
-          font-size: 0.8rem !important;
+          font-size: 1rem !important;
           white-space: nowrap !important;
         }
         
@@ -5696,7 +5696,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container .detail-popup-specs-row span {
-          font-size: 0.7em !important;
+          font-size: 0.9em !important;
           white-space: nowrap !important;
         }
         
