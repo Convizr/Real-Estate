@@ -2516,7 +2516,7 @@ export const BrantjesExtension = {
         /* Shadow DOM penetration - use :host and ::part if available */
         :host .brantjes-modal-container .detail-popup-header-price,
         :host .brantjes-modal-container .detail-popup-header-details {
-          font-size: 0.8rem !important;
+          font-size: 1rem !important;
           font-weight: normal !important;
           line-height: 1.2 !important;
           margin: 0 !important;
@@ -2660,7 +2660,7 @@ export const BrantjesExtension = {
         }
         
         .brantjes-modal-container table {
-          font-size: 1rem !important;
+          font-size: 0.85rem !important;
         }
         
         .brantjes-modal-container table td {
@@ -5729,7 +5729,7 @@ export const PropertyDetailsExtension = {
         }
         
         .property-details-container table {
-          font-size: 1rem !important;
+          font-size: 0.85rem !important;
         }
         
         .property-details-container table td {
