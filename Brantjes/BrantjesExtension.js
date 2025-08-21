@@ -2550,7 +2550,7 @@ export const BrantjesExtension = {
         }
         
         .detail-popup-specs-row span {
-          font-size: 0.8rem !important;
+          font-size: 1.2rem !important;
           white-space: nowrap !important;
         }
         
@@ -2914,8 +2914,11 @@ export const BrantjesExtension = {
         thumbsCol.className = 'detail-popup-thumbnails';
         function renderThumbnails() {
             thumbsCol.innerHTML = '';
-            // Always render 8 thumbnails (4 visible, 4 preloaded invisible)
-            const totalThumbs = Math.min(8, imageList.length);
+            // Check if we're on mobile
+            const isMobile = window.innerWidth <= 768;
+            // On mobile: render 5 thumbnails total (4 visible, 1 preloaded invisible)
+            // On desktop: render 8 thumbnails total (4 visible, 4 preloaded invisible)
+            const totalThumbs = isMobile ? Math.min(5, imageList.length) : Math.min(8, imageList.length);
             // Determine the start index for visible thumbs (1-4 in imageList)
             let start = 1;
             // If user has clicked a thumbnail, imageList is rotated so [0] is main, [1-4] are visible
@@ -6093,7 +6096,11 @@ export const PropertyDetailsExtension = {
       thumbsCol.className = 'detail-popup-thumbnails';
       function renderThumbnails() {
           thumbsCol.innerHTML = '';
-          const totalThumbs = Math.min(8, imageList.length);
+          // Check if we're on mobile
+          const isMobile = window.innerWidth <= 768;
+          // On mobile: render 5 thumbnails total (4 visible, 1 preloaded invisible)
+          // On desktop: render 8 thumbnails total (4 visible, 4 preloaded invisible)
+          const totalThumbs = isMobile ? Math.min(5, imageList.length) : Math.min(8, imageList.length);
           for (let i = 1; i < totalThumbs; i++) {
               const thumbDiv = document.createElement('div');
               thumbDiv.className = 'detail-popup-thumbnail';
