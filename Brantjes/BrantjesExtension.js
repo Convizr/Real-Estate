@@ -60,6 +60,10 @@ export const BrantjesExtension = {
     if (properties && Array.isArray(properties.resultaten)) {
       properties = properties.resultaten;
     }
+    // If properties is an object with a 'woningData' array (Custom Action format), use that
+    if (properties && Array.isArray(properties.woningData)) {
+      properties = properties.woningData;
+    }
     // --- FIX: If properties is a single object, wrap it in an array ---
     if (properties && !Array.isArray(properties)) {
       properties = [properties];
@@ -82,16 +86,21 @@ export const BrantjesExtension = {
         return raw.fullDetails ?? raw;
       });
     } else {
-      // Check if we have the direct structure: properties[0].json
+      // Check if we have the direct structure: properties[0].json or woningData items
       realSlidesData = properties.map(prop => {
         const raw = prop.json ?? prop;
         if (prop.json) {
           console.log('Using new structure: property.json');
+        } else if (raw.address !== undefined || raw.woningData !== undefined) {
+          console.log('Using woningData format');
         } else {
           console.log('Using old structure: property directly');
         }
-        // Support woningData format: use fullDetails when present
-        return raw.fullDetails ?? raw;
+        // Support woningData format: use fullDetails when present, merge top-level address/price as fallback
+        if (raw.fullDetails) {
+          return { ...raw.fullDetails, _address: raw.address, _price: raw.price, _link: raw.link };
+        }
+        return raw;
       });
     }
 
@@ -2824,10 +2833,14 @@ export const BrantjesExtension = {
         // --- HEADER SECTION (Brantjes style) ---
         const header = document.createElement('div');
         header.className = 'detail-popup-header';
-        // Title (street + number)
-        const straat = property.adres?.straat || '';
-        const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-        const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        // Title (street + number) - fallback for woningData format with _address
+        let straat = property.adres?.straat || '';
+        let huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+        let streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+        if (!streetAddress && property._address) {
+          const parts = String(property._address).split(',').map(s => s.trim());
+          streetAddress = parts[0] || '';
+        }
         const titleMain = document.createElement('h1');
         titleMain.className = 'detail-popup-title-main';
         titleMain.textContent = streetAddress || 'Onbekend adres';
@@ -2837,9 +2850,19 @@ export const BrantjesExtension = {
         const headerRow = document.createElement('div');
         headerRow.className = 'detail-popup-header-row';
 
-        // Address (postal code + city)
-        const plaats = property.adres?.plaats || '';
-        const postcode = property.adres?.postcode || '';
+        // Address (postal code + city) - fallback for woningData format
+        let plaats = property.adres?.plaats || '';
+        let postcode = property.adres?.postcode || '';
+        if (!postcode && !plaats && property._address) {
+          const parts = String(property._address).split(',').map(s => s.trim());
+          const cityPostalParts = parts.slice(1).filter(Boolean);
+          if (cityPostalParts.length >= 2) {
+            postcode = cityPostalParts[0] || '';
+            plaats = cityPostalParts[1] || '';
+          } else if (cityPostalParts.length === 1) {
+            postcode = cityPostalParts[0] || '';
+          }
+        }
         let hasAddress = Boolean(postcode || plaats);
         let hasEnergy = Boolean(property.algemeen?.energieklasse);
         if (hasAddress) {
@@ -2868,7 +2891,7 @@ export const BrantjesExtension = {
           dot2.textContent = '•';
           headerRow.appendChild(dot2);
         }
-        // Price
+        // Price - fallback for woningData format with _price
         const isRental = property.financieel?.overdracht?.huurprijs && 
                         property.financieel?.overdracht?.huurprijs > 0;
         
@@ -2883,7 +2906,11 @@ export const BrantjesExtension = {
         
         const priceDiv = document.createElement('div');
         priceDiv.className = 'detail-popup-header-price';
-        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:0.8rem;font-weight:400;\">${priceLabel}</span>`;
+        if ((!price || price === 0) && property._price) {
+          priceDiv.innerHTML = `${String(property._price).replace(/\s*(k\.k\.|p\.m\.)$/i, '').trim()} <span style=\"font-size:0.8rem;font-weight:400;\">${property._price.match(/(k\.k\.|p\.m\.)/i)?.[0] || 'k.k.'}</span>`;
+        } else {
+          priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style=\"font-size:0.8rem;font-weight:400;\">${priceLabel}</span>`;
+        }
         headerRow.appendChild(priceDiv);
         // Viewing button
         const viewingBtn = document.createElement('button');
@@ -2901,7 +2928,7 @@ export const BrantjesExtension = {
         const mainImgCol = document.createElement('div');
         mainImgCol.className = 'detail-popup-main-image';
         const mainImg = document.createElement('img');
-        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+        mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#e0e0e0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="18" font-family="sans-serif">Geen afbeelding</text></svg>'));
         mainImg.alt = 'Hoofdfoto';
         mainImgCol.appendChild(mainImg);
         // Image counter
@@ -2964,7 +2991,7 @@ export const BrantjesExtension = {
                     // Move all images before this one (including main) to end
                     imageList = imageList.slice(i).concat(imageList.slice(0, i));
                     // Re-render main image and thumbnails
-                    mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                    mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#e0e0e0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="18" font-family="sans-serif">Geen afbeelding</text></svg>'));
                     if (counter) {
                         counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
                     }
@@ -3255,12 +3282,16 @@ export const BrantjesExtension = {
         searchNearbyBtn.textContent = 'Zoek in de buurt';
         searchNearbyBtn.className = 'search-nearby-btn';
         searchNearbyBtn.onclick = () => {
-            // Extract street, house number, and city from property
-            const straat = property.adres?.straat || '';
-            // hoofdnummer is a string in the API, so use it as-is if present, else empty string
-            const huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
+            // Extract street, house number, and city from property - fallback for woningData _address
+            let straat = property.adres?.straat || '';
+            let huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
                 ? String(property.adres.huisnummer.hoofdnummer) : '';
-            const plaats = property.adres?.plaats || '';
+            let plaats = property.adres?.plaats || '';
+            if ((!straat || !plaats) && property._address) {
+                const parts = String(property._address).split(',').map(s => s.trim());
+                if (parts[0]) straat = parts[0];
+                if (parts.length >= 3 && parts[2]) plaats = parts[2];
+            }
             
             // Check if Voiceflow API is available
             if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
@@ -3297,7 +3328,7 @@ export const BrantjesExtension = {
     function showBookingModal(property) {
         const bookingContent = document.createElement('div');
         bookingContent.className = 'booking-form-content';
-        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' ');
+        const address = property._address || [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' ');
 
         // Add Brantjes-style form CSS
         const style = document.createElement('style');
@@ -3607,8 +3638,10 @@ export const BrantjesExtension = {
           }
         }
       }
+      // Use data URI for placeholder to avoid network requests (via.placeholder.com can fail)
+      const placeholderImg = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="#e0e0e0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="14" font-family="sans-serif">Geen afbeelding</text></svg>');
       const img = document.createElement('img');
-      img.src = imgUrl || 'https://via.placeholder.com/200x200?text=No+Image'; // Fallback image
+      img.src = imgUrl || placeholderImg;
       img.alt = 'Woning foto';
       cardInner.appendChild(img);
 
@@ -3621,8 +3654,14 @@ export const BrantjesExtension = {
       const huisnummer = propertyData.adres?.huisnummer?.hoofdnummer || '';
       const plaats = propertyData.adres?.plaats || '';
       const postcode = propertyData.adres?.postcode || '';
-      const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
-      const cityPostal = [postcode, formatCityName(plaats)].filter(Boolean).join(' ');
+      let streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+      let cityPostal = [postcode, formatCityName(plaats)].filter(Boolean).join(' ');
+      // Fallback for woningData format: parse address string "Straat 1, 1234 AB, Plaats"
+      if (!streetAddress && propertyData._address) {
+        const parts = String(propertyData._address).split(',').map(s => s.trim());
+        streetAddress = parts[0] || '';
+        cityPostal = parts.slice(1).filter(Boolean).join(', ') || '';
+      }
       // Determine if this is a rental or sale property
       const isRental = propertyData.financieel?.overdracht?.huurprijs && 
                       propertyData.financieel?.overdracht?.huurprijs > 0;
@@ -3635,7 +3674,7 @@ export const BrantjesExtension = {
         price = propertyData.financieel?.overdracht?.koopprijs || 0;
         priceLabel = 'k.k.'; // buyer's costs for sales
       }
-      const area = propertyData.algemeen?.woonoppervlakte || '';
+      const area = propertyData.algemeen?.woonoppervlakte || propertyData.algemeen?.totaleWoonkameroppervlakte || '';
       const rooms = propertyData.algemeen?.aantalKamers || '';
       const energy = propertyData.algemeen?.energieklasse || '';
 
@@ -3647,9 +3686,16 @@ export const BrantjesExtension = {
       const city = document.createElement('p');
       city.textContent = cityPostal;
       city.className = 'brantjes-card-city';
-      // Price
+      // Price - fallback for woningData format: use _price string (e.g. "€ 895.000 k.k.")
       const priceP = document.createElement('p');
-      priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">${priceLabel}</span>`;
+      if ((!price || price === 0) && propertyData._price) {
+        const priceStr = String(propertyData._price);
+        const suffix = priceStr.match(/(k\.k\.|p\.m\.)/i)?.[0] || 'k.k.';
+        const numbers = priceStr.replace(/\s*(k\.k\.|p\.m\.)$/i, '').trim();
+        priceP.innerHTML = `<span class="brantjes-card-price-numbers">${numbers}</span> <span class="brantjes-card-price-kk">${suffix}</span>`;
+      } else {
+        priceP.innerHTML = `<span class="brantjes-card-price-numbers">€ ${price.toLocaleString('nl-NL')}</span> <span class="brantjes-card-price-kk">${priceLabel}</span>`;
+      }
       priceP.className = 'brantjes-card-price';
       // Details pill (area, rooms)
       const detailsPill = document.createElement('div');
@@ -4873,6 +4919,10 @@ export const PropertyDetailsExtension = {
     if (properties && Array.isArray(properties.resultaten)) {
       properties = properties.resultaten;
     }
+    // If properties is an object with a 'woningData' array (Custom Action format), use that
+    if (properties && Array.isArray(properties.woningData)) {
+      properties = properties.woningData;
+    }
     // --- FIX: If properties is a single object, wrap it in an array ---
     if (properties && !Array.isArray(properties)) {
       properties = [properties];
@@ -4892,19 +4942,27 @@ export const PropertyDetailsExtension = {
       realSlidesData = properties[0].properties.map(prop => {
         const raw = prop.json ?? prop;
         // Support woningData format: use fullDetails when present
-        return raw.fullDetails ?? raw;
+        if (raw.fullDetails) {
+          return { ...raw.fullDetails, _address: raw.address, _price: raw.price, _link: raw.link };
+        }
+        return raw;
       });
     } else {
-      // Check if we have the direct structure: properties[0].json
+      // Check if we have the direct structure: properties[0].json or woningData items
       realSlidesData = properties.map(prop => {
         const raw = prop.json ?? prop;
         if (prop.json) {
           console.log('PropertyDetailsExtension: Using new structure: property.json');
+        } else if (raw.address !== undefined || raw.woningData !== undefined) {
+          console.log('PropertyDetailsExtension: Using woningData format');
         } else {
           console.log('PropertyDetailsExtension: Using old structure: property directly');
         }
-        // Support woningData format: use fullDetails when present
-        return raw.fullDetails ?? raw;
+        // Support woningData format: use fullDetails when present, merge top-level address/price as fallback
+        if (raw.fullDetails) {
+          return { ...raw.fullDetails, _address: raw.address, _price: raw.price, _link: raw.link };
+        }
+        return raw;
       });
     }
 
@@ -5790,7 +5848,7 @@ export const PropertyDetailsExtension = {
     function showBookingModal(property) {
         const bookingContent = document.createElement('div');
         bookingContent.className = 'booking-form-content';
-        const address = [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' ');
+        const address = property._address || [property.adres?.straat, property.adres?.huisnummer?.hoofdnummer].filter(Boolean).join(' ');
 
         // Add Brantjes-style form CSS
         const style = document.createElement('style');
@@ -6022,12 +6080,16 @@ export const PropertyDetailsExtension = {
       const detailContent = document.createElement('div');
       detailContent.className = 'detail-popup-content';
 
-      // --- HEADER SECTION ---
+      // --- HEADER SECTION --- (with fallback for woningData format)
       const header = document.createElement('div');
       header.className = 'detail-popup-header';
-      const straat = property.adres?.straat || '';
-      const huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
-      const streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+      let straat = property.adres?.straat || '';
+      let huisnummer = property.adres?.huisnummer?.hoofdnummer || '';
+      let streetAddress = [straat, huisnummer].filter(Boolean).join(' ');
+      if (!streetAddress && property._address) {
+        const parts = String(property._address).split(',').map(s => s.trim());
+        streetAddress = parts[0] || '';
+      }
       const titleMain = document.createElement('h1');
       titleMain.className = 'detail-popup-title-main';
       titleMain.textContent = streetAddress || 'Onbekend adres';
@@ -6035,8 +6097,18 @@ export const PropertyDetailsExtension = {
 
       const headerRow = document.createElement('div');
       headerRow.className = 'detail-popup-header-row';
-      const plaats = property.adres?.plaats || '';
-      const postcode = property.adres?.postcode || '';
+      let plaats = property.adres?.plaats || '';
+      let postcode = property.adres?.postcode || '';
+      if (!postcode && !plaats && property._address) {
+        const parts = String(property._address).split(',').map(s => s.trim());
+        const cityPostalParts = parts.slice(1).filter(Boolean);
+        if (cityPostalParts.length >= 2) {
+          postcode = cityPostalParts[0] || '';
+          plaats = cityPostalParts[1] || '';
+        } else if (cityPostalParts.length === 1) {
+          postcode = cityPostalParts[0] || '';
+        }
+      }
       let hasAddress = Boolean(postcode || plaats);
       let hasEnergy = Boolean(property.algemeen?.energieklasse);
       if (hasAddress) {
@@ -6062,7 +6134,7 @@ export const PropertyDetailsExtension = {
         dot2.textContent = '•';
         headerRow.appendChild(dot2);
       }
-      // Determine if this is a rental or sale property
+      // Determine if this is a rental or sale property - fallback for woningData _price
       const isRental = property.financieel?.overdracht?.huurprijs && 
                       property.financieel?.overdracht?.huurprijs > 0;
       
@@ -6077,7 +6149,11 @@ export const PropertyDetailsExtension = {
       
       const priceDiv = document.createElement('div');
       priceDiv.className = 'detail-popup-header-price';
-      priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">${priceLabel}</span>`;
+      if ((!price || price === 0) && property._price) {
+        priceDiv.innerHTML = `${String(property._price).replace(/\s*(k\.k\.|p\.m\.)$/i, '').trim()} <span style="font-size:1.08rem;font-weight:400;">${property._price.match(/(k\.k\.|p\.m\.)/i)?.[0] || 'k.k.'}</span>`;
+      } else {
+        priceDiv.innerHTML = `€ ${price.toLocaleString('nl-NL')} <span style="font-size:1.08rem;font-weight:400;">${priceLabel}</span>`;
+      }
       headerRow.appendChild(priceDiv);
       const viewingBtn = document.createElement('button');
       viewingBtn.className = 'detail-popup-header-viewing-btn';
@@ -6103,7 +6179,7 @@ export const PropertyDetailsExtension = {
       const mainImgCol = document.createElement('div');
       mainImgCol.className = 'detail-popup-main-image';
       const mainImg = document.createElement('img');
-      mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+      mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#e0e0e0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="18" font-family="sans-serif">Geen afbeelding</text></svg>'));
       mainImg.alt = 'Hoofdfoto';
       mainImgCol.appendChild(mainImg);
       let counter;
@@ -6156,7 +6232,7 @@ export const PropertyDetailsExtension = {
               }
               thumbDiv.onclick = () => {
                   imageList = imageList.slice(i).concat(imageList.slice(0, i));
-                  mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'https://via.placeholder.com/600x400?text=No+Image');
+                  mainImg.src = (imageList[0] ? (imageList[0].url + (imageList[0].url.includes('?') ? '&resize=4' : '?resize=4')) : 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="600" height="400" fill="#e0e0e0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-size="18" font-family="sans-serif">Geen afbeelding</text></svg>'));
                   if (counter) {
                       counter.textContent = `${imageList[0].originalIndex + 1}/${allImgs.length}`;
                   }
@@ -6420,10 +6496,15 @@ export const PropertyDetailsExtension = {
         searchNearbyBtn.textContent = 'Zoek in de buurt';
         searchNearbyBtn.className = 'search-nearby-btn';
         searchNearbyBtn.onclick = () => {
-            const straat = property.adres?.straat || '';
-            const huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
+            let straat = property.adres?.straat || '';
+            let huisnummer = (property.adres && property.adres.huisnummer && typeof property.adres.huisnummer.hoofdnummer !== 'undefined' && property.adres.huisnummer.hoofdnummer !== null)
                 ? String(property.adres.huisnummer.hoofdnummer) : '';
-            const plaats = property.adres?.plaats || '';
+            let plaats = property.adres?.plaats || '';
+            if ((!straat || !plaats) && property._address) {
+                const parts = String(property._address).split(',').map(s => s.trim());
+                if (parts[0]) straat = parts[0];
+                if (parts.length >= 3 && parts[2]) plaats = parts[2];
+            }
             if (window.voiceflow && window.voiceflow.chat && window.voiceflow.chat.interact) {
                 window.voiceflow.chat.interact({
                     type: 'searchNearby',
