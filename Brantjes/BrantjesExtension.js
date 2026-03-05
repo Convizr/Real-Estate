@@ -34,6 +34,10 @@ export const BrantjesExtension = {
     if (typeof trace.payload === 'string') {
       try {
         payloadObj = JSON.parse(trace.payload);
+        // Handle double/triple encoding: variabele wordt als string geïnterpoleerd
+        while (typeof payloadObj === 'string') {
+          payloadObj = JSON.parse(payloadObj);
+        }
       } catch (e) {
         console.error('Error parsing trace.payload:', e);
         return;
@@ -4843,6 +4847,10 @@ export const PropertyDetailsExtension = {
     if (typeof trace.payload === 'string') {
       try {
         payloadObj = JSON.parse(trace.payload);
+        // Handle double/triple encoding: variabele wordt als string geïnterpoleerd
+        while (typeof payloadObj === 'string') {
+          payloadObj = JSON.parse(payloadObj);
+        }
       } catch (e) {
         console.error('Error parsing trace.payload:', e);
         return;
