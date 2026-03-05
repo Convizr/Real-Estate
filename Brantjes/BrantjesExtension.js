@@ -43,7 +43,7 @@ export const BrantjesExtension = {
     }
     console.log('Parsed Payload:', payloadObj);
 
-    let properties = payloadObj.properties;
+    let properties = payloadObj.properties ?? payloadObj.woningData;
     if (typeof properties === 'string') {
       try {
         properties = JSON.parse(properties);
@@ -73,21 +73,21 @@ export const BrantjesExtension = {
     if (properties && properties.length > 0 && properties[0].properties) {
       console.log('Using deeply nested structure: properties[0].properties[0].json');
       realSlidesData = properties[0].properties.map(prop => {
-        if (prop.json) {
-          return prop.json;
-        }
-        return prop;
+        const raw = prop.json ?? prop;
+        // Support woningData format: use fullDetails when present
+        return raw.fullDetails ?? raw;
       });
     } else {
       // Check if we have the direct structure: properties[0].json
       realSlidesData = properties.map(prop => {
+        const raw = prop.json ?? prop;
         if (prop.json) {
           console.log('Using new structure: property.json');
-          return prop.json;
+        } else {
+          console.log('Using old structure: property directly');
         }
-        // Fallback to the old structure if 'json' field doesn't exist
-        console.log('Using old structure: property directly');
-        return prop;
+        // Support woningData format: use fullDetails when present
+        return raw.fullDetails ?? raw;
       });
     }
 
@@ -4852,7 +4852,7 @@ export const PropertyDetailsExtension = {
     }
     console.log('Parsed Payload:', payloadObj);
 
-    let properties = payloadObj.properties;
+    let properties = payloadObj.properties ?? payloadObj.woningData;
     if (typeof properties === 'string') {
       try {
         properties = JSON.parse(properties);
@@ -4882,21 +4882,21 @@ export const PropertyDetailsExtension = {
     if (properties && properties.length > 0 && properties[0].properties) {
       console.log('PropertyDetailsExtension: Using deeply nested structure: properties[0].properties[0].json');
       realSlidesData = properties[0].properties.map(prop => {
-        if (prop.json) {
-          return prop.json;
-        }
-        return prop;
+        const raw = prop.json ?? prop;
+        // Support woningData format: use fullDetails when present
+        return raw.fullDetails ?? raw;
       });
     } else {
       // Check if we have the direct structure: properties[0].json
       realSlidesData = properties.map(prop => {
+        const raw = prop.json ?? prop;
         if (prop.json) {
           console.log('PropertyDetailsExtension: Using new structure: property.json');
-          return prop.json;
+        } else {
+          console.log('PropertyDetailsExtension: Using old structure: property directly');
         }
-        // Fallback to the old structure if 'json' field doesn't exist
-        console.log('PropertyDetailsExtension: Using old structure: property directly');
-        return prop;
+        // Support woningData format: use fullDetails when present
+        return raw.fullDetails ?? raw;
       });
     }
 
